@@ -1,0 +1,403 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.3">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>:root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --success-green: #2e7d32; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body, input, button, table, .btn, .modal-content { font-family: 'Pretendard', sans-serif !important; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body { background-color: #f4f7f6; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.container { margin-top: 30px; max-width: 95% !important; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-trigger-wrapper {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: flex-end;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding-right: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-trigger-top {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--dark-cyan);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex; align-items: center; gap: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-trigger-top i { font-size: 1.2rem; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-trigger-top:hover { text-decoration: underline; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.search-box {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex; flex-direction: column; align-items: center; position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.search-row { display: flex; align-items: center; justify-content: center; width: 100%; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.search-ghost { width: 110px; flex-shrink: 0; }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.search-input-wrapper { flex: 0 1 600px; position: relative; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn-group { display: flex; align-items: center; gap: 8px; margin-left: 15px; width: 110px; flex-shrink: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.input-field { margin: 0 !important; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input#card-search { text-align: center !important; font-size: 1.2rem; padding-right: 40px !important; box-sizing: border-box; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input#card-search:disabled { background-color: #fafafa; color: #bdbdbd; cursor: not-allowed; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.clear-search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ccc; display: none; z-index: 5; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn.cyan-theme { background-color: var(--primary-cyan) !important; transition: background-color 0.3s, transform 0.1s; border-radius: 4px; font-weight: 600; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; font-weight: 600; text-align: center; }</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>@media only screen and (max-width: 600px) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.search-box { padding: 20px 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.search-ghost { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.search-input-wrapper { flex: 1; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.btn-group { width: auto; margin-left: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.guide-trigger-wrapper { padding-right: 5px; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>input#card-search { font-size: 1rem; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.modal { width: 95% !important; max-width: 95% !important; max-height: 80% !important; top: 5% !important; margin: 0 auto; overflow-y: auto !important; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.modal-footer { padding: 4px 15px 25px 15px !important; height: auto !important; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>th { background: var(--primary-cyan); color: white; text-align: center !important; border: 1px solid #ddd; padding: 10px 4px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>td { border: 1px solid #ddd; text-align: center; padding: 8px 4px; position: relative; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.col-card-no { width: 220px; } .col-loc { width: 130px; } .col-total { width: 80px; } .col-proc { width: 75px; }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.expand-btn { cursor: pointer; color: var(--primary-cyan); position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.another-row { background-color: #fafafa !important; display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.another-val { text-align: center !important; font-weight: 500; color: #444; }</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal { border-radius: 12px; width: 550px !important; max-height: 85% !important; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.url-input-container { display: flex; align-items: center; margin-top: 20px; margin-bottom: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.url-input-container input { margin-bottom: 0 !important; flex-grow: 1; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.trash-btn { cursor: pointer; color: #9e9e9e; margin-left: 15px; }</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-btn { cursor: pointer; display: flex; align-items: center; color: var(--dark-cyan); font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-content { display: none; background: #e0f2f1; padding: 15px; border-radius: 6px; font-size: 0.9rem; border: 1px inset #b2dfdb; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-content ol { margin: 0; padding-left: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.guide-content ul { padding-left: 10px; margin: 2px 0; color: #777; font-size: 0.85rem; list-style-type: none; line-height: 1.2; }<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.clear-history-btn { cursor: pointer; font-size: 1.1rem; color: #9e9e9e; }</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in; width: 100%; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#result-area.show { max-height: 5000px; opacity: 1; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.preloader-wrapper.big { width: 64px !important; height: 64px !important; flex-shrink: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="center-overlay"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h4 class="app-title"&gt;유희왕 카드 관리 &lt;span class="beta-tag"&gt;Beta&lt;/span&gt;&lt;/h4&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="guide-trigger-wrapper"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="guide-trigger-top" onclick="openGuideModal()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;i class="material-icons"&gt;help_outline&lt;/i&gt; 사용법</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="search-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="search-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="search-ghost"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="search-input-wrapper"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="input-field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input type="text" id="card-search" class="autocomplete" autocomplete="off" placeholder="카드 이름을 입력하세요"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;i id="clear-btn" class="material-icons clear-search-btn"&gt;cancel&lt;/i&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="btn-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="search-btn" class="btn waves-effect waves-light cyan-theme" onclick="startSearch()" style="height: 45px;"&gt;&lt;i class="material-icons"&gt;search&lt;/i&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn grey darken-1 modal-trigger tooltipped" id="settings-trigger" href="#settings-modal" data-position="bottom" data-tooltip="시트 설정" style="height: 45px; padding: 0 10px;"&gt;&lt;i class="material-icons"&gt;settings&lt;/i&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="sub-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="recent-search-area" class="recent-searches"&gt;최근 검색 : &lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;i id="clear-history-icon" class="material-icons clear-history-btn tooltipped" data-position="bottom" data-tooltip="기록 삭제" onclick="clearAllHistory()"&gt;delete_sweep&lt;/i&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="result-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="loading-overlay"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="preloader-wrapper big active"&gt;&lt;div class="spinner-layer spinner-teal-only"&gt;&lt;div class="circle-clipper left"&gt;&lt;div class="circle"&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="gap-patch"&gt;&lt;div class="circle"&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class="circle-clipper right"&gt;&lt;div class="circle"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);"&gt;데이터 조회 중...&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="result-area"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="settings-modal" class="modal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modal-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h5 style="font-weight: 800; margin-bottom: 20px;"&gt;구글 시트 연결&lt;/h5&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p id="modal-instruction"&gt;양식에 맞는 구글 시트 링크를 입력해주세요.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="url-input-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..."&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;i class="material-icons trash-btn tooltipped" data-position="bottom" data-tooltip="연결 끊기" onclick="disconnectSheet()"&gt;delete&lt;/i&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="guide-btn" onclick="toggleGuide()"&gt;&lt;i id="guide-icon" class="material-icons"&gt;expand_more&lt;/i&gt;&lt;span&gt;양식 다운로드 및 사용법&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="guide-box" class="guide-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ol&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;&lt;a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/template/preview" target="_blank" style="color: var(--primary-cyan); font-weight: bold; text-decoration: underline;"&gt;템플릿 파일&lt;/a&gt;을 본인의 구글 드라이브에 저장&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;CardList 시트에 원하는 팩의 카드 리스트를 양식에 맞게 기입</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;ul&gt;&lt;li&gt;- 정발 / 일판 상관 없이 기입 가능&lt;/li&gt;&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;MyCard 시트에 카드 번호, 가공, 수량, 보관 장소를 입력</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;li&gt;- 카드 이름은 CardList를 바탕으로 자동 입력됨&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;li&gt;- 기본적으로 어나더는 비워두고, 필요할때 원하는 호칭 기입&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;공유 설정에서 &lt;b&gt;링크가 있는 모든 사용자 / 뷰어로 설정&lt;/b&gt;&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;해당 파일의 링크를 위에 입력하고 저장&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ol&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modal-footer"&gt;&lt;button class="btn-flat modal-close"&gt;취소&lt;/button&gt;&lt;button class="btn cyan-theme waves-effect waves-light" onclick="saveSettings()" style="font-weight: 600;"&gt;저장&lt;/button&gt;&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>/** ⚠️ 아래 URL에 본인의 구글 스크립트 배포 주소를 넣으세요 **/</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmYjEhw9j4RkcM4SV9xE2UC_gZqcbXb3dSSFBKGReTgpwd2ukePKkmpXBvY9Krrs_O/exec";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>let allProcessingTypes = [];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let allNames = [];<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>let isAppConfigured = false;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let acInstance = null;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let isLoading = false;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const RECENT_KEY = 'recent_card_searches';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// [GitHub전용] 구글 API 호출 공통 함수</p>
+<p class="p1"><span class="Apple-converted-space">  </span>async function callApi(action, params = {}) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const url = new URL(SCRIPT_URL);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>url.searchParams.append("action", action);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>for (const key in params) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>url.searchParams.append(key, params[key]);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const response = await fetch(url);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return await response.json();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.addEventListener('DOMContentLoaded', function() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>M.Modal.init(document.querySelectorAll('.modal'));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const searchInput = document.getElementById('card-search');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const clearBtn = document.getElementById('clear-btn');</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length &gt; 0 ? 'block' : 'none'; });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>searchInput.addEventListener('keydown', function(e) {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (e.key === 'Enter') {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const dropdown = document.querySelector('.autocomplete-content');<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (dropdown &amp;&amp; dropdown.firstChild) { this.value = dropdown.firstChild.textContent.trim(); }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (acInstance) acInstance.close();<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>this.blur();<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>startSearch();<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderRecentSearches();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>refreshInitialData();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function openGuideModal() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const modal = M.Modal.getInstance(document.getElementById('settings-modal'));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>modal.open();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const box = document.getElementById('guide-box');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const icon = document.getElementById('guide-icon');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>box.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>icon.innerText = 'expand_less';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function updateModalInstruction(isLinked) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const instruction = document.getElementById('modal-instruction');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (isLinked) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instruction.innerText = '구글 시트 연결이 완료되었습니다!';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instruction.style.color = 'var(--success-green)';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instruction.style.fontWeight = '700';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instruction.innerText = '양식에 맞는 구글 시트 링크를 입력해주세요.';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instruction.style.color = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instruction.style.fontWeight = '';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>async function refreshInitialData() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>showLoading(true);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const res = await callApi('getInitialData');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showLoading(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>isAppConfigured = res.isConfigured;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateModalInstruction(res.isConfigured);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (res.isConfigured) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>allNames = res.names;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>allProcessingTypes = res.processingTypes.sort();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const initialData = {};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>allNames.forEach(n =&gt; initialData[n] = null);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: initialData, onAutocomplete: startSearch, limit: 15 });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showLoading(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>M.toast({html: '데이터 로드 실패: API 주소를 확인하세요.'});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>async function startSearch() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (isLoading) return;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!isAppConfigured) { openGuideModal(); showCenterMessage('먼저 시트를 연결해주세요!'); return; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const name = document.getElementById('card-search').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(!name) return;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>saveRecentSearch(name);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('result-area').classList.remove('show');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>showLoading(true);</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rows = await callApi('searchCard', { name: name });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderTable(rows);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showLoading(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>M.toast({html: '검색 중 오류 발생'});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function renderTable(rows) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>showLoading(false);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const resultArea = document.getElementById('result-area');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (rows.length === 0) { resultArea.innerHTML = "&lt;div class='center' style='padding:40px;'&gt;검색 결과가 없습니다.&lt;/div&gt;"; resultArea.classList.add('show'); return; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const groups = {};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rows.forEach(r =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [name, cardNo, proc, qty, loc, another] = r;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!groups[cardNo]) groups[cardNo] = { locations: {}, anotherItems: [] };</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!groups[cardNo].locations[loc]) groups[cardNo].locations[loc] = { total: 0, procs: {} };</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const count = parseInt(qty) || 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>groups[cardNo].locations[loc].total += count;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>groups[cardNo].locations[loc].procs[proc] = (groups[cardNo].locations[loc].procs[proc] || 0) + count;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (another) groups[cardNo].anotherItems.push({ another, loc, proc, count });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const activeProcs = allProcessingTypes.filter(pt =&gt; rows.some(r =&gt; r[2] === pt));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let html = `&lt;table&gt;&lt;colgroup&gt;&lt;col class="col-card-no"&gt;&lt;col class="col-loc"&gt;&lt;col class="col-total"&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>activeProcs.forEach(() =&gt; html += `&lt;col class="col-proc"&gt;`);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;/colgroup&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;카드 번호 / 일러스트&lt;/th&gt;&lt;th&gt;보관 장소&lt;/th&gt;&lt;th&gt;총 수량&lt;/th&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>activeProcs.forEach(pt =&gt; html += `&lt;th&gt;${pt}&lt;/th&gt;`);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>Object.keys(groups).forEach(cardNo =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const g = groups[cardNo];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const locList = Object.keys(g.locations);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>g.anotherItems.sort((a, b) =&gt; String(a.another).localeCompare(String(b.another), undefined, {numeric: true}));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>locList.forEach((loc, idx) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const item = g.locations[loc];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html += `&lt;tr class="main-row card-${rowId}"&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (idx === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>html += `&lt;td rowspan="${locList.length}" class="card-no-cell"&gt;&lt;div class="expand-container"&gt;&lt;span&gt;${cardNo}&lt;/span&gt;${g.anotherItems.length &gt; 0 ? `&lt;i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')"&gt;add_circle_outline&lt;/i&gt;` : ''}&lt;/div&gt;&lt;/td&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html += `&lt;td class="main-loc-cell"&gt;${loc}&lt;/td&gt;&lt;td class="main-total-cell"&gt;${item.total}&lt;/td&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>activeProcs.forEach(pt =&gt; { html += `&lt;td class="main-proc-cell" data-proc="${pt}"&gt;${item.procs[pt] || 0}&lt;/td&gt;`; });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html += `&lt;/tr&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>g.anotherItems.forEach(ai =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html += `&lt;tr class="another-row ${rowId}-sub" style="display:none;"&gt;&lt;td class="another-val"&gt;↳ ${ai.another}&lt;/td&gt;&lt;td class="sub-loc-cell"&gt;${ai.loc}&lt;/td&gt;&lt;td class="sub-qty-cell"&gt;${ai.count}&lt;/td&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>activeProcs.forEach(pt =&gt; { html += `&lt;td class="sub-proc-val" data-proc="${pt}"&gt;${ai.proc === pt ? ai.count : 0}&lt;/td&gt;`; });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html += `&lt;/tr&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;/tbody&gt;&lt;/table&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>resultArea.innerHTML = html;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setTimeout(() =&gt; resultArea.classList.add('show'), 50);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function toggleAnother(rowId) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const subs = document.getElementsByClassName(rowId + '-sub');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const mainRows = document.getElementsByClassName('card-' + rowId);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const btn = event.target;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const isExpanding = subs[0].style.display === 'none';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (isExpanding) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for(let s of subs) s.style.display = 'table-row';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>btn.innerText = 'remove_circle_outline';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateMainValues(mainRows, subs, true);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for(let s of subs) s.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>btn.innerText = 'add_circle_outline';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateMainValues(mainRows, subs, false);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function updateMainValues(mainRows, subs, isSubtract) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>for (let mRow of mainRows) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const locName = mRow.querySelector('.main-loc-cell').innerText;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const mainTotalCell = mRow.querySelector('.main-total-cell');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const mainProcCells = mRow.querySelectorAll('.main-proc-cell');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let locTotalSub = 0, locProcSub = {};</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let sRow of subs) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (sRow.querySelector('.sub-loc-cell').innerText === locName) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>let currentQty = parseInt(sRow.querySelector('.sub-qty-cell').innerText);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>locTotalSub += currentQty;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>sRow.querySelectorAll('.sub-proc-val').forEach(sCell =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const pt = sCell.getAttribute('data-proc');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>locProcSub[pt] = (locProcSub[pt] || 0) + parseInt(sCell.innerText);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const currentTotal = parseInt(mainTotalCell.innerText);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>mainTotalCell.innerText = isSubtract ? currentTotal - locTotalSub : currentTotal + locTotalSub;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>mainProcCells.forEach(mCell =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const pt = mCell.getAttribute('data-proc');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const currentProcVal = parseInt(mCell.innerText);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mCell.innerText = isSubtract ? currentProcVal - (locProcSub[pt] || 0) : currentProcVal + (locProcSub[pt] || 0);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() =&gt; { overlay.style.display = 'none'; }, 2000); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>function toggleGuide() { const box = document.getElementById('guide-box'); const icon = document.getElementById('guide-icon'); if (box.style.display === 'block') { box.style.display = 'none'; icon.innerText = 'expand_more'; } else { box.style.display = 'block'; icon.innerText = 'expand_less'; } }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>function renderRecentSearches() { const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const area = document.getElementById('recent-search-area'); const delIcon = document.getElementById('clear-history-icon'); let html = `최근 검색 : `; recent.forEach(name =&gt; { html += `&lt;span class="recent-item" onclick="quickSearch('${name}')"&gt;${name}&lt;/span&gt; `; }); area.innerHTML = html; delIcon.style.display = 'block'; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>async function saveSettings() {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const url = document.getElementById('sheet-url').value;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!url) { M.toast({html: '주소를 입력해주세요.'}); return; }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>await callApi('setSpreadsheetId', { url: url });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>M.Modal.getInstance(document.getElementById('settings-modal')).close();<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>showCenterMessage('연결이 완료되었습니다!');<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateModalInstruction(true);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>refreshInitialData();<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>M.toast({html: '설정 저장 실패'});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>async function disconnectSheet() {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!confirm("정말 연결을 끊으시겠습니까?")) return;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>await callApi('disconnectSpreadsheet');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>M.Modal.getInstance(document.getElementById('settings-modal')).close();<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>showCenterMessage('연결이 해제되었습니다!');<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateModalInstruction(false);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>refreshInitialData();<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>M.toast({html: '해제 실패'});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = recent.filter(item =&gt; item !== name); recent.unshift(name); if (recent.length &gt; 5) recent.pop(); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>function clearAllHistory() { if (!confirm("모든 검색 기록을 삭제하시겠습니까?")) return; localStorage.removeItem(RECENT_KEY); renderRecentSearches(); showCenterMessage('검색 기록이 삭제되었습니다.'); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>function quickSearch(name) { const input = document.getElementById('card-search'); input.value = name; startSearch(); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>function showLoading(show) { isLoading = show; document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('card-search').disabled = show; document.getElementById('search-btn').disabled = show; }</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
