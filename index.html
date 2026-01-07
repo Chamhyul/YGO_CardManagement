@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -45,7 +43,6 @@
     .btn.cyan-theme { background-color: var(--primary-cyan) !important; transition: background-color 0.3s, transform 0.1s; border-radius: 4px; font-weight: 600; }
     #center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; font-weight: 600; text-align: center; }
     
-    /* 모바일 반응형 스타일 */
     @media only screen and (max-width: 600px) {
       .search-box { padding: 20px 10px; }
       .search-ghost { display: none; }
@@ -53,8 +50,18 @@
       .btn-group { width: auto; margin-left: 8px; }
       .guide-trigger-wrapper { padding-right: 5px; }
       input#card-search { font-size: 1rem; }
-      .modal { width: 95% !important; max-width: 95% !important; max-height: 80% !important; top: 5% !important; margin: 0 auto; overflow-y: auto !important; }
-      .modal-footer { padding: 4px 15px 25px 15px !important; height: auto !important; }
+      .modal { 
+        width: 95% !important; 
+        max-width: 95% !important;
+        max-height: 80% !important; 
+        top: 5% !important; 
+        margin: 0 auto;
+        overflow-y: auto !important;
+      }
+      .modal-footer {
+        padding: 4px 15px 25px 15px !important; 
+        height: auto !important;
+      }
     }
 
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
@@ -159,8 +166,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  /** 알려주신 앱 웹 URL 적용 **/
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmYjEhw9j4RkcM4SV9xE2UC_gZqcbXb3dSSFBKGReTgpwd2ukePKkmpXBvY9Krrs_O/exec";
+  /** ⚠️ 아래 URL에 본인의 구글 스크립트 배포 주소를 넣으세요 **/
+  const SCRIPT_URL = "여기에_배포된_웹_앱_URL_붙여넣기";
+  const STORAGE_KEY = 'yugioh_spreadsheet_id';
 
   let allProcessingTypes = [];
   let allNames = []; 
@@ -169,10 +177,16 @@
   let isLoading = false;
   const RECENT_KEY = 'recent_card_searches';
 
+  // API 통신 공통 함수
   async function callApi(action, params = {}) {
     const url = new URL(SCRIPT_URL);
     url.searchParams.append("action", action);
-    for (const key in params) { url.searchParams.append(key, params[key]); }
+    const savedId = localStorage.getItem(STORAGE_KEY);
+    if (savedId) url.searchParams.append("ssId", savedId);
+
+    for (const key in params) {
+      url.searchParams.append(key, params[key]);
+    }
     const response = await fetch(url);
     return await response.json();
   }
@@ -182,12 +196,31 @@
     M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
+    
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
-    clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); });
-    searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { const dropdown = document.querySelector('.autocomplete-content'); if (dropdown && dropdown.firstChild) { this.value = dropdown.firstChild.textContent.trim(); } if (acInstance) acInstance.close(); this.blur(); startSearch(); } });
+    clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); triggerDropdown(); });
+    
+    searchInput.addEventListener('focus', function() { triggerDropdown(); });
+    searchInput.addEventListener('click', function() { triggerDropdown(); });
+    
+    searchInput.addEventListener('keydown', function(e) { 
+      if (e.key === 'Enter') { 
+        const dropdown = document.querySelector('.autocomplete-content'); 
+        if (dropdown && dropdown.firstChild) { this.value = dropdown.firstChild.textContent.trim(); } 
+        if (acInstance) acInstance.close(); 
+        this.blur(); 
+        startSearch(); 
+      } 
+    });
+    
     renderRecentSearches();
     refreshInitialData();
   });
+
+  function triggerDropdown() {
+    if (!acInstance || isLoading) return;
+    setTimeout(() => { if (!acInstance.isOpen) acInstance.open(); }, 100);
+  }
 
   function openGuideModal() {
     const modal = M.Modal.getInstance(document.getElementById('settings-modal'));
@@ -212,6 +245,13 @@
   }
 
   async function refreshInitialData() {
+    const savedId = localStorage.getItem(STORAGE_KEY);
+    if (!savedId) {
+      isAppConfigured = false;
+      updateModalInstruction(false);
+      return;
+    }
+
     showLoading(true);
     try {
       const res = await callApi('getInitialData');
@@ -223,9 +263,14 @@
         allProcessingTypes = res.processingTypes.sort();
         const initialData = {};
         allNames.forEach(n => initialData[n] = null);
-        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: initialData, onAutocomplete: startSearch, limit: 15 });
+        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { 
+          data: initialData, onAutocomplete: startSearch, limit: 15, minLength: 0 
+        });
       }
-    } catch (e) { showLoading(false); }
+    } catch (e) {
+      showLoading(false);
+      M.toast({html: '시트 연결을 확인해주세요.'});
+    }
   }
 
   async function startSearch() {
@@ -239,7 +284,10 @@
     try {
       const rows = await callApi('searchCard', { name: name });
       renderTable(rows);
-    } catch (e) { showLoading(false); }
+    } catch (e) {
+      showLoading(false);
+      M.toast({html: '검색 중 오류 발생'});
+    }
   }
 
   function renderTable(rows) {
@@ -333,8 +381,28 @@
   function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => { overlay.style.display = 'none'; }, 2000); }
   function toggleGuide() { const box = document.getElementById('guide-box'); const icon = document.getElementById('guide-icon'); if (box.style.display === 'block') { box.style.display = 'none'; icon.innerText = 'expand_more'; } else { box.style.display = 'block'; icon.innerText = 'expand_less'; } }
   function renderRecentSearches() { const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const area = document.getElementById('recent-search-area'); const delIcon = document.getElementById('clear-history-icon'); let html = `최근 검색 : `; recent.forEach(name => { html += `<span class="recent-item" onclick="quickSearch('${name}')">${name}</span> `; }); area.innerHTML = html; delIcon.style.display = 'block'; }
-  async function saveSettings() { const url = document.getElementById('sheet-url').value; if (!url) { M.toast({html: '주소를 입력해주세요.'}); return; } try { await callApi('setSpreadsheetId', { url: url }); M.Modal.getInstance(document.getElementById('settings-modal')).close(); showCenterMessage('연결이 완료되었습니다!'); updateModalInstruction(true); refreshInitialData(); } catch (e) { } }
-  async function disconnectSheet() { if (!confirm("정말 연결을 끊으시겠습니까?")) return; try { await callApi('disconnectSpreadsheet'); M.Modal.getInstance(document.getElementById('settings-modal')).close(); showCenterMessage('연결이 해제되었습니다!'); updateModalInstruction(false); refreshInitialData(); } catch (e) { } }
+  
+  async function saveSettings() { 
+    const url = document.getElementById('sheet-url').value; 
+    if (!url) { M.toast({html: '주소를 입력해주세요.'}); return; } 
+    const match = url.match(/[-\w]{25,}/);
+    const id = match ? match[0] : url;
+    localStorage.setItem(STORAGE_KEY, id);
+    M.Modal.getInstance(document.getElementById('settings-modal')).close(); 
+    showCenterMessage('연결이 완료되었습니다!'); 
+    refreshInitialData(); 
+  }
+
+  async function disconnectSheet() { 
+    if (!confirm("정말 연결을 끊으시겠습니까?")) return; 
+    localStorage.removeItem(STORAGE_KEY);
+    M.Modal.getInstance(document.getElementById('settings-modal')).close(); 
+    showCenterMessage('연결이 해제되었습니다!'); 
+    updateModalInstruction(false); 
+    isAppConfigured = false;
+    location.reload();
+  }
+
   function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = recent.filter(item => item !== name); recent.unshift(name); if (recent.length > 5) recent.pop(); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }
   function clearAllHistory() { if (!confirm("모든 검색 기록을 삭제하시겠습니까?")) return; localStorage.removeItem(RECENT_KEY); renderRecentSearches(); showCenterMessage('검색 기록이 삭제되었습니다.'); }
   function quickSearch(name) { const input = document.getElementById('card-search'); input.value = name; startSearch(); }
