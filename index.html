@@ -13,15 +13,10 @@
     .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
     
     .guide-trigger-wrapper {
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 8px;
-      padding-right: 15px;
+      width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px;
     }
     .guide-trigger-top { 
-      color: var(--dark-cyan); 
-      font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none;
+      color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none;
       display: flex; align-items: center; gap: 4px;
     }
     .guide-trigger-top i { font-size: 1.2rem; }
@@ -50,18 +45,8 @@
       .btn-group { width: auto; margin-left: 8px; }
       .guide-trigger-wrapper { padding-right: 5px; }
       input#card-search { font-size: 1rem; }
-      .modal { 
-        width: 95% !important; 
-        max-width: 95% !important;
-        max-height: 80% !important; 
-        top: 5% !important; 
-        margin: 0 auto;
-        overflow-y: auto !important;
-      }
-      .modal-footer {
-        padding: 4px 15px 25px 15px !important; 
-        height: auto !important;
-      }
+      .modal { width: 95% !important; top: 5% !important; }
+      .modal-footer { padding-bottom: 25px !important; }
     }
 
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
@@ -129,7 +114,7 @@
   <div class="result-container">
     <div id="loading-overlay">
       <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
-      <p style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 조회 중...</p>
+      <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 조회 중...</p>
     </div>
     <div id="result-area"></div>
   </div>
@@ -177,18 +162,27 @@
   let isLoading = false;
   const RECENT_KEY = 'recent_card_searches';
 
-  // API 통신 공통 함수
+  // API 통신 공통 함수 (에러 상세화)
   async function callApi(action, params = {}) {
-    const url = new URL(SCRIPT_URL);
-    url.searchParams.append("action", action);
-    const savedId = localStorage.getItem(STORAGE_KEY);
-    if (savedId) url.searchParams.append("ssId", savedId);
+    try {
+      const url = new URL(SCRIPT_URL);
+      url.searchParams.append("action", action);
+      const savedId = localStorage.getItem(STORAGE_KEY);
+      if (savedId) url.searchParams.append("ssId", savedId);
 
-    for (const key in params) {
-      url.searchParams.append(key, params[key]);
+      for (const key in params) {
+        url.searchParams.append(key, params[key]);
+      }
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("네트워크 응답 오류");
+      const json = await response.json();
+      if (json.error) throw new Error(json.error);
+      return json;
+    } catch (err) {
+      console.error("API Error:", err);
+      throw err;
     }
-    const response = await fetch(url);
-    return await response.json();
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -231,16 +225,16 @@
     icon.innerText = 'expand_less';
   }
 
-  function updateModalInstruction(isLinked) {
+  function updateModalInstruction(isLinked, errorMsg = "") {
     const instruction = document.getElementById('modal-instruction');
     if (isLinked) {
       instruction.innerText = '구글 시트 연결이 완료되었습니다!';
       instruction.style.color = 'var(--success-green)';
       instruction.style.fontWeight = '700';
     } else {
-      instruction.innerText = '양식에 맞는 구글 시트 링크를 입력해주세요.';
-      instruction.style.color = '';
-      instruction.style.fontWeight = '';
+      instruction.innerText = errorMsg || '양식에 맞는 구글 시트 링크를 입력해주세요.';
+      instruction.style.color = errorMsg ? 'var(--error-red)' : '';
+      instruction.style.fontWeight = errorMsg ? '700' : '';
     }
   }
 
@@ -252,7 +246,7 @@
       return;
     }
 
-    showLoading(true);
+    showLoading(true, "초기 데이터 로딩 중...");
     try {
       const res = await callApi('getInitialData');
       showLoading(false);
@@ -269,7 +263,8 @@
       }
     } catch (e) {
       showLoading(false);
-      M.toast({html: '시트 연결을 확인해주세요.'});
+      updateModalInstruction(false, e.message);
+      M.toast({html: '에러: ' + e.message, displayLength: 6000});
     }
   }
 
@@ -280,13 +275,13 @@
     if(!name) return;
     saveRecentSearch(name);
     document.getElementById('result-area').classList.remove('show');
-    showLoading(true);
+    showLoading(true, "카드 정보를 찾는 중...");
     try {
       const rows = await callApi('searchCard', { name: name });
       renderTable(rows);
     } catch (e) {
       showLoading(false);
-      M.toast({html: '검색 중 오류 발생'});
+      M.toast({html: '검색 에러: ' + e.message});
     }
   }
 
@@ -389,7 +384,7 @@
     const id = match ? match[0] : url;
     localStorage.setItem(STORAGE_KEY, id);
     M.Modal.getInstance(document.getElementById('settings-modal')).close(); 
-    showCenterMessage('연결이 완료되었습니다!'); 
+    showCenterMessage('설정이 저장되었습니다. 데이터를 불러옵니다.'); 
     refreshInitialData(); 
   }
 
@@ -406,7 +401,13 @@
   function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = recent.filter(item => item !== name); recent.unshift(name); if (recent.length > 5) recent.pop(); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }
   function clearAllHistory() { if (!confirm("모든 검색 기록을 삭제하시겠습니까?")) return; localStorage.removeItem(RECENT_KEY); renderRecentSearches(); showCenterMessage('검색 기록이 삭제되었습니다.'); }
   function quickSearch(name) { const input = document.getElementById('card-search'); input.value = name; startSearch(); }
-  function showLoading(show) { isLoading = show; document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('card-search').disabled = show; document.getElementById('search-btn').disabled = show; }
+  function showLoading(show, text = "데이터 조회 중...") { 
+    isLoading = show; 
+    document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; 
+    document.getElementById('loading-text').innerText = text;
+    document.getElementById('card-search').disabled = show; 
+    document.getElementById('search-btn').disabled = show; 
+  }
 </script>
 </body>
 </html>
