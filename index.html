@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    :root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --warning-yellow: #fbc02d; --success-green: #2e7d32; }
+    :root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --warning-yellow: #fbc02d; --success-green: #2e7d32; --disabled-grey: #bdbdbd; }
     body, input, button, table, .btn, .modal-content, select { font-family: 'Pretendard', sans-serif !important; }
     body { background-color: #f4f7f6; }
     .container { margin-top: 30px; max-width: 95% !important; }
@@ -33,7 +33,7 @@
       .search-ghost { display: none; }
       .search-input-wrapper { flex: 1; }
       .btn-group { width: auto; margin-left: 8px; }
-      .modal { width: 95% !important; max-height: 85% !important; top: 5% !important; }
+      .modal { width: 95% !important; max-height: 90% !important; top: 5% !important; }
     }
 
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
@@ -49,25 +49,29 @@
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
     .clear-history-btn { cursor: pointer; font-size: 1.1rem; color: #9e9e9e; }
 
-    /* 연결 모달 레이아웃 */
-    .modal { border-radius: 12px; width: 600px !important; }
+    /* 연결 모달 레이아웃 (반응형 수정) */
+    .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
     .url-input-container input { margin-bottom: 0 !important; padding-right: 40px !important; }
     .valid-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: none; }
     .status-msg { font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; min-height: 1.2rem; }
     
-    .guide-btn { cursor: pointer; display: flex; align-items: center; color: var(--dark-cyan); font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
-    .guide-content { background: #f1f8f7; padding: 18px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #d1e4e1; }
+    /* 가이드 아코디언 스타일 */
+    .guide-btn { cursor: pointer; color: var(--dark-cyan); font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; }
+    .guide-btn:hover { text-decoration: underline; }
+    .guide-content { background: #f1f8f7; padding: 18px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #d1e4e1; display: none; margin-bottom: 15px; }
     .guide-content ol { margin: 0; padding-left: 22px; }
     .guide-content li { margin-bottom: 8px; line-height: 1.5; }
     .guide-content p { margin: 12px 0 0 0; font-size: 0.85rem; color: #666; line-height: 1.4; }
+
+    /* 비활성화 버튼 배경색 수정 */
+    .btn.disabled, .btn:disabled { background-color: var(--disabled-grey) !important; color: #fff !important; pointer-events: none; }
 
     .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 5000px; opacity: 1; }
     #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }
 
-    /* 카드 추가 UI */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     #add-card-modal { width: 95% !important; max-width: 1100px !important; }
     .add-modal-table { font-size: 0.85rem; width: 100%; border-collapse: collapse; }
@@ -131,7 +135,7 @@
       양식에 맞는 구글 시트 링크를 입력해주세요.
     </p>
 
-    <div class="guide-btn"><i class="material-icons">description</i><span> 양식 다운로드 및 사용법</span></div>
+    <div class="guide-btn" onclick="toggleGuide()"><span>양식 다운로드 및 사용법</span></div>
     <div id="guide-box" class="guide-content">
       <ol>
         <li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/copy" target="_blank" style="color: var(--primary-cyan); font-weight: 800; text-decoration: underline;">링크</a>를 눌러 양식 시트를 구글 드라이브에 복사합니다.</li>
@@ -213,6 +217,11 @@
     const btn = document.getElementById('disconnect-btn');
     const hasLinked = !!localStorage.getItem(STORAGE_KEY);
     if (hasLinked) { btn.classList.remove('disabled'); } else { btn.classList.add('disabled'); }
+  }
+
+  function toggleGuide() {
+    const box = document.getElementById('guide-box');
+    box.style.display = (box.style.display === 'block') ? 'none' : 'block';
   }
 
   function validateSheetLink() {
@@ -372,7 +381,6 @@
     for(let s of subs) s.style.display = isExpanding ? 'table-row' : 'none'; event.target.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
   }
 
-  function toggleGuide() { const box = document.getElementById('guide-box'); box.style.display = box.style.display === 'block' ? 'none' : 'block'; }
   function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => overlay.style.display = 'none', 2000); }
   function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); M.Modal.getInstance(document.getElementById('settings-modal')).close(); location.reload(); } }
   function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
