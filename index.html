@@ -42,10 +42,9 @@
     .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
     .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
-    /* 검색 기록 삭제 아이콘 색상 복구 */
     .clear-history-btn { cursor: pointer; font-size: 1.1rem; color: #9e9e9e !important; }
 
-    .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
+    .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; z-index: 1005 !important; }
     /* 모달 타이틀과 설명 사이 행간 넓힘 */
     .modal-content h5 { margin-bottom: 25px !important; } 
     .modal-subtitle { color: #666; font-size: 0.95rem; margin-top: -20px; margin-bottom: 30px; display: block; line-height: 1.5; }
@@ -59,6 +58,7 @@
     .guide-btn.active i { transform: rotate(90deg); }
     .guide-content { background: #f1f8f7; padding: 18px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #d1e4e1; display: none; margin-bottom: 15px; }
     .btn.disabled, .btn:disabled { background-color: var(--disabled-grey) !important; color: #fff !important; pointer-events: none; }
+    
     #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
@@ -67,11 +67,9 @@
     #center-message { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.85); color: white; padding: 15px 30px; border-radius: 50px; z-index: 12000; font-size: 1.1rem; font-weight: 600; text-align: center; min-width: 280px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
 
     /* FAB 레이블 위치 및 애니메이션 수정 */
-    .fixed-action-btn { bottom: 24px; right: 24px; }
-    /* 메인 아이콘 회전 */
+    .fixed-action-btn { bottom: 24px; right: 24px; z-index: 1000; }
     .fixed-action-btn .main-fab i { transition: transform 0.3s ease; }
     .fixed-action-btn.active .main-fab i { transform: rotate(180deg); }
-    
     .fixed-action-btn ul li { position: relative; margin-bottom: 15px; }
     
     .fab-label { 
@@ -79,13 +77,13 @@
       background: rgba(0,0,0,0.65); color: white; padding: 4px 12px; border-radius: 4px;
       font-size: 0.85rem; white-space: nowrap; pointer-events: none;
       opacity: 0; 
-      transition: opacity 0.1s ease; /* 사라질 때: 즉시(0.1s) */
+      transition: opacity 0.1s ease; /* 사라질 때 즉시(0.1s) */
       font-weight: 500;
     }
     .fixed-action-btn.active .fab-label { 
       opacity: 1; 
       transition: opacity 0.3s ease; 
-      transition-delay: 0.35s; /* 나타날 때: 버튼 애니메이션 후(0.35s) */
+      transition-delay: 0.35s; /* 나타날 때 0.35s 딜레이 */
     }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
@@ -96,6 +94,7 @@
     .flex-select { flex: 1; min-width: 0; height: 2.2rem !important; font-size: 0.85rem; }
     .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
     .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.8rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+    .owned-qty-val { font-weight: 400; color: #000; }
   </style>
 </head>
 <body>
@@ -111,7 +110,7 @@
   <h4 class="app-title">유희왕 카드 관리 <span class="beta-tag">Beta</span></h4>
   <div class="guide-trigger-wrapper"><button class="guide-trigger-top" onclick="openGuideFromMain()"><i class="material-icons">help_outline</i> 사용법</button></div>
   <div class="search-box">
-    <div class="version-tag">ver. 0.1.2</div>
+    <div class="version-tag">ver. 0.1.3</div>
     <div class="search-row"><div class="search-ghost"></div><div class="search-input-wrapper"><div class="input-field"><input type="text" id="card-search" class="autocomplete" autocomplete="off" placeholder="카드 이름을 입력하세요"><i id="clear-btn" class="material-icons clear-search-btn">cancel</i></div></div><div class="btn-group"><button id="search-btn" class="btn waves-effect waves-light cyan-theme" onclick="startSearch()" style="height: 45px;"><i class="material-icons">search</i></button><button class="btn grey darken-1 modal-trigger tooltipped" data-position="bottom" data-tooltip="시트 설정" href="#settings-modal" onclick="toggleGuide(false)" style="height: 45px; padding: 0 10px;"><i class="material-icons">settings</i></button></div></div>
     <div class="sub-row"><div id="recent-search-area" class="recent-searches">최근 검색 : </div><i id="clear-history-icon" class="material-icons clear-history-btn tooltipped" data-position="bottom" data-tooltip="기록 삭제" onclick="clearAllHistory()">delete_sweep</i></div>
   </div>
@@ -133,12 +132,7 @@
     <span class="modal-subtitle">카드의 보관 장소를 변경할 수 있습니다.</span>
     <div style="overflow-x: auto;">
       <table class="add-modal-table">
-        <thead>
-          <tr>
-            <th style="width: 22%;">카드 이름</th><th style="width: 15%;">카드 번호</th><th style="width: 13%;">가공</th><th style="width: 12%;">어나더</th>
-            <th style="width: 13%;">보관 장소</th><th style="width: 15%;">이동 장소</th><th style="width: 10%;">이동 수량</th>
-          </tr>
-        </thead>
+        <thead><tr><th style="width: 20%;">카드 이름</th><th style="width: 14%;">카드 번호</th><th style="width: 12%;">가공</th><th style="width: 10%;">어나더</th><th style="width: 12%;">보관 장소</th><th style="width: 12%;">이동 장소</th><th style="width: 10%;">보유 수량</th><th style="width: 10%;">이동 수량</th></tr></thead>
         <tbody id="manage-card-tbody"></tbody>
       </table>
     </div>
@@ -190,6 +184,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
+  /** ⚠️ 본인의 배포 URL 주소 (수정 금지) **/
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgOQN7QaR9vqUb0xmmeygmhIxuX6Th2LqZZ0kDmIKFa9RrR3zYBrFxVpdJRa9nXkYC/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
@@ -198,23 +193,22 @@
   let isAppConfigured = false, acInstance = null, isLoading = false, validationTimeout = null;
 
   document.addEventListener('DOMContentLoaded', function() {
-    // 모달 초기화: 닫힐 때 내용 리셋
+    // 모달 초기화: onCloseEnd 리셋 로직 포함
     M.Modal.init(document.querySelectorAll('.modal'), {
       onCloseEnd: function(el) { resetModalContent(el.id); }
     });
     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
     
+    // FAB 아이콘 토글 및 애니메이션
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
-    
-    // FAB 아이콘 토글 로직
     M.FloatingActionButton.init(fabElem, {
       direction: 'top', hoverEnabled: false,
       onOpenStart: () => { fabIcon.innerText = 'remove'; },
       onCloseStart: () => { fabIcon.innerText = 'add'; }
     });
     
-    // FAB 버튼 클릭으로 닫힐 때 아이콘 강제 복구
+    // FAB 하위 버튼 클릭 시 아이콘 강제 복구
     fabElem.querySelectorAll('ul li a').forEach(a => { a.addEventListener('click', () => { setTimeout(() => { fabIcon.innerText = 'add'; }, 150); }); });
 
     const searchInput = document.getElementById('card-search');
@@ -223,21 +217,14 @@
   });
 
   function resetModalContent(modalId) {
-    if (modalId === 'add-card-modal') {
-      document.getElementById('add-card-tbody').innerHTML = '';
-      addMoreRows(1);
-    } else if (modalId === 'manage-card-modal') {
-      document.getElementById('manage-card-tbody').innerHTML = '';
-      addManageRows(1);
-    }
+    if (modalId === 'add-card-modal') { document.getElementById('add-card-tbody').innerHTML = ''; addMoreRows(1); } 
+    else if (modalId === 'manage-card-modal') { document.getElementById('manage-card-tbody').innerHTML = ''; addManageRows(1); }
   }
 
   function showCenterMessage(text, isError = false) {
-    const el = document.getElementById('center-message');
-    el.innerText = text;
+    const el = document.getElementById('center-message'); el.innerText = text;
     el.style.backgroundColor = isError ? 'rgba(211, 47, 47, 0.95)' : 'rgba(0, 150, 136, 0.95)';
-    el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 1500);
+    el.style.display = 'block'; setTimeout(() => { el.style.display = 'none'; }, 1500);
   }
 
   function checkAuthAndOpen(modalId) {
@@ -301,10 +288,11 @@
       row.innerHTML = `
         <td><span class="card-name-fetch">번호 입력 대기</span></td>
         <td><input type="text" class="manage-card-no" onblur="updateManageDropdowns(this)" placeholder="번호 입력"></td>
-        <td><select class="browser-default manage-proc flex-select" disabled><option value="">선택</option></select></td>
-        <td><select class="browser-default manage-another flex-select" disabled><option value="">-</option></select></td>
-        <td><select class="browser-default manage-loc flex-select" disabled><option value="">선택</option></select></td>
+        <td><select class="browser-default manage-proc flex-select" onchange="updateOwnedQty(this)" disabled><option value="">선택</option></select></td>
+        <td><select class="browser-default manage-another flex-select" onchange="updateOwnedQty(this)" disabled><option value="">-</option></select></td>
+        <td><select class="browser-default manage-loc flex-select" onchange="updateOwnedQty(this)" disabled><option value="">선택</option></select></td>
         <td><div class="td-flex-container"><select class="browser-default move-loc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 입력</option></select><input type="text" class="direct-input loc-direct flex-input" placeholder="새로운 위치"></div></td>
+        <td><span class="owned-qty-val">-</span></td>
         <td><input type="number" class="move-qty" min="1" style="height:2.2rem !important; text-align:center;"></td>
       `;
       tbody.appendChild(row);
@@ -323,7 +311,18 @@
       anotherSel.innerHTML = (anothers.includes("") ? `<option value="">기본</option>` : '') + anothers.filter(a => a !== "").map(a => `<option value="${a}">${a}</option>`).join('');
       anotherSel.disabled = anothers.length === 1 && anothers[0] === "";
       locSel.innerHTML = locs.map(l => `<option value="${l}">${l}</option>`).join(''); locSel.disabled = false;
-    } else { nameSpan.innerText = "보유하지 않은 카드"; procSel.disabled = true; anotherSel.disabled = true; locSel.disabled = true; }
+      updateOwnedQty(inputEl);
+    } else { nameSpan.innerText = "보유하지 않은 카드"; procSel.disabled = true; anotherSel.disabled = true; locSel.disabled = true; updateOwnedQty(inputEl); }
+  }
+
+  function updateOwnedQty(el) {
+    const row = el.closest('tr'); const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase();
+    const proc = row.querySelector('.manage-proc').value, another = row.querySelector('.manage-another').value, loc = row.querySelector('.manage-loc').value;
+    const qtySpan = row.querySelector('.owned-qty-val');
+    if (!cardNo || !proc || !loc) { qtySpan.innerText = '-'; return; }
+    const targetAnother = another === "기본" ? "" : another;
+    const sum = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[2]) === proc && String(r[4]) === loc && String(r[5] || "") === targetAnother).reduce((acc, curr) => acc + (parseInt(curr[3]) || 0), 0);
+    qtySpan.innerText = sum;
   }
 
   async function submitNewCards() {
