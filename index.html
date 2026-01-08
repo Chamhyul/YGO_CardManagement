@@ -56,26 +56,26 @@
     .fixed-action-btn { bottom: 24px; right: 24px; }
     .fixed-action-btn .main-fab i { transition: transform 0.3s ease; }
     
-    /* FAB 활성화 시 회전 (45도, X자 모양) */
-    .fixed-action-btn.active .main-fab i { transform: rotate(45deg); }
-    
-    /* 하위 버튼 목록 레이아웃 수정: 
-       Flexbox 제거 후 기본 블록/우측 정렬로 복구하여 visibility 문제 해결 
+    /* ★ FAB 커스텀 상태 (.fab-open) 제어 
+       라이브러리의 .active 대신 우리가 JS로 붙이는 .fab-open 클래스를 기준으로 작동 
     */
+    .fixed-action-btn.fab-open .main-fab i { transform: rotate(45deg); }
+    
+    /* 하위 버튼 목록 레이아웃 */
     .fixed-action-btn ul li { 
       margin-bottom: 12px; 
-      text-align: right; /* 버튼 우측 정렬 */
-      position: relative; /* 레이블 배치를 위한 기준점 */
+      text-align: right; 
+      position: relative; 
     }
     
-    /* FAB 레이블 설정: Absolute Positioning으로 복귀 */
+    /* FAB 레이블 설정 */
     .fab-label { 
       position: absolute;
-      right: 52px; /* 버튼(40px) + 간격(12px) */
+      right: 52px; 
       top: 50%;
-      transform: translateY(-50%); /* 정확한 수직 중앙 정렬 */
+      transform: translateY(-50%);
       
-      background: #757575; /* 하위 버튼 색상 */
+      background: #757575; 
       color: white; 
       padding: 6px 12px; 
       border-radius: 4px;
@@ -85,12 +85,13 @@
       font-weight: 500;
       line-height: 1.2;
       
-      /* 애니메이션 */
+      /* 기본(닫힘): 투명, 즉시 반응 (딜레이 없음) */
       opacity: 0; 
       transition: opacity 0.2s ease 0s; 
     }
     
-    .fixed-action-btn.active .fab-label { 
+    /* FAB 열림 상태: 딜레이를 주고 등장 */
+    .fixed-action-btn.fab-open .fab-label { 
       opacity: 1; 
       transition: opacity 0.3s ease 0.35s; 
     }
@@ -108,7 +109,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.16</div>
+<div class="version-info">ver. 0.1.17</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -198,22 +199,49 @@
   let allProcessingTypes = [], allNames = [], allLocations = [], localCardDatabase = [];
   let isAppConfigured = false, acInstance = null, isLoading = false, validationTimeout = null;
 
+  // ★ 1. FAB 상태 관리 변수
+  let isFabOpen = false;
+
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
     
-    // FAB 초기화 (텍스트 변경 로직 제거, 회전 애니메이션만 CSS로 처리)
+    // ★ 2. 메인 FAB 버튼 클릭 이벤트 리스너 (즉시 반응 로직)
+    const mainFabBtn = fabElem.querySelector('.main-fab');
+    mainFabBtn.addEventListener('click', function() {
+      // 클릭 시 상태 토글
+      isFabOpen = !isFabOpen;
+      updateFabState(fabElem);
+    });
+
+    // ★ 3. Materialize FAB 초기화 및 동기화 (외부 클릭 방어)
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
-      hoverEnabled: false
+      hoverEnabled: false,
+      onCloseStart: () => {
+        // 사용자가 배경을 클릭하여 닫을 경우를 대비한 동기화
+        if(isFabOpen) {
+            isFabOpen = false;
+            updateFabState(fabElem);
+        }
+      }
     });
     
     const searchInput = document.getElementById('card-search');
     searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { const dropdown = document.querySelector('.autocomplete-content'); if (dropdown) { const firstVisible = dropdown.querySelector('li:not(.hide)'); if (firstVisible) this.value = firstVisible.innerText.trim(); } if (acInstance) acInstance.close(); this.blur(); startSearch(); } });
     updateDisconnectBtn(); renderRecentSearches(); refreshInitialData();
   });
+
+  // ★ 4. FAB 상태 업데이트 함수
+  function updateFabState(fabElem) {
+    if (isFabOpen) {
+      fabElem.classList.add('fab-open');
+    } else {
+      fabElem.classList.remove('fab-open');
+    }
+  }
 
   async function callApi(action, params = {}, postData = null) {
     const url = new URL(SCRIPT_URL); url.searchParams.append("action", action);
