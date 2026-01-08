@@ -38,6 +38,17 @@
     .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
     .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
+    
+    /* 검색 기록 삭제 버튼 스타일 (회색 변경) */
+    .clear-history-btn { 
+        cursor: pointer; 
+        color: #9e9e9e; /* 회색 적용 */
+        transition: color 0.2s;
+    }
+    .clear-history-btn:hover {
+        color: #616161; /* 호버 시 약간 진한 회색 */
+    }
+
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
     .url-input-container input { margin-bottom: 0 !important; padding-right: 40px !important; }
@@ -52,12 +63,32 @@
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
 
+    /* ★ 토스트 메세지 중앙 정렬 (모든 토스트에 적용) ★ */
+    #toast-container {
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        right: auto !important;
+        bottom: auto !important;
+        max-width: 90%;
+        width: auto !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .toast {
+        border-radius: 24px !important;
+        text-align: center;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     
     /* 1. 메인 아이콘 애니메이션 */
     .fixed-action-btn .main-fab i { 
-      /* 딜레이 없이 ease-in-out으로 0.3초간 회전 */
       transition: transform 0.3s ease-in-out 0s; 
     }
     
@@ -90,7 +121,6 @@
       font-weight: 500;
       line-height: 1.2;
       
-      /* 기본(닫힘): 투명 */
       opacity: 0; 
       
       /* 퇴장(닫힐 때): 빠르게 시작해서 서서히 느려짐 (ease-out) */
@@ -118,7 +148,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.22</div>
+<div class="version-info">ver. 0.1.23</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -225,8 +255,7 @@
       updateFabState(fabElem);
     });
 
-    // ★ 3. 하위 버튼 클릭 시 FAB 상태 리셋 (추가된 로직)
-    // 하위 버튼을 눌러서 모달을 띄우는 순간에도 아이콘이 +로 돌아와야 함
+    // ★ 3. 하위 버튼 클릭 시 FAB 상태 리셋
     const subBtns = fabElem.querySelectorAll('ul li a');
     subBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -235,7 +264,7 @@
       });
     });
 
-    // ★ 4. Materialize FAB 초기화 및 동기화 (외부 클릭 방어)
+    // ★ 4. Materialize FAB 초기화 및 동기화
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
       hoverEnabled: false,
