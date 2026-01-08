@@ -49,27 +49,24 @@
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
     .clear-history-btn { cursor: pointer; font-size: 1.1rem; color: #9e9e9e; }
 
-    /* 연결 모달 레이아웃 (반응형 수정) */
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
     .url-input-container input { margin-bottom: 0 !important; padding-right: 40px !important; }
     .valid-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: none; }
     .status-msg { font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; min-height: 1.2rem; }
     
-    /* 가이드 아코디언 스타일 */
-    .guide-btn { cursor: pointer; color: var(--dark-cyan); font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; }
-    .guide-btn:hover { text-decoration: underline; }
+    .guide-btn { cursor: pointer; color: var(--dark-cyan); font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
+    .guide-btn i { transition: transform 0.2s ease; }
+    .guide-btn.active i { transform: rotate(90deg); }
     .guide-content { background: #f1f8f7; padding: 18px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #d1e4e1; display: none; margin-bottom: 15px; }
     .guide-content ol { margin: 0; padding-left: 22px; }
     .guide-content li { margin-bottom: 8px; line-height: 1.5; }
-    .guide-content p { margin: 12px 0 0 0; font-size: 0.85rem; color: #666; line-height: 1.4; }
-
-    /* 비활성화 버튼 배경색 수정 */
+    
     .btn.disabled, .btn:disabled { background-color: var(--disabled-grey) !important; color: #fff !important; pointer-events: none; }
 
     .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
-    #result-area.show { max-height: 5000px; opacity: 1; }
+    #result-area.show { max-height: 10000px; opacity: 1; }
     #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }
 
     .fixed-action-btn { bottom: 24px; right: 24px; }
@@ -92,7 +89,7 @@
 <div class="container">
   <h4 class="app-title">유희왕 카드 관리 <span class="beta-tag">Beta</span></h4>
   <div class="guide-trigger-wrapper">
-    <button class="guide-trigger-top modal-trigger" href="#settings-modal"><i class="material-icons">help_outline</i> 사용법</button>
+    <button class="guide-trigger-top" onclick="openGuideFromMain()"><i class="material-icons">help_outline</i> 사용법</button>
   </div>
 
   <div class="search-box">
@@ -135,15 +132,16 @@
       양식에 맞는 구글 시트 링크를 입력해주세요.
     </p>
 
-    <div class="guide-btn" onclick="toggleGuide()"><span>양식 다운로드 및 사용법</span></div>
+    <div class="guide-btn" id="guide-accordion-btn" onclick="toggleGuide()">
+      <i class="material-icons">keyboard_arrow_right</i><span>양식 다운로드 및 사용법</span>
+    </div>
     <div id="guide-box" class="guide-content">
       <ol>
         <li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/copy" target="_blank" style="color: var(--primary-cyan); font-weight: 800; text-decoration: underline;">링크</a>를 눌러 양식 시트를 구글 드라이브에 복사합니다.</li>
         <li>해당 파일을 **링크가 있는 모든 사용자 / 편집자**로 공유 설정을 변경합니다.</li>
         <li>해당 파일의 공유 링크를 입력 후 확인을 눌러주세요.</li>
       </ol>
-      <p>* 이 앱은 공유된 파일 이외의 정보를 저장하거나 수집하지 않으며, 오직 로컬 스토리지에만 기록됩니다.</p>
-      <p>* 공유한 구글 시트를 직접 수정하거나, 앱 기능을 통해서 보유한 카드를 추가, 수정, 삭제할 수 있습니다.</p>
+      <p style="font-size:0.85rem; color:#666; margin-top:10px;">* 이 앱은 공유된 파일 이외의 정보를 저장하거나 수집하지 않으며, 오직 로컬 스토리지에만 기록됩니다.</p>
     </div>
 
     <div class="url-input-container">
@@ -178,7 +176,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
   /** ⚠️ 본인의 배포 URL 주소를 넣으세요 **/
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0-4JoZ1XQq-XsxuJaZfsh7XCTCnobWT6kMXlGGaUf8iV723dqmmSRROOqsjqlX92N/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgOQN7QaR9vqUb0xmmeygmhIxuX6Th2LqZZ0kDmIKFa9RrR3zYBrFxVpdJRa9nXkYC/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
 
@@ -204,10 +202,26 @@
     M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
+    
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
     clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); triggerDropdown(); });
     searchInput.addEventListener('focus', triggerDropdown);
     searchInput.addEventListener('click', triggerDropdown);
+    
+    // 엔터 키 추천 검색어 선택 버그 수정
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const dropdown = document.querySelector('.autocomplete-content');
+        if (dropdown && dropdown.firstChild) {
+          const firstItem = dropdown.firstChild.innerText.trim();
+          this.value = firstItem;
+        }
+        if (acInstance) acInstance.close();
+        this.blur();
+        startSearch();
+      }
+    });
+
     updateDisconnectBtn();
     renderRecentSearches();
     refreshInitialData();
@@ -215,13 +229,23 @@
 
   function updateDisconnectBtn() {
     const btn = document.getElementById('disconnect-btn');
-    const hasLinked = !!localStorage.getItem(STORAGE_KEY);
-    if (hasLinked) { btn.classList.remove('disabled'); } else { btn.classList.add('disabled'); }
+    if (localStorage.getItem(STORAGE_KEY)) { btn.classList.remove('disabled'); } else { btn.classList.add('disabled'); }
   }
 
-  function toggleGuide() {
+  // 아코디언 토글 기능
+  function toggleGuide(forceOpen = false) {
+    const btn = document.getElementById('guide-accordion-btn');
     const box = document.getElementById('guide-box');
-    box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    const isOpen = forceOpen || box.style.display === 'none';
+    box.style.display = isOpen ? 'block' : 'none';
+    if (isOpen) btn.classList.add('active'); else btn.classList.remove('active');
+  }
+
+  // 메인 페이지 버튼 전용 핸들러
+  function openGuideFromMain() {
+    const modal = M.Modal.getInstance(document.getElementById('settings-modal'));
+    modal.open();
+    toggleGuide(true); // 확장 상태로 강제 열기
   }
 
   function validateSheetLink() {
@@ -232,15 +256,11 @@
     const confirmBtn = document.getElementById('confirm-btn');
 
     if (!url) { mark.style.display = 'none'; msg.innerText = ''; confirmBtn.classList.add('disabled'); return; }
-
     const match = url.match(/[-\w]{25,}/);
     if (!match) {
       mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>';
-      mark.style.display = 'block';
-      msg.innerText = '구글 시트 링크를 적어주세요.';
-      msg.style.color = 'var(--error-red)';
-      confirmBtn.classList.add('disabled');
-      return;
+      mark.style.display = 'block'; msg.innerText = '구글 시트 링크를 적어주세요.'; msg.style.color = 'var(--error-red)';
+      confirmBtn.classList.add('disabled'); return;
     }
 
     validationTimeout = setTimeout(async () => {
@@ -251,14 +271,9 @@
           mark.innerHTML = '<i class="material-icons" style="color: var(--success-green)">check_circle</i>';
           msg.innerText = '유효한 시트입니다.'; msg.style.color = 'var(--success-green)';
           confirmBtn.classList.remove('disabled');
-        } else if (res.status === 'NO_EDIT_ACCESS') {
-          mark.innerHTML = '<i class="material-icons" style="color: var(--warning-yellow)">warning</i>';
-          msg.innerText = '공유 설정을 링크를 가진 모든 사용자 / 편집자로 설정해주세요.';
-          msg.style.color = 'var(--warning-yellow)';
-          confirmBtn.classList.add('disabled');
         } else {
-          mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>';
-          msg.innerText = '시트에 접근할 수 없거나 형식이 잘못되었습니다.';
+          mark.innerHTML = '<i class="material-icons" style="color: var(--warning-yellow)">warning</i>';
+          msg.innerText = (res.status === 'NO_EDIT_ACCESS') ? '공유 설정을 링크를 가진 모든 사용자 / 편집자로 설정해주세요.' : '접근할 수 없거나 형식이 잘못되었습니다.';
           msg.style.color = 'var(--warning-yellow)';
           confirmBtn.classList.add('disabled');
         }
@@ -312,7 +327,7 @@
     const tbody = document.getElementById('add-card-tbody'); const rows = [];
     for (let tr of tbody.children) {
       const cardNo = tr.querySelector('.new-card-no').value.trim(); const name = tr.querySelector('.card-name-fetch').innerText;
-      if (!cardNo || name === "결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
+      if (!cardNo || name === "검색 결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
       let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
       let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
       const qty = tr.querySelector('.new-card-qty').value; const another = tr.querySelector('.new-card-another').value.trim();
@@ -355,6 +370,7 @@
         groups[cardNo].anotherGroups[aKey].total += qty; groups[cardNo].anotherGroups[aKey].procs[proc] = (groups[cardNo].anotherGroups[aKey].procs[proc] || 0) + qty;
       }
     });
+
     const activeProcs = allProcessingTypes.filter(pt => rows.some(r => String(r[2]).trim() === pt));
     let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`;
     activeProcs.forEach(() => html += `<col class="col-proc">`);
@@ -364,21 +380,62 @@
     Object.keys(groups).forEach(cardNo => {
       const g = groups[cardNo]; const locList = Object.keys(g.locations); const rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');
       locList.forEach((loc, idx) => {
-        const item = g.locations[loc]; html += `<tr class="main-row card-${rowId}">`;
+        const item = g.locations[loc]; html += `<tr class="main-row card-${rowId}" data-loc="${loc}">`;
         if (idx === 0) html += `<td rowspan="${locList.length}">${cardNo}${Object.keys(g.anotherGroups).length > 0 ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</td>`;
-        html += `<td>${loc}</td><td>${item.total}</td>`; activeProcs.forEach(pt => html += `<td>${item.procs[pt] || 0}</td>`); html += `</tr>`;
+        html += `<td class="main-loc-cell">${loc}</td><td class="main-total-cell" data-original="${item.total}">${item.total}</td>`;
+        activeProcs.forEach(pt => { 
+          const val = item.procs[pt] || 0;
+          html += `<td class="main-proc-cell" data-proc="${pt}" data-original="${val}">${val}</td>`; 
+        });
+        html += `</tr>`;
       });
       Object.values(g.anotherGroups).forEach(ag => {
-        html += `<tr class="another-row ${rowId}-sub" style="display:none;"><td class="another-val">↳ ${ag.another}</td><td>${ag.loc}</td><td>${ag.total}</td>`;
+        html += `<tr class="another-row ${rowId}-sub" data-another-loc="${ag.loc}" style="display:none;"><td class="another-val">↳ ${ag.another}</td><td>${ag.loc}</td><td>${ag.total}</td>`;
         activeProcs.forEach(pt => { html += `<td>${ag.procs[pt] || 0}</td>`; }); html += `</tr>`;
       });
     });
     resultArea.innerHTML = html + `</tbody></table>`; setTimeout(() => resultArea.classList.add('show'), 50);
   }
 
+  // 어나더 확장 시 수량 차감 및 복구 로직 버그 수정
   function toggleAnother(rowId) {
-    const subs = document.getElementsByClassName(rowId + '-sub'); const isExpanding = subs[0].style.display === 'none';
-    for(let s of subs) s.style.display = isExpanding ? 'table-row' : 'none'; event.target.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
+    const subs = Array.from(document.getElementsByClassName(rowId + '-sub'));
+    const mains = Array.from(document.getElementsByClassName('card-' + rowId));
+    const isExpanding = subs[0].style.display === 'none';
+    
+    subs.forEach(s => s.style.display = isExpanding ? 'table-row' : 'none');
+    event.target.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
+
+    mains.forEach(mRow => {
+      const loc = mRow.getAttribute('data-loc');
+      const totalCell = mRow.querySelector('.main-total-cell');
+      const procCells = mRow.querySelectorAll('.main-proc-cell');
+      
+      let subTotalSum = 0;
+      let subProcSums = {};
+
+      subs.forEach(sRow => {
+        if (sRow.getAttribute('data-another-loc') === loc) {
+          subTotalSum += parseInt(sRow.cells[2].innerText) || 0;
+          const procCols = Array.from(sRow.cells).slice(3);
+          procCols.forEach((cell, idx) => {
+            const procName = procCells[idx].getAttribute('data-proc');
+            subProcSums[procName] = (subProcSums[procName] || 0) + (parseInt(cell.innerText) || 0);
+          });
+        }
+      });
+
+      if (isExpanding) {
+        totalCell.innerText = parseInt(totalCell.getAttribute('data-original')) - subTotalSum;
+        procCells.forEach(pCell => {
+          const pName = pCell.getAttribute('data-proc');
+          pCell.innerText = parseInt(pCell.getAttribute('data-original')) - (subProcSums[pName] || 0);
+        });
+      } else {
+        totalCell.innerText = totalCell.getAttribute('data-original');
+        procCells.forEach(pCell => pCell.innerText = pCell.getAttribute('data-original'));
+      }
+    });
   }
 
   function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => overlay.style.display = 'none', 2000); }
