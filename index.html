@@ -59,15 +59,14 @@
     .guide-btn i { transition: transform 0.2s ease; }
     .guide-btn.active i { transform: rotate(90deg); }
     .guide-content { background: #f1f8f7; padding: 18px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #d1e4e1; display: none; margin-bottom: 15px; }
-    .guide-content ol { margin: 0; padding-left: 22px; }
-    .guide-content li { margin-bottom: 8px; line-height: 1.5; }
     
     .btn.disabled, .btn:disabled { background-color: var(--disabled-grey) !important; color: #fff !important; pointer-events: none; }
 
+    /* 로딩창 z-index 수정 (모달 위로 오게 함) */
+    #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; }
     .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
-    #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }
 
     .fixed-action-btn { bottom: 24px; right: 24px; }
     #add-card-modal { width: 95% !important; max-width: 1100px !important; }
@@ -85,6 +84,11 @@
 <body>
 
 <div id="center-overlay"></div>
+
+<div id="loading-overlay">
+  <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
+  <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 처리 중...</p>
+</div>
 
 <div class="container">
   <h4 class="app-title">유희왕 카드 관리 <span class="beta-tag">Beta</span></h4>
@@ -112,10 +116,6 @@
     </div>
   </div>
   <div class="result-container">
-    <div id="loading-overlay">
-      <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
-      <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 조회 중...</p>
-    </div>
     <div id="result-area"></div>
   </div>
 </div>
@@ -127,14 +127,8 @@
 <div id="settings-modal" class="modal">
   <div class="modal-content">
     <h5 style="font-weight: 800; margin-bottom: 10px;">사용법 및 연결</h5>
-    <p style="color: #555; line-height: 1.5; margin-bottom: 20px;">
-      이 앱은 구글 시트를 기반으로 사용자가 보유한 카드를 등록하여, 실물 카드 관리를 보조합니다.<br>
-      양식에 맞는 구글 시트 링크를 입력해주세요.
-    </p>
-
-    <div class="guide-btn" id="guide-accordion-btn" onclick="toggleGuide()">
-      <i class="material-icons">keyboard_arrow_right</i><span>양식 다운로드 및 사용법</span>
-    </div>
+    <p style="color: #555; line-height: 1.5; margin-bottom: 20px;">이 앱은 구글 시트를 기반으로 사용자가 보유한 카드를 등록하여, 실물 카드 관리를 보조합니다.<br>양식에 맞는 구글 시트 링크를 입력해주세요.</p>
+    <div class="guide-btn" id="guide-accordion-btn" onclick="toggleGuide()"><i class="material-icons">keyboard_arrow_right</i><span>양식 다운로드 및 사용법</span></div>
     <div id="guide-box" class="guide-content">
       <ol>
         <li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/copy" target="_blank" style="color: var(--primary-cyan); font-weight: 800; text-decoration: underline;">링크</a>를 눌러 양식 시트를 구글 드라이브에 복사합니다.</li>
@@ -143,7 +137,6 @@
       </ol>
       <p style="font-size:0.85rem; color:#666; margin-top:10px;">* 이 앱은 공유된 파일 이외의 정보를 저장하거나 수집하지 않으며, 오직 로컬 스토리지에만 기록됩니다.</p>
     </div>
-
     <div class="url-input-container">
       <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." oninput="validateSheetLink()">
       <div id="valid-mark" class="valid-icon"></div>
@@ -152,10 +145,7 @@
   </div>
   <div class="modal-footer" style="display: flex; justify-content: space-between; padding: 0 24px 20px 24px; align-items: center; height: auto;">
     <button id="disconnect-btn" class="btn red darken-1 waves-effect waves-light" onclick="disconnectSheet()">연결 끊기</button>
-    <div>
-      <button class="btn-flat modal-close">취소</button>
-      <button id="confirm-btn" class="btn cyan-theme waves-effect waves-light disabled" onclick="saveSettings()">확인</button>
-    </div>
+    <div><button class="btn-flat modal-close">취소</button><button id="confirm-btn" class="btn cyan-theme waves-effect waves-light disabled" onclick="saveSettings()">확인</button></div>
   </div>
 </div>
 
@@ -170,7 +160,10 @@
     </div>
     <div style="margin-top: 20px; text-align: center;"><button class="btn-flat waves-effect" onclick="addMoreRows()" style="color: var(--primary-cyan); font-weight: 700;">더 많은 카드를 등록할 건가요?</button></div>
   </div>
-  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme" onclick="submitNewCards()">추가</button></div>
+  <div class="modal-footer">
+    <button class="btn-flat modal-close">취소</button>
+    <button id="add-submit-btn" class="btn cyan-theme" onclick="submitNewCards()">추가</button>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -184,123 +177,79 @@
   let validationTimeout = null;
 
   async function callApi(action, params = {}, postData = null) {
-    try {
-      const url = new URL(SCRIPT_URL);
-      url.searchParams.append("action", action);
-      const savedId = localStorage.getItem(STORAGE_KEY);
-      if (savedId) url.searchParams.append("ssId", savedId);
-      for (const key in params) { url.searchParams.append(key, params[key]); }
-      const options = { method: postData ? 'POST' : 'GET' };
-      if (postData) options.body = JSON.stringify(postData);
-      const response = await fetch(url, options);
-      return await response.json();
-    } catch (err) { throw err; }
+    const url = new URL(SCRIPT_URL); url.searchParams.append("action", action);
+    const savedId = localStorage.getItem(STORAGE_KEY); if (savedId) url.searchParams.append("ssId", savedId);
+    for (const key in params) { url.searchParams.append(key, params[key]); }
+    const options = { method: postData ? 'POST' : 'GET' }; if (postData) options.body = JSON.stringify(postData);
+    const response = await fetch(url, options); return await response.json();
   }
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
-    M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
-    
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
     clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); triggerDropdown(); });
     searchInput.addEventListener('focus', triggerDropdown);
     searchInput.addEventListener('click', triggerDropdown);
     
-    // 엔터 키 추천 검색어 선택 버그 수정
     searchInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         const dropdown = document.querySelector('.autocomplete-content');
-        if (dropdown && dropdown.firstChild) {
-          const firstItem = dropdown.firstChild.innerText.trim();
-          this.value = firstItem;
-        }
-        if (acInstance) acInstance.close();
-        this.blur();
-        startSearch();
+        if (dropdown && dropdown.firstChild) this.value = dropdown.firstChild.innerText.trim();
+        if (acInstance) acInstance.close(); this.blur(); startSearch();
       }
     });
-
-    updateDisconnectBtn();
-    renderRecentSearches();
-    refreshInitialData();
+    updateDisconnectBtn(); renderRecentSearches(); refreshInitialData();
   });
 
   function updateDisconnectBtn() {
     const btn = document.getElementById('disconnect-btn');
-    if (localStorage.getItem(STORAGE_KEY)) { btn.classList.remove('disabled'); } else { btn.classList.add('disabled'); }
+    if (localStorage.getItem(STORAGE_KEY)) btn.classList.remove('disabled'); else btn.classList.add('disabled');
   }
 
-  // 아코디언 토글 기능
   function toggleGuide(forceOpen = false) {
-    const btn = document.getElementById('guide-accordion-btn');
-    const box = document.getElementById('guide-box');
+    const btn = document.getElementById('guide-accordion-btn'); const box = document.getElementById('guide-box');
     const isOpen = forceOpen || box.style.display === 'none';
-    box.style.display = isOpen ? 'block' : 'none';
-    if (isOpen) btn.classList.add('active'); else btn.classList.remove('active');
+    box.style.display = isOpen ? 'block' : 'none'; if (isOpen) btn.classList.add('active'); else btn.classList.remove('active');
   }
 
-  // 메인 페이지 버튼 전용 핸들러
-  function openGuideFromMain() {
-    const modal = M.Modal.getInstance(document.getElementById('settings-modal'));
-    modal.open();
-    toggleGuide(true); // 확장 상태로 강제 열기
-  }
+  function openGuideFromMain() { M.Modal.getInstance(document.getElementById('settings-modal')).open(); toggleGuide(true); }
 
   function validateSheetLink() {
-    clearTimeout(validationTimeout);
-    const url = document.getElementById('sheet-url').value.trim();
-    const mark = document.getElementById('valid-mark');
-    const msg = document.getElementById('status-msg');
-    const confirmBtn = document.getElementById('confirm-btn');
-
+    clearTimeout(validationTimeout); const url = document.getElementById('sheet-url').value.trim();
+    const mark = document.getElementById('valid-mark'); const msg = document.getElementById('status-msg'); const confirmBtn = document.getElementById('confirm-btn');
     if (!url) { mark.style.display = 'none'; msg.innerText = ''; confirmBtn.classList.add('disabled'); return; }
     const match = url.match(/[-\w]{25,}/);
-    if (!match) {
-      mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>';
-      mark.style.display = 'block'; msg.innerText = '구글 시트 링크를 적어주세요.'; msg.style.color = 'var(--error-red)';
-      confirmBtn.classList.add('disabled'); return;
-    }
-
+    if (!match) { mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>'; mark.style.display = 'block'; msg.innerText = '구글 시트 링크를 적어주세요.'; msg.style.color = 'var(--error-red)'; confirmBtn.classList.add('disabled'); return; }
     validationTimeout = setTimeout(async () => {
-      msg.innerText = '권한 확인 중...'; msg.style.color = '#777';
+      msg.innerText = '확인 중...'; msg.style.color = '#777';
       try {
         const res = await callApi('checkSheet', { targetId: match[0] });
-        if (res.status === 'OK') {
-          mark.innerHTML = '<i class="material-icons" style="color: var(--success-green)">check_circle</i>';
-          msg.innerText = '유효한 시트입니다.'; msg.style.color = 'var(--success-green)';
-          confirmBtn.classList.remove('disabled');
-        } else {
-          mark.innerHTML = '<i class="material-icons" style="color: var(--warning-yellow)">warning</i>';
-          msg.innerText = (res.status === 'NO_EDIT_ACCESS') ? '공유 설정을 링크를 가진 모든 사용자 / 편집자로 설정해주세요.' : '접근할 수 없거나 형식이 잘못되었습니다.';
-          msg.style.color = 'var(--warning-yellow)';
-          confirmBtn.classList.add('disabled');
-        }
+        if (res.status === 'OK') { mark.innerHTML = '<i class="material-icons" style="color: var(--success-green)">check_circle</i>'; msg.innerText = '유효한 시트입니다.'; msg.style.color = 'var(--success-green)'; confirmBtn.classList.remove('disabled'); } 
+        else { mark.innerHTML = '<i class="material-icons" style="color: var(--warning-yellow)">warning</i>'; msg.innerText = (res.status === 'NO_EDIT_ACCESS') ? '공유 설정을 링크를 가진 모든 사용자 / 편집자로 설정해주세요.' : '접근할 수 없거나 형식이 잘못되었습니다.'; msg.style.color = 'var(--warning-yellow)'; confirmBtn.classList.add('disabled'); }
         mark.style.display = 'block';
       } catch (e) { msg.innerText = '확인 실패'; }
     }, 500);
   }
 
+  // 실시간 추천 검색어 필터링 로직 수정
   function triggerDropdown() {
-    if (!acInstance || isLoading || document.getElementById('card-search').value !== "") return;
-    const top15 = {}; allNames.slice(0, 15).forEach(n => top15[n] = null); acInstance.updateData(top15);
+    if (!acInstance || isLoading) return;
+    // 빈 값일 때도 전체 목록 중 상위 15개를 보여주기 위해 업데이트
+    if (document.getElementById('card-search').value === "") {
+      const top15 = {}; allNames.slice(0, 15).forEach(n => top15[n] = null);
+      acInstance.updateData(top15);
+    }
     setTimeout(() => { if (!acInstance.isOpen) acInstance.open(); }, 150);
   }
 
   function addMoreRows(count = null) {
-    const tbody = document.getElementById('add-card-tbody');
-    const increment = count || (tbody.children.length === 1 ? 4 : 5);
+    const tbody = document.getElementById('add-card-tbody'); const increment = count || (tbody.children.length === 1 ? 4 : 5);
     for (let i = 0; i < increment; i++) {
       const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><span class="card-name-fetch">번호 입력 대기</span></td>
-        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td>
-        <td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td>
-        <td><input type="number" class="new-card-qty" min="1" value="1" style="height:2.2rem !important; text-align:center;"></td>
-        <td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td>
-        <td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)"><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>
-      `;
+      row.innerHTML = `<td><span class="card-name-fetch">번호 입력 대기</span></td><td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td><td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td><td><input type="number" class="new-card-qty" min="1" value="1" style="height:2.2rem !important; text-align:center;"></td><td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td><td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)"><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>`;
       tbody.appendChild(row);
     }
   }
@@ -313,8 +262,7 @@
 
   function syncAnother(cb) {
     const input = cb.closest('.td-flex-container').querySelector('.new-card-another');
-    if (cb.checked) { input.disabled = false; input.placeholder = "종류 입력"; input.focus(); } 
-    else { input.value = ""; input.disabled = true; input.placeholder = "원본"; }
+    if (cb.checked) { input.disabled = false; input.placeholder = "종류 입력"; input.focus(); } else { input.value = ""; input.disabled = true; input.placeholder = "원본"; }
   }
 
   async function fetchCardName(el) {
@@ -323,6 +271,7 @@
     try { const res = await callApi('getCardNameFromDb', { cardNo }); nameSpan.innerText = res.name; } catch (e) { nameSpan.innerText = "조회 실패"; }
   }
 
+  // 카드 추가 중 UI 처리 강화
   async function submitNewCards() {
     const tbody = document.getElementById('add-card-tbody'); const rows = [];
     for (let tr of tbody.children) {
@@ -333,17 +282,32 @@
       const qty = tr.querySelector('.new-card-qty').value; const another = tr.querySelector('.new-card-another').value.trim();
       if (proc && loc && qty) rows.push([name, cardNo, proc, qty, loc, another]);
     }
-    if (rows.length === 0) return; showLoading(true, "저장 중...");
-    try { await callApi('addCards', {}, rows); M.Modal.getInstance(document.getElementById('add-card-modal')).close(); location.reload(); } catch (e) { showLoading(false); }
+    if (rows.length === 0) return;
+    
+    // UI 비활성화 및 로딩 표시
+    const submitBtn = document.getElementById('add-submit-btn');
+    submitBtn.classList.add('disabled');
+    showLoading(true, "시트에 카드 기록 중...");
+
+    try { 
+      await callApi('addCards', {}, rows); 
+      M.Modal.getInstance(document.getElementById('add-card-modal')).close(); 
+      location.reload(); 
+    } catch (e) { 
+      showLoading(false); submitBtn.classList.remove('disabled'); 
+    }
   }
 
   async function refreshInitialData() {
-    const savedId = localStorage.getItem(STORAGE_KEY); if (!savedId) return; showLoading(true, "초기화 중...");
+    const savedId = localStorage.getItem(STORAGE_KEY); if (!savedId) return;
+    showLoading(true, "초기 데이터 로드 중...");
     try {
       const res = await callApi('getInitialData'); showLoading(false); isAppConfigured = res.isConfigured;
       if (res.isConfigured) {
         allNames = res.names; allProcessingTypes = res.processingTypes; allLocations = res.locations; 
-        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: Object.fromEntries(allNames.map(n => [n, null])), onAutocomplete: startSearch, limit: 15, minLength: 0 });
+        // 실시간 필터링을 위해 전체 데이터를 전달
+        const fullData = {}; allNames.forEach(n => fullData[n] = null);
+        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 });
         if(document.getElementById('add-card-tbody').children.length === 0) addMoreRows(1);
       }
     } catch (e) { showLoading(false); }
@@ -357,7 +321,7 @@
 
   function renderTable(rows) {
     showLoading(false); const resultArea = document.getElementById('result-area');
-    if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>없음</p>"; resultArea.classList.add('show'); return; }
+    if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>결과 없음</p>"; resultArea.classList.add('show'); return; }
     const groups = {};
     rows.forEach(r => {
       const cardNo = String(r[1]), proc = String(r[2]), qty = parseInt(r[3]) || 0, loc = String(r[4]), another = String(r[5] || "").trim();
@@ -370,24 +334,18 @@
         groups[cardNo].anotherGroups[aKey].total += qty; groups[cardNo].anotherGroups[aKey].procs[proc] = (groups[cardNo].anotherGroups[aKey].procs[proc] || 0) + qty;
       }
     });
-
     const activeProcs = allProcessingTypes.filter(pt => rows.some(r => String(r[2]).trim() === pt));
     let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`;
     activeProcs.forEach(() => html += `<col class="col-proc">`);
     html += `</colgroup><thead><tr><th>번호</th><th>장소</th><th>총합</th>`;
-    activeProcs.forEach(pt => html += `<th>${pt}</th>`);
-    html += `</tr></thead><tbody>`;
+    activeProcs.forEach(pt => html += `<th>${pt}</th>`); html += `</tr></thead><tbody>`;
     Object.keys(groups).forEach(cardNo => {
       const g = groups[cardNo]; const locList = Object.keys(g.locations); const rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');
       locList.forEach((loc, idx) => {
         const item = g.locations[loc]; html += `<tr class="main-row card-${rowId}" data-loc="${loc}">`;
         if (idx === 0) html += `<td rowspan="${locList.length}">${cardNo}${Object.keys(g.anotherGroups).length > 0 ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</td>`;
         html += `<td class="main-loc-cell">${loc}</td><td class="main-total-cell" data-original="${item.total}">${item.total}</td>`;
-        activeProcs.forEach(pt => { 
-          const val = item.procs[pt] || 0;
-          html += `<td class="main-proc-cell" data-proc="${pt}" data-original="${val}">${val}</td>`; 
-        });
-        html += `</tr>`;
+        activeProcs.forEach(pt => { const v = item.procs[pt] || 0; html += `<td class="main-proc-cell" data-proc="${pt}" data-original="${v}">${v}</td>`; }); html += `</tr>`;
       });
       Object.values(g.anotherGroups).forEach(ag => {
         html += `<tr class="another-row ${rowId}-sub" data-another-loc="${ag.loc}" style="display:none;"><td class="another-val">↳ ${ag.another}</td><td>${ag.loc}</td><td>${ag.total}</td>`;
@@ -397,43 +355,24 @@
     resultArea.innerHTML = html + `</tbody></table>`; setTimeout(() => resultArea.classList.add('show'), 50);
   }
 
-  // 어나더 확장 시 수량 차감 및 복구 로직 버그 수정
   function toggleAnother(rowId) {
-    const subs = Array.from(document.getElementsByClassName(rowId + '-sub'));
-    const mains = Array.from(document.getElementsByClassName('card-' + rowId));
-    const isExpanding = subs[0].style.display === 'none';
-    
-    subs.forEach(s => s.style.display = isExpanding ? 'table-row' : 'none');
+    const subs = Array.from(document.getElementsByClassName(rowId + '-sub')); const mains = Array.from(document.getElementsByClassName('card-' + rowId));
+    const isExpanding = subs[0].style.display === 'none'; subs.forEach(s => s.style.display = isExpanding ? 'table-row' : 'none');
     event.target.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
-
     mains.forEach(mRow => {
-      const loc = mRow.getAttribute('data-loc');
-      const totalCell = mRow.querySelector('.main-total-cell');
-      const procCells = mRow.querySelectorAll('.main-proc-cell');
-      
-      let subTotalSum = 0;
-      let subProcSums = {};
-
+      const loc = mRow.getAttribute('data-loc'); const totalCell = mRow.querySelector('.main-total-cell'); const procCells = mRow.querySelectorAll('.main-proc-cell');
+      let subT = 0, subP = {};
       subs.forEach(sRow => {
         if (sRow.getAttribute('data-another-loc') === loc) {
-          subTotalSum += parseInt(sRow.cells[2].innerText) || 0;
-          const procCols = Array.from(sRow.cells).slice(3);
-          procCols.forEach((cell, idx) => {
-            const procName = procCells[idx].getAttribute('data-proc');
-            subProcSums[procName] = (subProcSums[procName] || 0) + (parseInt(cell.innerText) || 0);
-          });
+          subT += parseInt(sRow.cells[2].innerText) || 0;
+          Array.from(sRow.cells).slice(3).forEach((c, i) => { const pN = procCells[i].getAttribute('data-proc'); subP[pN] = (subP[pN] || 0) + (parseInt(c.innerText) || 0); });
         }
       });
-
       if (isExpanding) {
-        totalCell.innerText = parseInt(totalCell.getAttribute('data-original')) - subTotalSum;
-        procCells.forEach(pCell => {
-          const pName = pCell.getAttribute('data-proc');
-          pCell.innerText = parseInt(pCell.getAttribute('data-original')) - (subProcSums[pName] || 0);
-        });
+        totalCell.innerText = parseInt(totalCell.getAttribute('data-original')) - subT;
+        procCells.forEach(pC => { const pN = pC.getAttribute('data-proc'); pC.innerText = parseInt(pC.getAttribute('data-original')) - (subP[pN] || 0); });
       } else {
-        totalCell.innerText = totalCell.getAttribute('data-original');
-        procCells.forEach(pCell => pCell.innerText = pCell.getAttribute('data-original'));
+        totalCell.innerText = totalCell.getAttribute('data-original'); procCells.forEach(pC => pC.innerText = pC.getAttribute('data-original'));
       }
     });
   }
