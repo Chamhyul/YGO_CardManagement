@@ -54,30 +54,28 @@
 
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
+    .fixed-action-btn .main-fab i { transition: transform 0.3s ease; }
     
-    .fixed-action-btn .main-fab i { 
-      transition: transform 0.3s ease 0s; 
-    }
+    /* FAB 활성화 시 회전 (45도, X자 모양) */
+    .fixed-action-btn.active .main-fab i { transform: rotate(45deg); }
     
-    .fixed-action-btn.active .main-fab i { 
-      transform: rotate(45deg); 
-      transition: transform 0.3s ease 0s; 
-    }
-    
+    /* 하위 버튼 목록 레이아웃 수정: 
+       Flexbox 제거 후 기본 블록/우측 정렬로 복구하여 visibility 문제 해결 
+    */
     .fixed-action-btn ul li { 
       margin-bottom: 12px; 
-      text-align: right; 
-      position: relative;
+      text-align: right; /* 버튼 우측 정렬 */
+      position: relative; /* 레이블 배치를 위한 기준점 */
     }
     
-    /* FAB 레이블 설정 (하드웨어 가속 추가) */
+    /* FAB 레이블 설정: Absolute Positioning으로 복귀 */
     .fab-label { 
       position: absolute;
-      right: 52px; 
+      right: 52px; /* 버튼(40px) + 간격(12px) */
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%); /* 정확한 수직 중앙 정렬 */
       
-      background: #757575; 
+      background: #757575; /* 하위 버튼 색상 */
       color: white; 
       padding: 6px 12px; 
       border-radius: 4px;
@@ -87,24 +85,14 @@
       font-weight: 500;
       line-height: 1.2;
       
+      /* 애니메이션 */
       opacity: 0; 
-      /* 렌더링 성능 최적화를 위한 속성 추가 */
-      will-change: opacity;
-      transform: translateZ(0);
       transition: opacity 0.2s ease 0s; 
     }
     
-    /* 레이블 활성 상태 (등장 시) */
     .fixed-action-btn.active .fab-label { 
       opacity: 1; 
-      transition: opacity 0.2s ease 0.3s; 
-    }
-
-    /* 레이블 강제 퇴장 상태 (성능 최적화 적용) */
-    .fab-label.quick-hide {
-      opacity: 0 !important;
-      /* 0.15초 동안 부드럽게 사라지도록 설정 (GPU가 처리하므로 렉 감소) */
-      transition: opacity 0.15s ease 0s !important; 
+      transition: opacity 0.3s ease 0.35s; 
     }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
@@ -120,7 +108,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.15</div>
+<div class="version-info">ver. 0.1.16</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -216,18 +204,10 @@
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
     
-    // FAB 초기화 및 이벤트 콜백 설정
+    // FAB 초기화 (텍스트 변경 로직 제거, 회전 애니메이션만 CSS로 처리)
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
-      hoverEnabled: false,
-      onOpenStart: () => {
-        // 열리기 시작할 때: 강제 숨김 클래스 제거 (0.3초 딜레이 후 등장)
-        document.querySelectorAll('.fab-label').forEach(el => el.classList.remove('quick-hide'));
-      },
-      onCloseStart: () => {
-        // 닫히기 시작할 때: 즉시 숨김 클래스 추가
-        document.querySelectorAll('.fab-label').forEach(el => el.classList.add('quick-hide'));
-      }
+      hoverEnabled: false
     });
     
     const searchInput = document.getElementById('card-search');
