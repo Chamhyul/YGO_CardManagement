@@ -35,7 +35,8 @@
       .search-ghost { display: none; }
       .search-input-wrapper { flex: 1; }
       .btn-group { width: auto; margin-left: 8px; }
-      .modal { width: 95% !important; max-height: 80% !important; top: 5% !important; }
+      .modal { width: 95% !important; max-height: 85% !important; top: 5% !important; }
+      #add-card-modal { width: 98% !important; }
     }
 
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
@@ -65,20 +66,23 @@
     #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }
     .preloader-wrapper.big { width: 64px !important; height: 64px !important; flex-shrink: 0; }
 
-    /* 카드 추가 UI */
+    /* 카드 추가 모달 전용 레이아웃 스타일 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
-    #add-card-modal { width: 95% !important; max-width: 1000px !important; }
-    .add-modal-table { font-size: 0.8rem; width: 100%; border-collapse: collapse; }
-    .add-modal-table th { background: #f5f5f5; color: #666; font-weight: 600; padding: 8px 4px; text-align: center; border: 1px solid #eee; }
-    .add-modal-table td { padding: 4px; border: 1px solid #eee; }
-    .add-modal-table input, .add-modal-table select { height: 2rem !important; margin: 0 !important; font-size: 0.85rem !important; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
-    .direct-input { margin-top: 5px !important; }
-    .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.8rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #add-card-modal { width: 95% !important; max-width: 1100px !important; }
+    .add-modal-table { font-size: 0.85rem; width: 100%; border-collapse: collapse; }
+    .add-modal-table th { background: #f5f5f5; color: #666; font-weight: 700; padding: 10px 4px; text-align: center; border: 1px solid #ddd; }
+    .add-modal-table td { padding: 8px 4px; border: 1px solid #ddd; }
     
-    /* 어나더 스위치 중앙 정렬 */
-    .switch-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 5px; }
-    .switch label input[type=checkbox]:checked+.lever { background-color: #b2dfdb; }
-    .switch label input[type=checkbox]:checked+.lever:after { background-color: var(--primary-cyan); }
+    /* 셀 내부 요소 가로 정렬용 컨테이너 */
+    .td-flex-container { display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; }
+    .flex-select { flex: 1; min-width: 0; height: 2.2rem !important; }
+    .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
+    
+    .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.85rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+    
+    /* 체크박스 정렬 스타일 */
+    .checkbox-label { margin: 0 !important; height: 20px; display: flex; align-items: center; }
+    .another-input { flex: 1; height: 2.2rem !important; margin: 0 !important; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
   </style>
 </head>
 <body>
@@ -110,7 +114,7 @@
     </div>
     <div class="sub-row">
       <div id="recent-search-area" class="recent-searches">최근 검색 : </div>
-      <i class="material-icons" style="color:#9e9e9e; cursor:pointer;" onclick="clearAllHistory()">delete_sweep</i>
+      <i id="clear-history-icon" class="material-icons clear-history-btn tooltipped" data-position="bottom" data-tooltip="기록 삭제" onclick="clearAllHistory()">delete_sweep</i>
     </div>
   </div>
   <div class="result-container">
@@ -142,16 +146,16 @@
           <tr>
             <th style="width: 25%;">카드 이름</th>
             <th style="width: 15%;">카드 번호</th>
-            <th style="width: 15%;">가공</th>
+            <th style="width: 18%;">가공</th>
             <th style="width: 10%;">수량</th>
-            <th style="width: 15%;">보관 장소</th>
-            <th style="width: 20%;">어나더</th>
+            <th style="width: 18%;">보관 장소</th>
+            <th style="width: 14%;">어나더</th>
           </tr>
         </thead>
         <tbody id="add-card-tbody"></tbody>
       </table>
     </div>
-    <div style="margin-top: 15px; text-align: center;">
+    <div style="margin-top: 20px; text-align: center;">
       <button class="btn-flat waves-effect" onclick="addMoreRows()" style="color: var(--primary-cyan); font-weight: 700;">더 많은 카드를 등록할 건가요?</button>
     </div>
   </div>
@@ -164,32 +168,24 @@
     <p id="modal-instruction">양식에 맞는 구글 시트 링크를 입력해주세요.</p>
     <div class="url-input-container">
       <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-      <i class="material-icons trash-btn" onclick="disconnectSheet()">delete</i>
+      <i class="material-icons trash-btn tooltipped" data-position="bottom" data-tooltip="연결 끊기" onclick="disconnectSheet()">delete</i>
     </div>
     <div class="guide-btn" onclick="toggleGuide()"><i id="guide-icon" class="material-icons">expand_more</i><span>양식 다운로드 및 사용법</span></div>
     <div id="guide-box" class="guide-content">
       <ol>
         <li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/template/preview" target="_blank" style="color: var(--primary-cyan); font-weight: bold; text-decoration: underline;">템플릿 파일</a>을 본인의 구글 드라이브에 저장</li>
-        <li>CardList 시트에 원하는 팩의 카드 리스트를 양식에 맞게 기입
-          <ul><li>- 정발 / 일판 상관 없이 기입 가능</li></ul>
-        </li>
-        <li>MyCard 시트에 카드 번호, 가공, 수량, 보관 장소를 입력
-          <ul>
-            <li>- 카드 이름은 CardList를 바탕으로 자동 입력됨</li>
-            <li>- 기본적으로 어나더는 비워두고, 필요할때 원하는 호칭 기입</li>
-          </ul>
-        </li>
+        <li>CardList 시트에 원하는 팩의 카드 리스트를 양식에 맞게 기입</li>
+        <li>MyCard 시트에 카드 번호, 가공, 수량, 보관 장소를 입력</li>
         <li>공유 설정에서 <b>링크가 있는 모든 사용자 / 뷰어로 설정</b></li>
-        <li>해당 파일의 링크를 위에 입력하고 저장</li>
       </ol>
     </div>
   </div>
-  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme" onclick="saveSettings()">저장</button></div>
+  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme waves-effect waves-light" onclick="saveSettings()" style="font-weight: 600;">저장</button></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLgWgoJpUaw9bF2dAMJzvBa2GQx6AHOJ4kuHMEagLs1gdA8Q5hVILsLFj0pJ6aMgMU/exec";
+  const SCRIPT_URL = "여기에_배포된_웹_앱_URL_붙여넣기";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
 
@@ -218,15 +214,13 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
-    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
     clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); triggerDropdown(); });
     searchInput.addEventListener('focus', triggerDropdown);
     searchInput.addEventListener('click', triggerDropdown);
-    
-    // 초기 로딩 후 드롭다운 목록이 완성되면 첫 행 생성
     renderRecentSearches();
     refreshInitialData();
   });
@@ -246,28 +240,32 @@
       const row = document.createElement('tr');
       row.innerHTML = `
         <td><span class="card-name-fetch">번호 입력 대기</span></td>
-        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="예: ST19-KR001"></td>
+        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="ST19-KR001"></td>
         <td>
-          <select class="browser-default new-card-proc" onchange="syncDirectInput(this)">
-            <option value="" disabled selected>선택</option>
-            ${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}
-            <option value="DIRECT">직접 추가</option>
-          </select>
-          <input type="text" class="direct-input rarity-direct" disabled placeholder="">
+          <div class="td-flex-container">
+            <select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)">
+              <option value="" disabled selected>선택</option>
+              ${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}
+              <option value="DIRECT">직접 추가</option>
+            </select>
+            <input type="text" class="direct-input rarity-direct flex-input" disabled>
+          </div>
         </td>
-        <td><input type="number" class="new-card-qty" min="1" value="1"></td>
+        <td><input type="number" class="new-card-qty" min="1" value="1" style="height:2.2rem !important; text-align:center;"></td>
         <td>
-          <select class="browser-default new-card-loc" onchange="syncDirectInput(this)">
-            <option value="" disabled selected>선택</option>
-            ${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}
-            <option value="DIRECT">직접 추가</option>
-          </select>
-          <input type="text" class="direct-input loc-direct" disabled placeholder="">
+          <div class="td-flex-container">
+            <select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)">
+              <option value="" disabled selected>선택</option>
+              ${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}
+              <option value="DIRECT">직접 추가</option>
+            </select>
+            <input type="text" class="direct-input loc-direct flex-input" disabled>
+          </div>
         </td>
         <td>
-          <div class="switch-cell">
-            <div class="switch"><label><input type="checkbox" onchange="syncAnother(this)"><span class="lever"></span></label></div>
-            <input type="text" class="new-card-another" disabled value="" placeholder="원본">
+          <div class="td-flex-container" style="justify-content: center;">
+            <label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)"><span></span></label>
+            <input type="text" class="another-input new-card-another" disabled placeholder="원본">
           </div>
         </td>
       `;
@@ -275,24 +273,27 @@
     }
   }
 
-  // 가공/보관장소 동기화 및 활성화 로직
+  // 가공/보관장소: 직접 추가 시 너비 분할 및 입력 활성화
   function syncDirectInput(sel) {
     const input = sel.nextElementSibling;
     if (sel.value === 'DIRECT') {
-      input.value = '';
+      sel.style.flex = "0 0 40%"; // 드롭박스 축소
+      input.style.display = 'block'; // 입력란 표시
+      input.style.flex = "1";
       input.disabled = false;
-      input.placeholder = ""; // 직접 입력 시 플레이스홀더 없음
+      input.value = "";
       input.focus();
     } else {
-      input.value = sel.value;
+      sel.style.flex = "1"; // 드롭박스 원래대로
+      input.style.display = 'none';
       input.disabled = true;
-      input.placeholder = "";
+      input.value = sel.value;
     }
   }
 
-  // 어나더 스위치 동기화 로직
+  // 어나더: 체크박스에 따른 상호작용
   function syncAnother(cb) {
-    const input = cb.closest('.switch-cell').querySelector('.new-card-another');
+    const input = cb.closest('.td-flex-container').querySelector('.new-card-another');
     if (cb.checked) {
       input.disabled = false;
       input.placeholder = "종류 입력";
@@ -322,8 +323,12 @@
       const name = tr.querySelector('.card-name-fetch').innerText;
       if (!cardNo || name === "검색 결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
       
-      let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
-      let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
+      let procSel = tr.querySelector('.new-card-proc');
+      let proc = procSel.value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : procSel.value;
+      
+      let locSel = tr.querySelector('.new-card-loc');
+      let loc = locSel.value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : locSel.value;
+      
       const qty = tr.querySelector('.new-card-qty').value;
       const another = tr.querySelector('.new-card-another').value.trim();
       
@@ -349,10 +354,7 @@
         const initialData = {};
         allNames.forEach(n => initialData[n] = null);
         acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: initialData, onAutocomplete: startSearch, limit: 15, minLength: 0 });
-        
-        // 데이터 로드 완료 후 모달 첫 행 생성 (드롭다운 채우기 위함)
-        const tbody = document.getElementById('add-card-tbody');
-        if(tbody.children.length === 0) addMoreRows(1);
+        if(document.getElementById('add-card-tbody').children.length === 0) addMoreRows(1);
       }
     } catch (e) { showLoading(false); }
   }
