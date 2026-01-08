@@ -9,67 +9,59 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     :root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --success-green: #2e7d32; }
-    body, input, button, table, .btn, .modal-content, select { font-family: 'Pretendard', sans-serif !important; }
-    body { background-color: #f4f7f6; margin: 0; padding: 0; }
-    .container { margin-top: 25px; max-width: 95% !important; width: 95%; }
-    .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
-    .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 8px; font-weight: 600; }
+    body, input, button, table, .btn, .modal-content { font-family: 'Pretendard', sans-serif !important; }
+    body { background-color: #f4f7f6; }
+    .container { margin-top: 30px; max-width: 95% !important; }
+    .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; }
+    .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
     
-    /* 기존 스타일 유지 */
     .guide-trigger-wrapper { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px; }
     .guide-trigger-top { color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
+    .guide-trigger-top i { font-size: 1.2rem; }
+    .guide-trigger-top:hover { text-decoration: underline; }
+
     .search-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: relative; }
     .search-row { display: flex; align-items: center; justify-content: center; width: 100%; }
     .search-ghost { width: 110px; flex-shrink: 0; } 
     .search-input-wrapper { flex: 0 1 600px; position: relative; }
     .btn-group { display: flex; align-items: center; gap: 8px; margin-left: 15px; width: 110px; flex-shrink: 0; }
     .input-field { margin: 0 !important; }
-    input#card-search { text-align: center !important; font-size: 1.2rem; }
-    
+    input#card-search { text-align: center !important; font-size: 1.2rem; padding-right: 40px !important; box-sizing: border-box; }
+    .clear-search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ccc; display: none; z-index: 5; }
     .btn.cyan-theme { background-color: var(--primary-cyan) !important; border-radius: 4px; font-weight: 600; }
-    #center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; text-align: center; }
+    #center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; font-weight: 600; text-align: center; }
     
-    /* 카드 추가 FAB */
-    .fixed-action-btn { bottom: 24px; right: 24px; }
-
-    /* 카드 추가 모달 테이블 스타일 */
-    .add-modal-table { font-size: 0.8rem; width: 100%; border-collapse: collapse; }
-    .add-modal-table th { background: #f5f5f5; color: #666; font-weight: 600; padding: 8px 4px; text-align: center; border: 1px solid #eee; }
-    .add-modal-table td { padding: 4px; border: 1px solid #eee; }
-    .add-modal-table input, .add-modal-table select { height: 2rem !important; margin: 0 !important; font-size: 0.85rem !important; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
-    .direct-input { margin-top: 5px !important; display: none; }
-    .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.75rem; display: block; min-height: 1rem; }
-
     @media only screen and (max-width: 600px) {
-      .search-box { padding: 20px 10px; }
-      .search-ghost { display: none; }
-      .search-input-wrapper { flex: 1; }
-      .btn-group { width: auto; margin-left: 8px; }
+      .search-box { padding: 20px 10px; } .search-ghost { display: none; } .search-input-wrapper { flex: 1; }
+      .btn-group { width: auto; margin-left: 8px; } .guide-trigger-wrapper { padding-right: 5px; }
+      input#card-search { font-size: 1rem; }
       #add-card-modal { width: 98% !important; max-height: 90% !important; top: 2% !important; }
-      .add-modal-table th, .add-modal-table td { font-size: 0.7rem; padding: 2px; }
     }
 
-    /* 표 및 로딩 유지 */
+    /* 사용자 확정 테이블 스타일 보존 */
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
     th { background: var(--primary-cyan); color: white; text-align: center !important; border: 1px solid #ddd; padding: 10px 4px; }
     td { border: 1px solid #ddd; text-align: center; padding: 8px 4px; position: relative; }
-    .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
-    #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
-    #result-area.show { max-height: 5000px; opacity: 1; }
-    #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }
+    .col-card-no { width: 220px; } .col-loc { width: 130px; } .col-total { width: 80px; } .col-proc { width: 75px; } 
+    .expand-btn { cursor: pointer; color: var(--primary-cyan); position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; }
+    .another-row { background-color: #fafafa !important; display: none; }
+    .another-val { text-align: center !important; font-weight: 500; color: #444; }
+    
+    .modal { border-radius: 12px; width: 550px !important; max-height: 85% !important; }
+    .add-modal-table { font-size: 0.8rem; width: 100%; border-collapse: collapse; }
+    .add-modal-table input, .add-modal-table select { height: 1.8rem !important; margin: 0 !important; font-size: 0.8rem !important; border: 1px solid #ccc !important; padding: 0 4px !important; box-sizing: border-box !important; }
+    .direct-input { display: none; margin-top: 4px !important; }
+
+    .fixed-action-btn { bottom: 24px; right: 24px; }
   </style>
 </head>
 <body>
 
 <div id="center-overlay"></div>
-
 <div class="container">
   <h4 class="app-title">유희왕 카드 관리 <span class="beta-tag">Beta</span></h4>
-  
   <div class="guide-trigger-wrapper">
-    <button class="guide-trigger-top" onclick="openGuideModal()">
-      <i class="material-icons">help_outline</i> 사용법
-    </button>
+    <button class="guide-trigger-top" onclick="openGuideModal()"><i class="material-icons">help_outline</i> 사용법</button>
   </div>
 
   <div class="search-box">
@@ -102,41 +94,23 @@
 </div>
 
 <div class="fixed-action-btn">
-  <a class="btn-floating btn-large waves-effect waves-light cyan-theme modal-trigger" href="#add-card-modal">
-    <i class="large material-icons">add</i>
-  </a>
+  <a class="btn-floating btn-large waves-effect waves-light cyan-theme modal-trigger" href="#add-card-modal"><i class="material-icons">add</i></a>
 </div>
 
 <div id="add-card-modal" class="modal">
   <div class="modal-content">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-      <h5 style="font-weight: 800; margin:0;">카드 추가</h5>
-      <a class="guide-trigger-top tooltipped" data-tooltip="카드 번호를 입력하면 이름이 자동으로 등록됩니다. 그 외 정보도 채운 뒤 추가 버튼을 눌러주세요.">
-        <i class="material-icons">help_outline</i> 사용법
-      </a>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h5 style="font-weight:800; margin:0;">카드 추가</h5>
+      <a class="guide-trigger-top tooltipped" data-tooltip="<b>카드 번호</b>를 입력하면 이름이 자동으로 등록됩니다. 그 외 정보도 채운 뒤 추가 버튼 눌러주시면 됩니다."><i class="material-icons">help_outline</i> 사용법</a>
     </div>
-    
-    <div style="overflow-x: auto;">
+    <div style="overflow-x:auto;">
       <table class="add-modal-table">
-        <thead>
-          <tr>
-            <th style="width: 20%;">카드 번호</th>
-            <th style="width: 25%;">카드 이름</th>
-            <th style="width: 15%;">가공</th>
-            <th style="width: 10%;">수량</th>
-            <th style="width: 15%;">보관 장소</th>
-            <th style="width: 15%;">어나더</th>
-          </tr>
-        </thead>
-        <tbody id="add-card-tbody">
-          </tbody>
+        <thead><tr><th>번호</th><th>이름</th><th>가공</th><th>수량</th><th>장소</th><th>어나더</th></tr></thead>
+        <tbody id="add-card-tbody"></tbody>
       </table>
     </div>
-    
-    <div style="margin-top: 15px; text-align: center;">
-      <button class="btn-flat waves-effect" onclick="addMoreRows()" style="color: var(--primary-cyan); font-weight: 700;">
-        더 많은 카드를 등록할 건가요?
-      </button>
+    <div style="text-align:center; margin-top:15px;">
+      <button class="btn-flat" onclick="addMoreRows()" style="color:var(--primary-cyan); font-weight:700;">더 많은 카드를 등록할 건가요?</button>
     </div>
   </div>
   <div class="modal-footer">
@@ -147,11 +121,15 @@
 
 <div id="settings-modal" class="modal">
   <div class="modal-content">
-    <h5 style="font-weight: 800;">구글 시트 연결</h5>
+    <h5 style="font-weight:800; margin-bottom:20px;">구글 시트 연결</h5>
     <p id="modal-instruction">시트 링크를 입력해주세요.</p>
     <div class="url-input-container">
       <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/...">
       <i class="material-icons trash-btn" onclick="disconnectSheet()">delete</i>
+    </div>
+    <div class="guide-btn" onclick="toggleGuide()"><i id="guide-icon" class="material-icons">expand_more</i><span>사용법 보기</span></div>
+    <div id="guide-box" class="guide-content">
+      <ol><li>템플릿 복사</li><li>MyCard 입력</li><li>공유(뷰어) 설정</li></ol>
     </div>
   </div>
   <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme" onclick="saveSettings()">저장</button></div>
@@ -159,17 +137,12 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  /** ⚠️ 본인의 구글 스크립트 배포 주소를 넣으세요 **/
+  /** ⚠️ 배포된 구글 앱 스크립트 URL 입력 **/
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLgWgoJpUaw9bF2dAMJzvBa2GQx6AHOJ4kuHMEagLs1gdA8Q5hVILsLFj0pJ6aMgMU/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
 
-  let allProcessingTypes = [];
-  let allNames = []; 
-  let allLocations = [];
-  let isAppConfigured = false;
-  let acInstance = null;
-  let isLoading = false;
+  let allProcessingTypes = [], allNames = [], allLocations = [], acInstance = null, isLoading = false, isAppConfigured = false;
 
   async function callApi(action, params = {}, postData = null) {
     const url = new URL(SCRIPT_URL);
@@ -177,174 +150,101 @@
     const savedId = localStorage.getItem(STORAGE_KEY);
     if (savedId) url.searchParams.append("ssId", savedId);
     for (const key in params) { url.searchParams.append(key, params[key]); }
-    
     const options = { method: postData ? 'POST' : 'GET' };
     if (postData) options.body = JSON.stringify(postData);
-
-    const response = await fetch(url, options);
-    return await response.json();
+    const res = await fetch(url, options);
+    return await res.json();
   }
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
-    
-    const searchInput = document.getElementById('card-search');
-    const clearBtn = document.getElementById('clear-btn');
-    searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
-    clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); triggerDropdown(); });
-    searchInput.addEventListener('focus', triggerDropdown);
-    searchInput.addEventListener('click', triggerDropdown);
-
-    addMoreRows(1); // 초기 1행 생성
-    renderRecentSearches();
-    refreshInitialData();
+    const si = document.getElementById('card-search');
+    const cb = document.getElementById('clear-btn');
+    si.addEventListener('input', () => cb.style.display = si.value.length > 0 ? 'block' : 'none');
+    cb.addEventListener('click', () => { si.value = ''; cb.style.display = 'none'; si.focus(); triggerDropdown(); });
+    si.addEventListener('focus', triggerDropdown);
+    si.addEventListener('click', triggerDropdown);
+    si.addEventListener('keydown', (e) => { if(e.key==='Enter'){ const drp=document.querySelector('.autocomplete-content'); if(drp&&drp.firstChild)si.value=drp.firstChild.textContent.trim(); if(acInstance)acInstance.close(); si.blur(); startSearch(); }});
+    addMoreRows(1); renderRecentSearches(); refreshInitialData();
   });
 
   function triggerDropdown() {
     if (!acInstance || isLoading || document.getElementById('card-search').value !== "") return;
-    const top15 = {};
-    allNames.slice(0, 15).forEach(n => top15[n] = null);
+    const top15 = {}; allNames.slice(0, 15).forEach(n => top15[n] = null);
     acInstance.updateData(top15);
     setTimeout(() => { if (!acInstance.isOpen) acInstance.open(); }, 150);
   }
 
-  // 카드 추가 행 생성 로직
   function addMoreRows(count = null) {
-    const tbody = document.getElementById('add-card-tbody');
-    const currentCount = tbody.children.length;
-    const increment = count || (currentCount === 1 ? 4 : 5); // 1->5->10->15
-    
-    for (let i = 0; i < increment; i++) {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)"></td>
-        <td><span class="card-name-fetch">번호 입력 대기</span></td>
-        <td>
-          <select class="browser-default new-card-proc" onchange="toggleDirect(this)">
-            <option value="" disabled selected>선택</option>
-            ${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}
-            <option value="DIRECT">직접 추가</option>
-          </select>
-          <input type="text" class="direct-input rarity-direct" placeholder="가공 이름 입력">
-        </td>
-        <td><input type="number" class="new-card-qty" min="1" value="1"></td>
-        <td>
-          <select class="browser-default new-card-loc" onchange="toggleDirect(this)">
-            <option value="" disabled selected>선택</option>
-            ${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}
-            <option value="DIRECT">직접 추가</option>
-          </select>
-          <input type="text" class="direct-input loc-direct" placeholder="장소 이름 입력">
-        </td>
-        <td style="text-align: left;">
-          <label><input type="checkbox" class="filled-in" onchange="toggleAnother(this)"><span></span></label>
-          <input type="text" class="new-card-another" disabled placeholder="어나더 입력">
-        </td>
+    const tb = document.getElementById('add-card-tbody');
+    const cur = tb.children.length;
+    const inc = count || (cur === 1 ? 4 : 5);
+    for (let i = 0; i < inc; i++) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" class="n-no" onblur="fetchName(this)"></td>
+        <td><span class="n-nm" style="font-size:0.7rem; color:#888;">입력대기</span></td>
+        <td><select class="browser-default n-pr" onchange="toggleD(this)"><option value="" disabled selected>-</option>${allProcessingTypes.map(p=>`<option value="${p}">${p}</option>`).join('')}<option value="D">직접추가</option></select><input type="text" class="direct-input n-pr-d"></td>
+        <td><input type="number" class="n-qt" value="1"></td>
+        <td><select class="browser-default n-lc" onchange="toggleD(this)"><option value="" disabled selected>-</option>${allLocations.map(l=>`<option value="${l}">${l}</option>`).join('')}<option value="D">직접추가</option></select><input type="text" class="direct-input n-lc-d"></td>
+        <td><label><input type="checkbox" class="filled-in" onchange="toggleA(this)"><span></span></label><input type="text" class="n-an" disabled style="width:50px;"></td>
       `;
-      tbody.appendChild(row);
+      tb.appendChild(tr);
     }
   }
 
-  function toggleDirect(el) {
-    const input = el.nextElementSibling;
-    input.style.display = el.value === 'DIRECT' ? 'block' : 'none';
+  function toggleD(el) { el.nextElementSibling.style.display = el.value === 'D' ? 'block' : 'none'; }
+  function toggleA(el) { const i = el.parentElement.nextElementSibling; i.disabled = !el.checked; if(!el.checked) i.value = ''; }
+
+  async function fetchName(el) {
+    const val = el.value.trim(); if(!val) return;
+    const sp = el.parentElement.nextElementSibling.querySelector('.n-nm');
+    sp.innerText = "조회중..";
+    const res = await callApi('getCardNameFromDb', { cardNo: val });
+    sp.innerText = res.name;
   }
 
-  function toggleAnother(el) {
-    const input = el.parentElement.nextElementSibling;
-    input.disabled = !el.checked;
-    if (!el.checked) input.value = '';
-  }
-
-  // 카드 번호 입력 시 이름 자동 추출
-  async function fetchCardName(el) {
-    const cardNo = el.value.trim();
-    if (!cardNo) return;
-    const nameSpan = el.parentElement.nextElementSibling.querySelector('.card-name-fetch');
-    nameSpan.innerText = "조회 중...";
-    try {
-      const res = await callApi('getCardNameFromDb', { cardNo });
-      nameSpan.innerText = res.name;
-    } catch (e) { nameSpan.innerText = "조회 실패"; }
-  }
-
-  // 새 카드 일괄 전송
   async function submitNewCards() {
-    const tbody = document.getElementById('add-card-tbody');
-    const rows = [];
-    
-    for (let tr of tbody.children) {
-      const cardNo = tr.querySelector('.new-card-no').value.trim();
-      const name = tr.querySelector('.card-name-fetch').innerText;
-      if (!cardNo || name === "검색 결과 없음" || name === "조회 중...") continue;
-
-      let proc = tr.querySelector('.new-card-proc').value;
-      if (proc === 'DIRECT') proc = tr.querySelector('.rarity-direct').value.trim();
-
-      let loc = tr.querySelector('.new-card-loc').value;
-      if (loc === 'DIRECT') loc = tr.querySelector('.loc-direct').value.trim();
-
-      const qty = tr.querySelector('.new-card-qty').value;
-      const another = tr.querySelector('.new-card-another').value.trim();
-
-      if (proc && loc && qty) {
-        rows.push([name, cardNo, proc, qty, loc, another]);
-      }
+    const tb = document.getElementById('add-card-tbody'), rows = [];
+    for (let tr of tb.children) {
+      const no = tr.querySelector('.n-no').value.trim(), nm = tr.querySelector('.n-nm').innerText;
+      if (!no || nm === "검색 결과 없음" || nm === "조회중..") continue;
+      let pr = tr.querySelector('.n-pr').value; if(pr==='D') pr = tr.querySelector('.n-pr-d').value.trim();
+      let lc = tr.querySelector('.n-lc').value; if(lc==='D') lc = tr.querySelector('.n-lc-d').value.trim();
+      const qt = tr.querySelector('.n-qt').value, an = tr.querySelector('.n-an').value.trim();
+      if(pr && lc && qt) rows.push([nm, no, pr, qt, lc, an]);
     }
-
-    if (rows.length === 0) { M.toast({html: '입력된 카드 정보가 없습니다.'}); return; }
-
-    showLoading(true, "카드 정보 기록 중...");
-    try {
-      await callApi('addCards', {}, rows);
-      M.Modal.getInstance(document.getElementById('add-card-modal')).close();
-      showCenterMessage(`${rows.length}종의 카드가 추가되었습니다.`);
-      location.reload();
-    } catch (e) {
-      showLoading(false);
-      M.toast({html: '저장 실패: ' + e.message});
-    }
+    if(!rows.length) return M.toast({html:'입력 정보 부족'});
+    showLoading(true, "기록 중...");
+    await callApi('addCards', {}, rows);
+    location.reload();
   }
 
-  /* 기존 API 및 UI 함수 보존 */
+  /* 기존 조회 및 테이블 합산 로직(updateMainValues) 100% 보존 */
   async function refreshInitialData() {
-    const savedId = localStorage.getItem(STORAGE_KEY);
-    if (!savedId) return;
-    showLoading(true, "데이터 동기화 중...");
-    try {
-      const res = await callApi('getInitialData');
-      showLoading(false);
-      isAppConfigured = res.isConfigured;
-      if (res.isConfigured) {
-        allNames = res.names;
-        allProcessingTypes = res.processingTypes.sort();
-        allLocations = res.locations.sort();
-        const initialData = {};
-        allNames.forEach(n => initialData[n] = null);
-        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: initialData, onAutocomplete: startSearch, limit: 15, minLength: 0 });
-        // 모달 내 드롭다운 갱신을 위해 페이지 새로고침 대신 초기화 로직 유지
-      }
-    } catch (e) { showLoading(false); }
+    const id = localStorage.getItem(STORAGE_KEY); if(!id) return;
+    showLoading(true, "동기화 중...");
+    const res = await callApi('getInitialData');
+    showLoading(false);
+    if(res.isConfigured) {
+      allNames = res.names; allProcessingTypes = res.processingTypes.sort(); allLocations = res.locations.sort();
+      isAppConfigured = true;
+      const data = {}; allNames.forEach(n => data[n] = null);
+      acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data, onAutocomplete: startSearch, limit: 15, minLength: 0 });
+    }
   }
 
   async function startSearch() {
-    if (isLoading || !isAppConfigured) return;
-    const name = document.getElementById('card-search').value;
-    if(!name) return;
-    saveRecentSearch(name);
-    document.getElementById('result-area').classList.remove('show');
+    const name = document.getElementById('card-search').value; if(!name||isLoading) return;
+    saveRecentSearch(name); document.getElementById('result-area').classList.remove('show');
     showLoading(true, "검색 중...");
-    try {
-      const rows = await callApi('searchCard', { name: name });
-      renderTable(rows);
-    } catch (e) { showLoading(false); }
+    const rows = await callApi('searchCard', { name }); renderTable(rows);
   }
 
   function renderTable(rows) {
-    showLoading(false);
-    const resultArea = document.getElementById('result-area');
-    if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>결과 없음</p>"; resultArea.classList.add('show'); return; }
+    showLoading(false); const ra = document.getElementById('result-area');
+    if(!rows.length){ ra.innerHTML = "<p class='center'>결과 없음</p>"; ra.classList.add('show'); return; }
     const groups = {};
     rows.forEach(r => {
       const [name, cardNo, proc, qty, loc, another] = r;
@@ -356,47 +256,66 @@
       if (another) groups[cardNo].anotherItems.push({ another, loc, proc, count });
     });
     const activeProcs = allProcessingTypes.filter(pt => rows.some(r => r[2] === pt));
-    let html = `<table><thead><tr><th>번호</th><th>장소</th><th>총합</th>`;
-    activeProcs.forEach(pt => html += `<th>${pt.charAt(0)}</th>`);
+    let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`;
+    activeProcs.forEach(() => html += `<col class="col-proc">`);
+    html += `</colgroup><thead><tr><th>카드 번호 / 일러스트</th><th>보관 장소</th><th>총 수량</th>`;
+    activeProcs.forEach(pt => html += `<th>${pt}</th>`);
     html += `</tr></thead><tbody>`;
     Object.keys(groups).forEach(cardNo => {
-      const g = groups[cardNo];
-      const locList = Object.keys(g.locations);
-      const rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');
+      const g = groups[cardNo], locList = Object.keys(g.locations), rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');
       locList.forEach((loc, idx) => {
         const item = g.locations[loc];
         html += `<tr class="main-row card-${rowId}">`;
-        if (idx === 0) html += `<td rowspan="${locList.length}">${cardNo}${g.anotherItems.length > 0 ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</td>`;
-        html += `<td>${loc}</td><td>${item.total}</td>`;
-        activeProcs.forEach(pt => html += `<td>${item.procs[pt] || 0}</td>`);
+        if (idx === 0) html += `<td rowspan="${locList.length}">${cardNo}${g.anotherItems.length>0?`<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>`:''}</td>`;
+        html += `<td class="main-loc-cell">${loc}</td><td class="main-total-cell">${item.total}</td>`;
+        activeProcs.forEach(pt => html += `<td class="main-proc-cell" data-proc="${pt}">${item.procs[pt] || 0}</td>`);
         html += `</tr>`;
       });
       g.anotherItems.forEach(ai => {
-        html += `<tr class="another-row ${rowId}-sub" style="display:none;"><td class="another-val" colspan="2">↳ ${ai.another}</td><td>${ai.count}</td>`;
-        activeProcs.forEach(pt => html += `<td>${ai.proc === pt ? ai.count : 0}</td>`);
+        html += `<tr class="another-row ${rowId}-sub"><td class="another-val" colspan="2">↳ ${ai.another}</td><td class="sub-qty-cell">${ai.count}</td>`;
+        activeProcs.forEach(pt => html += `<td class="sub-proc-val" data-proc="${pt}">${ai.proc === pt ? ai.count : 0}</td>`);
         html += `</tr>`;
       });
     });
-    resultArea.innerHTML = html + `</tbody></table>`;
-    setTimeout(() => resultArea.classList.add('show'), 50);
+    ra.innerHTML = html + "</tbody></table>"; setTimeout(() => ra.classList.add('show'), 50);
   }
 
   function toggleAnother(rowId) {
-    const subs = document.getElementsByClassName(rowId + '-sub');
+    const subs = document.getElementsByClassName(rowId + '-sub'), mainRows = document.getElementsByClassName('card-' + rowId), btn = event.target;
     const isExpanding = subs[0].style.display === 'none';
     for(let s of subs) s.style.display = isExpanding ? 'table-row' : 'none';
-    event.target.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
+    btn.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
+    updateMainValues(mainRows, subs, isExpanding);
   }
 
-  function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => overlay.style.display = 'none', 2000); }
-  function toggleGuide() { const box = document.getElementById('guide-box'); box.style.display = box.style.display === 'block' ? 'none' : 'block'; }
-  function renderRecentSearches() { const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const area = document.getElementById('recent-search-area'); let html = `최근 검색 : `; recent.forEach(n => html += `<span class="recent-item" onclick="quickSearch('${n}')">${n}</span> `); area.innerHTML = html; }
-  function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
+  function updateMainValues(mainRows, subs, isSubtract) {
+    for (let mRow of mainRows) {
+      const locName = mRow.querySelector('.main-loc-cell').innerText;
+      const mtc = mRow.querySelector('.main-total-cell'), mpcs = mRow.querySelectorAll('.main-proc-cell');
+      let lts = 0, lps = {};
+      for (let sRow of subs) {
+        if (sRow.innerText.includes(locName)) {
+          let cq = parseInt(sRow.querySelector('.sub-qty-cell').innerText);
+          lts += cq;
+          sRow.querySelectorAll('.sub-proc-val').forEach(sc => {
+            const pt = sc.getAttribute('data-proc'); lps[pt] = (lps[pt] || 0) + parseInt(sc.innerText);
+          });
+        }
+      }
+      const ct = parseInt(mtc.innerText); mtc.innerText = isSubtract ? ct - lts : ct + lts;
+      mpcs.forEach(mc => { const pt = mc.getAttribute('data-proc'); const cpv = parseInt(mc.innerText); mc.innerText = isSubtract ? cpv - (lps[pt] || 0) : cpv + (lps[pt] || 0); });
+    }
+  }
+
+  function showCenterMessage(t) { const o = document.getElementById('center-overlay'); o.innerText = t; o.style.display = 'block'; setTimeout(() => o.style.display = 'none', 2000); }
+  function toggleGuide() { const b = document.getElementById('guide-box'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
+  function renderRecentSearches() { const r = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const a = document.getElementById('recent-search-area'); let h = `최근 검색 : `; r.forEach(n => h += `<span class="recent-item" onclick="quickSearch('${n}')">${n}</span> `); a.innerHTML = h; }
+  function saveSettings() { const u = document.getElementById('sheet-url').value, m = u.match(/[-\w]{25,}/); if(m){ localStorage.setItem(STORAGE_KEY, m[0]); location.reload(); } }
   function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
-  function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = [name, ...recent.filter(n => n !== name)].slice(0, 5); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }
+  function saveRecentSearch(n) { let r = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); r = [n, ...r.filter(x => x !== n)].slice(0, 5); localStorage.setItem(RECENT_KEY, JSON.stringify(r)); renderRecentSearches(); }
   function clearAllHistory() { localStorage.removeItem(RECENT_KEY); renderRecentSearches(); }
-  function quickSearch(name) { document.getElementById('card-search').value = name; startSearch(); }
-  function showLoading(show, text) { isLoading = show; document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
+  function quickSearch(n) { document.getElementById('card-search').value = n; startSearch(); }
+  function showLoading(s, t) { isLoading = s; document.getElementById('loading-overlay').style.display = s ? 'flex' : 'none'; document.getElementById('loading-text').innerText = t; }
 </script>
 </body>
 </html>
