@@ -26,7 +26,7 @@
     input#card-search { text-align: center !important; font-size: 1.2rem; padding-right: 40px !important; box-sizing: border-box; }
     .clear-search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ccc; display: none; z-index: 5; }
     .btn.cyan-theme { background-color: var(--primary-cyan) !important; border-radius: 4px; font-weight: 600; }
-    #center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; font-weight: 600; text-align: center; }
+    #center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; text-align: center; }
     
     @media only screen and (max-width: 600px) {
       .search-box { padding: 20px 10px; }
@@ -34,6 +34,7 @@
       .search-input-wrapper { flex: 1; }
       .btn-group { width: auto; margin-left: 8px; }
       .modal { width: 95% !important; max-height: 85% !important; top: 5% !important; }
+      #add-card-modal { width: 98% !important; }
     }
 
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
@@ -55,7 +56,7 @@
     .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
     .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
-    #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in; width: 100%; }
+    #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 5000px; opacity: 1; }
     #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }
 
@@ -81,11 +82,8 @@
 
 <div class="container">
   <h4 class="app-title">유희왕 카드 관리 <span class="beta-tag">Beta</span></h4>
-  
   <div class="guide-trigger-wrapper">
-    <button class="guide-trigger-top" onclick="openGuideModal()">
-      <i class="material-icons">help_outline</i> 사용법
-    </button>
+    <button class="guide-trigger-top" onclick="openGuideModal()"><i class="material-icons">help_outline</i> 사용법</button>
   </div>
 
   <div class="search-box">
@@ -99,7 +97,7 @@
       </div>
       <div class="btn-group">
         <button id="search-btn" class="btn waves-effect waves-light cyan-theme" onclick="startSearch()" style="height: 45px;"><i class="material-icons">search</i></button>
-        <button class="btn grey darken-1 modal-trigger tooltipped" id="settings-trigger" href="#settings-modal" data-position="bottom" data-tooltip="시트 설정" style="height: 45px; padding: 0 10px;"><i class="material-icons">settings</i></button>
+        <button class="btn grey darken-1 modal-trigger tooltipped" id="settings-trigger" href="#settings-modal" data-tooltip="시트 설정" style="height: 45px; padding: 0 10px;"><i class="material-icons">settings</i></button>
       </div>
     </div>
     <div class="sub-row">
@@ -117,16 +115,14 @@
 </div>
 
 <div class="fixed-action-btn">
-  <a class="btn-floating btn-large waves-effect waves-light cyan-theme modal-trigger" href="#add-card-modal">
-    <i class="large material-icons">add</i>
-  </a>
+  <a class="btn-floating btn-large waves-effect waves-light cyan-theme modal-trigger" href="#add-card-modal"><i class="large material-icons">add</i></a>
 </div>
 
 <div id="add-card-modal" class="modal">
   <div class="modal-content">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
       <h5 style="font-weight: 800; margin:0;">카드 추가</h5>
-      <a class="guide-trigger-top tooltipped" data-tooltip="<b>카드 번호</b>를 입력하면 이름이 자동으로 등록됩니다. 그 외 정보도 채운 뒤 추가 버튼 눌러주시면 됩니다.">
+      <a class="guide-trigger-top tooltipped" data-tooltip="<b>카드 번호</b>를 입력하면 이름이 자동으로 등록됩니다.">
         <i class="material-icons">help_outline</i> 사용법
       </a>
     </div>
@@ -154,29 +150,28 @@
 
 <div id="settings-modal" class="modal">
   <div class="modal-content">
-    <h5 style="font-weight: 800; margin-bottom: 20px;">구글 시트 연결</h5>
+    <h5 style="font-weight: 800;">구글 시트 연결</h5>
     <p id="modal-instruction">양식에 맞는 구글 시트 링크를 입력해주세요.</p>
     <div class="url-input-container">
       <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-      <i class="material-icons trash-btn tooltipped" data-position="bottom" data-tooltip="연결 끊기" onclick="disconnectSheet()">delete</i>
+      <i class="material-icons trash-btn tooltipped" data-tooltip="연결 끊기" onclick="disconnectSheet()">delete</i>
     </div>
     <div class="guide-btn" onclick="toggleGuide()"><i id="guide-icon" class="material-icons">expand_more</i><span>양식 다운로드 및 사용법</span></div>
     <div id="guide-box" class="guide-content">
       <ol>
-        <li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/template/preview" target="_blank" style="color: var(--primary-cyan); font-weight: bold; text-decoration: underline;">템플릿 파일</a>을 본인의 구글 드라이브에 저장</li>
-        <li>CardList 시트에 원하는 팩의 카드 리스트를 양식에 맞게 기입</li>
-        <li>MyCard 시트에 카드 번호, 가공, 수량, 보관 장소를 입력</li>
-        <li>공유 설정에서 <b>링크가 있는 모든 사용자 / 뷰어로 설정</b></li>
+        <li>템플릿 파일을 드라이브에 저장</li>
+        <li>MyCard 시트에 데이터 입력</li>
+        <li>공유 설정을 '링크가 있는 모든 사용자 / 뷰어'로 설정</li>
       </ol>
     </div>
   </div>
-  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme waves-effect waves-light" onclick="saveSettings()" style="font-weight: 600;">저장</button></div>
+  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme" onclick="saveSettings()">저장</button></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  /** ⚠️ 여기에 새로 배포한 URL을 반드시 넣으세요 **/
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQccsfMUdSkfMPhijwMT4UuvVxZeaY7SIE4W6nVCd5Ol-eCoEAYBEfwWCzOwGlBxsV/exec";
+  /** ⚠️ 여기에 반드시 새 배포 URL을 복사해 넣으세요 **/
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0-4JoZ1XQq-XsxuJaZfsh7XCTCnobWT6kMXlGGaUf8iV723dqmmSRROOqsjqlX92N/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
 
@@ -205,7 +200,7 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
-    M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
@@ -271,8 +266,8 @@
 
   function openDbDebug(el) {
     const cardNo = el.previousElementSibling.value.trim();
-    if (!cardNo) { M.toast({html: '카드 번호를 먼저 입력하세요.'}); return; }
-    const url = `https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&stype=4&keyword=${encodeURIComponent(cardNo)}&request_locale=ko`;
+    if (!cardNo) return;
+    const url = "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&stype=4&keyword=" + encodeURIComponent(cardNo) + "&request_locale=ko";
     window.open(url, '_blank');
   }
 
@@ -322,22 +317,24 @@
     for (let tr of tbody.children) {
       const cardNo = tr.querySelector('.new-card-no').value.trim();
       const name = tr.querySelector('.card-name-fetch').innerText;
-      if (!cardNo || name === "검색 결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
-      let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
-      let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
+      if (!cardNo || name === "결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
+      let procSel = tr.querySelector('.new-card-proc');
+      let proc = procSel.value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : procSel.value;
+      let locSel = tr.querySelector('.new-card-loc');
+      let loc = locSel.value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : locSel.value;
       const qty = tr.querySelector('.new-card-qty').value;
       const another = tr.querySelector('.new-card-another').value.trim();
       if (proc && loc && qty) rows.push([name, cardNo, proc, qty, loc, another]);
     }
-    if (rows.length === 0) { M.toast({html: '입력된 정보가 없습니다.'}); return; }
-    showLoading(true, "정보 기록 중...");
-    try { await callApi('addCards', {}, rows); M.Modal.getInstance(document.getElementById('add-card-modal')).close(); location.reload(); } catch (e) { showLoading(false); M.toast({html: '저장 실패'}); }
+    if (rows.length === 0) { M.toast({html: '정보 부족'}); return; }
+    showLoading(true, "저장 중...");
+    try { await callApi('addCards', {}, rows); M.Modal.getInstance(document.getElementById('add-card-modal')).close(); location.reload(); } catch (e) { showLoading(false); }
   }
 
   async function refreshInitialData() {
     const savedId = localStorage.getItem(STORAGE_KEY);
     if (!savedId) return;
-    showLoading(true, "데이터 동기화 중...");
+    showLoading(true, "초기화 중...");
     try {
       const res = await callApi('getInitialData');
       showLoading(false);
@@ -367,7 +364,7 @@
   function renderTable(rows) {
     showLoading(false);
     const resultArea = document.getElementById('result-area');
-    if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>결과 없음</p>"; resultArea.classList.add('show'); return; }
+    if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>없음</p>"; resultArea.classList.add('show'); return; }
     const groups = {};
     rows.forEach(r => {
       const [name, cardNo, proc, qty, loc, another] = r;
@@ -398,7 +395,7 @@
       });
       g.anotherItems.forEach(ai => {
         html += `<tr class="another-row ${rowId}-sub" style="display:none;"><td class="another-val" colspan="2">↳ ${ai.another}</td><td>${ai.count}</td>`;
-        activeProcs.forEach(pt => html += `<td>${ai.proc === pt ? ai.count : 0}</td>`);
+        activeProcs.forEach(pt => { html += `<td>${ai.proc === pt ? ai.count : 0}</td>`; });
         html += `</tr>`;
       });
     });
@@ -414,8 +411,8 @@
   }
 
   function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => overlay.style.display = 'none', 2000); }
-  function toggleGuide() { const box = document.getElementById('guide-box'); const icon = document.getElementById('guide-icon'); if (box.style.display === 'block') { box.style.display = 'none'; icon.innerText = 'expand_more'; } else { box.style.display = 'block'; icon.innerText = 'expand_less'; } }
-  function openGuideModal() { const modal = M.Modal.getInstance(document.getElementById('settings-modal')); modal.open(); document.getElementById('guide-box').style.display = 'block'; document.getElementById('guide-icon').innerText = 'expand_less'; }
+  function toggleGuide() { const box = document.getElementById('guide-box'); box.style.display = box.style.display === 'block' ? 'none' : 'block'; }
+  function openGuideModal() { const modal = M.Modal.getInstance(document.getElementById('settings-modal')); modal.open(); document.getElementById('guide-box').style.display = 'block'; }
   function renderRecentSearches() { const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const area = document.getElementById('recent-search-area'); let html = `최근 검색 : `; recent.forEach(n => html += `<span class="recent-item" onclick="quickSearch('${n}')">${n}</span> `); area.innerHTML = html; }
   function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
   function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
