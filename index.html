@@ -54,9 +54,8 @@
 
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
-    .fixed-action-btn .main-fab i { transition: transform 0.3s ease; }
-    /* FAB 활성화 시 회전 */
-    .fixed-action-btn.active .main-fab i { transform: rotate(180deg); }
+    /* 회전 애니메이션 제거됨 */
+    .fixed-action-btn .main-fab i { transition: none; } 
     /* 하위 버튼 간격 */
     .fixed-action-btn ul li { margin-bottom: 10px; text-align: right; }
     
@@ -66,7 +65,7 @@
       right: 60px; /* 버튼 크기 + 간격 고려 */
       top: 50%;
       transform: translateY(-50%); /* 수직 중앙 정렬 */
-      background: rgba(0,0,0,0.6); 
+      background: #757575; /* grey darken-1 색상과 일치 */
       color: white; 
       padding: 6px 12px; 
       border-radius: 4px;
@@ -75,15 +74,15 @@
       pointer-events: none;
       font-weight: 500;
       
-      /* 기본(비활성/퇴장) 상태: 즉시 사라짐 */
+      /* 기본(비활성/퇴장) 상태: 0.05초만에 빠르게 사라짐 (버튼 애니메이션보다 먼저) */
       opacity: 0; 
-      transition: opacity 0.2s ease 0s; 
+      transition: opacity 0.05s ease-out; 
     }
     
-    /* FAB 활성화(등장) 시 레이블: 버튼 애니메이션 후 딜레이 등장 */
+    /* FAB 활성화(등장) 시 레이블: 버튼 애니메이션(약 0.3초) 후 딜레이 등장 */
     .fixed-action-btn.active .fab-label { 
       opacity: 1; 
-      transition: opacity 0.3s ease 0.3s; /* 0.3초 딜레이 */
+      transition: opacity 0.3s ease 0.3s; 
     }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
@@ -99,7 +98,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.4</div>
+<div class="version-info">ver. 0.1.5</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
