@@ -55,12 +55,12 @@
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     
-    /* 1. 메인 아이콘 기본 상태 (닫힐 때): 0.25초 딜레이 후 회전 (하위 요소 퇴장 대기) */
+    /* 1. 메인 아이콘 기본 상태 (닫힐 때): 딜레이 없이 즉시 회전 복구 (0s) */
     .fixed-action-btn .main-fab i { 
-      transition: transform 0.3s ease 0.25s; 
+      transition: transform 0.3s ease 0s; 
     }
     
-    /* 2. 메인 아이콘 활성 상태 (열릴 때): 즉시 회전 (딜레이 0s) */
+    /* 2. 메인 아이콘 활성 상태 (열릴 때): 즉시 회전 (0s) */
     .fixed-action-btn.active .main-fab i { 
       transform: rotate(45deg); 
       transition: transform 0.3s ease 0s; 
@@ -89,7 +89,7 @@
       font-weight: 500;
       line-height: 1.2;
       
-      /* 3. 레이블 기본 상태 (닫힐 때): 딜레이 없이 즉시, 0.2초간 페이드 아웃 */
+      /* 3. 레이블 기본 상태 (닫힐 때): 딜레이 없이 0.2초간 페이드 아웃 */
       opacity: 0; 
       transition: opacity 0.2s ease 0s; 
     }
@@ -113,7 +113,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.11</div>
+<div class="version-info">ver. 0.1.12</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
