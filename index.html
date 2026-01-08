@@ -14,64 +14,44 @@
     .container { margin-top: 30px; max-width: 95% !important; }
     .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
     .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
-    
     .guide-trigger-wrapper { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px; }
     .guide-trigger-top { color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
-
     .search-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: relative; }
     .search-row { display: flex; align-items: center; justify-content: center; width: 100%; }
     .search-ghost { width: 110px; flex-shrink: 0; } 
     .search-input-wrapper { flex: 0 1 600px; position: relative; }
     .btn-group { display: flex; align-items: center; gap: 8px; margin-left: 15px; width: 110px; flex-shrink: 0; }
-    .input-field { margin: 0 !important; }
     input#card-search { text-align: center !important; font-size: 1.2rem; padding-right: 40px !important; box-sizing: border-box; }
     .clear-search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ccc; display: none; z-index: 5; }
     .btn.cyan-theme { background-color: var(--primary-cyan) !important; border-radius: 4px; font-weight: 600; }
-    
-    @media only screen and (max-width: 600px) {
-      .search-box { padding: 20px 10px; }
-      .search-ghost { display: none; }
-      .search-input-wrapper { flex: 1; }
-      .btn-group { width: auto; margin-left: 8px; }
-      .modal { width: 95% !important; max-height: 85% !important; top: 5% !important; }
-    }
-
+    @media only screen and (max-width: 600px) { .search-box { padding: 20px 10px; } .search-ghost { display: none; } .search-input-wrapper { flex: 1; } .btn-group { width: auto; margin-left: 8px; } .modal { width: 95% !important; max-height: 90% !important; top: 5% !important; } }
     table { background: white; font-size: 0.85rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
     th { background: var(--primary-cyan); color: white; text-align: center !important; border: 1px solid #ddd; padding: 8px 2px; font-size: 0.8rem; word-break: break-all; }
     td { border: 1px solid #ddd; text-align: center; padding: 8px 2px; position: relative; word-break: break-all; }
     .col-card-no { width: 180px; } .col-loc { width: 110px; } .col-total { width: 60px; } .col-proc { width: 70px; } 
-    
     .expand-btn { cursor: pointer; color: var(--primary-cyan); position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 1.3rem; }
     .another-row { background-color: #fafafa !important; display: none; }
     .another-val { text-align: center !important; font-weight: 500; color: #444; }
-    
     .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
     .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
     .clear-history-btn { cursor: pointer; font-size: 1.1rem; color: #9e9e9e; }
-
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
     .url-input-container input { margin-bottom: 0 !important; padding-right: 40px !important; }
     .valid-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: none; }
     .status-msg { font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; min-height: 1.2rem; }
-    
     .guide-btn { cursor: pointer; color: var(--dark-cyan); font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
     .guide-btn i { transition: transform 0.2s ease; }
     .guide-btn.active i { transform: rotate(90deg); }
     .guide-content { background: #f1f8f7; padding: 18px; border-radius: 8px; font-size: 0.95rem; border: 1px solid #d1e4e1; display: none; margin-bottom: 15px; }
-    
     .btn.disabled, .btn:disabled { background-color: var(--disabled-grey) !important; color: #fff !important; pointer-events: none; }
     #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
-
-    /* 확장형 FAB 스타일 커스텀 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
-    .fixed-action-btn ul li { margin-bottom: 15px; }
     .fab-label { position: absolute; right: 50px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.3s; top: 50%; transform: translateY(-50%); }
     .fixed-action-btn ul li:hover .fab-label { opacity: 1; }
-
     #add-card-modal, #manage-card-modal { width: 95% !important; max-width: 1100px !important; }
     .add-modal-table { font-size: 0.85rem; width: 100%; border-collapse: collapse; }
     .add-modal-table th { background: #f5f5f5; color: #666; font-weight: 700; padding: 10px 4px; text-align: center; border: 1px solid #ddd; }
@@ -89,7 +69,7 @@
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
-  <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 처리 중...</p>
+  <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 로드 중...</p>
 </div>
 
 <div class="container">
@@ -118,33 +98,16 @@
 </div>
 
 <div class="fixed-action-btn">
-  <a class="btn-floating btn-large cyan-theme">
-    <i class="large material-icons">add</i>
-  </a>
+  <a class="btn-floating btn-large cyan-theme"><i class="large material-icons">add</i></a>
   <ul>
-    <li>
-      <a class="btn-floating cyan darken-1 modal-trigger" href="#add-card-modal">
-        <i class="material-icons">library_add</i>
-      </a>
-      <span class="fab-label">카드 추가</span>
-    </li>
-    <li>
-      <a class="btn-floating cyan darken-2 modal-trigger" href="#manage-card-modal">
-        <i class="material-icons">import_export</i>
-      </a>
-      <span class="fab-label">카드 관리</span>
-    </li>
+    <li><a class="btn-floating cyan darken-1 modal-trigger" href="#add-card-modal"><i class="material-icons">library_add</i></a><span class="fab-label">카드 추가</span></li>
+    <li><a class="btn-floating cyan darken-2 modal-trigger" href="#manage-card-modal"><i class="material-icons">import_export</i></a><span class="fab-label">카드 관리</span></li>
   </ul>
 </div>
 
 <div id="manage-card-modal" class="modal">
-  <div class="modal-content">
-    <h5 style="font-weight: 800; margin-bottom: 20px;">카드 관리</h5>
-    <p class="center" style="color: #9e9e9e; margin-top: 50px;">서비스 준비 중입니다.</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn-flat modal-close">닫기</button>
-  </div>
+  <div class="modal-content"><h5 style="font-weight: 800; margin-bottom: 20px;">카드 관리</h5><p class="center" style="color: #9e9e9e; margin-top: 50px;">서비스 준비 중입니다.</p></div>
+  <div class="modal-footer"><button class="btn-flat modal-close">닫기</button></div>
 </div>
 
 <div id="settings-modal" class="modal">
@@ -190,28 +153,22 @@
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
 
-  let allProcessingTypes = [], allNames = [], allLocations = [], isAppConfigured = false, acInstance = null, isLoading = false;
-  let validationTimeout = null;
+  // 로컬 검색을 위한 캐시 변수
+  let allProcessingTypes = [], allNames = [], allLocations = [], localCardDatabase = [];
+  let isAppConfigured = false, acInstance = null, isLoading = false, validationTimeout = null;
 
   async function callApi(action, params = {}, postData = null) {
-    try {
-      const url = new URL(SCRIPT_URL); url.searchParams.append("action", action);
-      const savedId = localStorage.getItem(STORAGE_KEY); if (savedId) url.searchParams.append("ssId", savedId);
-      for (const key in params) { url.searchParams.append(key, params[key]); }
-      const options = { method: postData ? 'POST' : 'GET' }; if (postData) options.body = JSON.stringify(postData);
-      const response = await fetch(url, options); return await response.json();
-    } catch (err) { throw err; }
+    const url = new URL(SCRIPT_URL); url.searchParams.append("action", action);
+    const savedId = localStorage.getItem(STORAGE_KEY); if (savedId) url.searchParams.append("ssId", savedId);
+    for (const key in params) { url.searchParams.append(key, params[key]); }
+    const options = { method: postData ? 'POST' : 'GET' }; if (postData) options.body = JSON.stringify(postData);
+    const response = await fetch(url, options); return await response.json();
   }
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
-    M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
-    
-    // FAB 초기화 (hoverEnabled: false로 설정하여 클릭 시 확장되도록 함)
-    M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {
-      direction: 'top',
-      hoverEnabled: false
-    });
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+    M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), { direction: 'top', hoverEnabled: false });
 
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
@@ -225,9 +182,7 @@
           const firstVisible = dropdown.querySelector('li:not(.hide)');
           if (firstVisible) this.value = firstVisible.innerText.trim();
         }
-        if (acInstance) acInstance.close();
-        this.blur();
-        startSearch();
+        if (acInstance) acInstance.close(); this.blur(); startSearch();
       }
     });
 
@@ -245,8 +200,7 @@
     const match = url.match(/[-\w]{25,}/);
     if (!match) { mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>'; mark.style.display = 'block'; msg.innerText = '구글 시트 링크를 적어주세요.'; msg.style.color = 'var(--error-red)'; confirmBtn.classList.add('disabled'); return; }
     validationTimeout = setTimeout(async () => {
-      msg.innerText = '권한 확인 중...'; msg.style.color = '#777';
-      try {
+      msg.innerText = '권한 확인 중...'; try {
         const res = await callApi('checkSheet', { targetId: match[0] });
         if (res.status === 'OK') { mark.innerHTML = '<i class="material-icons" style="color: var(--success-green)">check_circle</i>'; msg.innerText = '유효한 시트입니다.'; msg.style.color = 'var(--success-green)'; confirmBtn.classList.remove('disabled'); } 
         else { mark.innerHTML = '<i class="material-icons" style="color: var(--warning-yellow)">warning</i>'; msg.innerText = (res.status === 'NO_EDIT_ACCESS') ? '공유 설정을 링크를 가진 모든 사용자 / 편집자로 설정해주세요.' : '접근할 수 없거나 형식이 잘못되었습니다.'; msg.style.color = 'var(--warning-yellow)'; confirmBtn.classList.add('disabled'); }
@@ -261,71 +215,67 @@
     acInstance = M.Autocomplete.init(searchInput, { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 });
   }
 
-  function addMoreRows(count = null) {
-    const tbody = document.getElementById('add-card-tbody'); const increment = count || (tbody.children.length === 1 ? 4 : 5);
-    for (let i = 0; i < increment; i++) {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td><span class="card-name-fetch">번호 입력 대기</span></td><td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td><td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td><td><input type="number" class="new-card-qty" min="1" value="1" style="height:2.2rem !important; text-align:center;"></td><td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td><td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)"><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>`;
-      tbody.appendChild(row);
-    }
-  }
-
-  function syncDirectInput(sel) {
-    const input = sel.nextElementSibling;
-    if (sel.value === 'DIRECT') { sel.style.flex = "0 0 40%"; input.style.display = 'block'; input.style.flex = "1"; input.disabled = false; input.value = ""; input.focus(); } 
-    else { sel.style.flex = "1"; input.style.display = 'none'; input.disabled = true; input.value = sel.value; }
-  }
-
-  function syncAnother(cb) {
-    const input = cb.closest('.td-flex-container').querySelector('.new-card-another');
-    if (cb.checked) { input.disabled = false; input.placeholder = "종류 입력"; input.focus(); } else { input.value = ""; input.disabled = true; input.placeholder = "원본"; }
-  }
-
-  async function fetchCardName(el) {
-    const cardNo = el.value.trim(); if (!cardNo) return;
-    const nameSpan = el.closest('tr').querySelector('.card-name-fetch'); nameSpan.innerText = "조회 중...";
-    try { const res = await callApi('getCardNameFromDb', { cardNo }); nameSpan.innerText = res.name; } catch (e) { nameSpan.innerText = "조회 실패"; }
-  }
-
-  async function submitNewCards() {
-    const tbody = document.getElementById('add-card-tbody'); const rows = [];
-    for (let tr of tbody.children) {
-      const cardNo = tr.querySelector('.new-card-no').value.trim(); const name = tr.querySelector('.card-name-fetch').innerText;
-      if (!cardNo || name === "결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
-      let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
-      let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
-      const qty = tr.querySelector('.new-card-qty').value; const another = tr.querySelector('.new-card-another').value.trim();
-      if (proc && loc && qty) rows.push([name, cardNo, proc, qty, loc, another]);
-    }
-    if (rows.length === 0) return;
-    const submitBtn = document.getElementById('add-submit-btn');
-    submitBtn.classList.add('disabled');
-    showLoading(true, "시트에 카드 기록 중...");
-    try { await callApi('addCards', {}, rows); M.Modal.getInstance(document.getElementById('add-card-modal')).close(); location.reload(); } 
-    catch (e) { showLoading(false); submitBtn.classList.remove('disabled'); }
-  }
-
+  /**
+   * 경량화 핵심: 최초 1회 로드 후 로컬 검색 수행
+   */
   async function refreshInitialData() {
     const savedId = localStorage.getItem(STORAGE_KEY); if (!savedId) return;
-    showLoading(true, "초기 데이터 로드 중...");
+    showLoading(true, "초기 데이터 동기화 중...");
     try {
-      const res = await callApi('getInitialData'); showLoading(false); isAppConfigured = res.isConfigured;
+      const res = await callApi('getInitialData');
+      showLoading(false);
+      isAppConfigured = res.isConfigured;
       if (res.isConfigured) {
-        allNames = res.names; allProcessingTypes = res.processingTypes; allLocations = res.locations; 
+        allNames = res.names;
+        allProcessingTypes = res.processingTypes;
+        allLocations = res.locations;
+        localCardDatabase = res.allCards; // 전체 시트 데이터를 메모리에 저장
         setupAutocomplete();
         if(document.getElementById('add-card-tbody').children.length === 0) addMoreRows(1);
       }
     } catch (e) { showLoading(false); }
   }
 
+  /**
+   * 로컬 검색: 구글 서버를 거치지 않아 매우 빠름
+   */
   async function startSearch() {
-    if (isLoading || !isAppConfigured) return; const name = document.getElementById('card-search').value; if(!name) return;
-    saveRecentSearch(name); document.getElementById('result-area').classList.remove('show'); showLoading(true, "검색 중...");
-    try { const rows = await callApi('searchCard', { name: name }); renderTable(rows); } catch (e) { showLoading(false); }
+    const name = document.getElementById('card-search').value;
+    if(!name || !isAppConfigured) return;
+    saveRecentSearch(name);
+    
+    // 로딩바 없이 즉시 필터링
+    const filteredRows = localCardDatabase.filter(row => String(row[0]) === name);
+    renderTable(filteredRows);
+  }
+
+  async function submitNewCards() {
+    const tbody = document.getElementById('add-card-tbody'); const rows = [];
+    for (let tr of tbody.children) {
+      const cardNo = tr.querySelector('.new-card-no').value.trim();
+      const name = tr.querySelector('.card-name-fetch').innerText;
+      if (!cardNo || name === "결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
+      let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
+      let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
+      const qty = tr.querySelector('.new-card-qty').value;
+      const another = tr.querySelector('.new-card-another').value.trim();
+      if (proc && loc && qty) rows.push([name, cardNo, proc, qty, loc, another]);
+    }
+    if (rows.length === 0) return;
+    const btn = document.getElementById('add-submit-btn'); btn.classList.add('disabled');
+    showLoading(true, "시트에 기록 중...");
+    try {
+      await callApi('addCards', {}, rows);
+      M.Modal.getInstance(document.getElementById('add-card-modal')).close();
+      // 성공 후 전체 데이터를 다시 로드하여 로컬 캐시 갱신
+      await refreshInitialData();
+      showLoading(false);
+      btn.classList.remove('disabled');
+    } catch (e) { showLoading(false); btn.classList.remove('disabled'); }
   }
 
   function renderTable(rows) {
-    showLoading(false); const resultArea = document.getElementById('result-area');
+    const resultArea = document.getElementById('result-area');
     if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>결과 없음</p>"; resultArea.classList.add('show'); return; }
     const groups = {};
     rows.forEach(r => {
@@ -339,6 +289,7 @@
         groups[cardNo].anotherGroups[aKey].total += qty; groups[cardNo].anotherGroups[aKey].procs[proc] = (groups[cardNo].anotherGroups[aKey].procs[proc] || 0) + qty;
       }
     });
+
     const activeProcs = allProcessingTypes.filter(pt => rows.some(r => String(r[2]).trim() === pt));
     let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`;
     activeProcs.forEach(() => html += `<col class="col-proc">`);
@@ -357,7 +308,8 @@
         activeProcs.forEach(pt => { html += `<td>${ag.procs[pt] || 0}</td>`; }); html += `</tr>`;
       });
     });
-    resultArea.innerHTML = html + `</tbody></table>`; setTimeout(() => resultArea.classList.add('show'), 50);
+    resultArea.innerHTML = html + `</tbody></table>`;
+    setTimeout(() => resultArea.classList.add('show'), 50);
   }
 
   function toggleAnother(rowId) {
@@ -383,13 +335,26 @@
     });
   }
 
-  function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); M.Modal.getInstance(document.getElementById('settings-modal')).close(); location.reload(); } }
+  function addMoreRows(count = null) {
+    const tbody = document.getElementById('add-card-tbody'); const increment = count || (tbody.children.length === 1 ? 4 : 5);
+    for (let i = 0; i < increment; i++) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td><span class="card-name-fetch">번호 입력 대기</span></td><td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td><td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td><td><input type="number" class="new-card-qty" min="1" value="1" style="height:2.2rem !important; text-align:center;"></td><td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td><td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)"><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>`;
+      tbody.appendChild(row);
+    }
+  }
+
+  function syncDirectInput(sel) { const input = sel.nextElementSibling; if (sel.value === 'DIRECT') { sel.style.flex = "0 0 40%"; input.style.display = 'block'; input.style.flex = "1"; input.disabled = false; input.value = ""; input.focus(); } else { sel.style.flex = "1"; input.style.display = 'none'; input.disabled = true; input.value = sel.value; } }
+  function syncAnother(cb) { const input = cb.closest('.td-flex-container').querySelector('.new-card-another'); if (cb.checked) { input.disabled = false; input.placeholder = "종류 입력"; input.focus(); } else { input.value = ""; input.disabled = true; input.placeholder = "원본"; } }
+  async function fetchCardName(el) { const cardNo = el.value.trim(); if (!cardNo) return; const nameSpan = el.closest('tr').querySelector('.card-name-fetch'); nameSpan.innerText = "조회 중..."; try { const res = await callApi('getCardNameFromDb', { cardNo }); nameSpan.innerText = res.name; } catch (e) { nameSpan.innerText = "조회 실패"; } }
+  function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => overlay.style.display = 'none', 2000); }
+  function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
   function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
   function renderRecentSearches() { const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const area = document.getElementById('recent-search-area'); area.innerHTML = `최근 검색 : ` + recent.map(n => `<span class="recent-item" onclick="quickSearch('${n}')">${n}</span>`).join(' '); }
   function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = [name, ...recent.filter(n => n !== name)].slice(0, 5); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }
   function clearAllHistory() { localStorage.removeItem(RECENT_KEY); renderRecentSearches(); }
   function quickSearch(name) { document.getElementById('card-search').value = name; startSearch(); }
-  function showLoading(show, text) { isLoading = show; document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; document.getElementById('card-search').disabled = show; document.getElementById('search-btn').disabled = show; }
+  function showLoading(show, text) { isLoading = show; document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
 </script>
 </body>
 </html>
