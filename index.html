@@ -55,17 +55,24 @@
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     .fixed-action-btn .main-fab i { transition: transform 0.3s ease; }
+    
     /* FAB 활성화 시 회전 (45도, X자 모양) */
     .fixed-action-btn.active .main-fab i { transform: rotate(45deg); }
-    /* 하위 버튼 간격 */
-    .fixed-action-btn ul li { margin-bottom: 10px; text-align: right; }
+    
+    /* 하위 버튼 목록 레이아웃 수정: Flexbox를 사용하여 수직 중앙 정렬 강제 */
+    .fixed-action-btn ul li { 
+      margin-bottom: 12px; 
+      display: flex; /* Flexbox 활성화 */
+      align-items: center; /* 수직 중앙 정렬 (핵심) */
+      justify-content: flex-end; /* 우측 정렬 */
+      flex-direction: row-reverse; /* 버튼이 우측, 레이블이 좌측에 오도록 순서 반전 */
+    }
     
     /* FAB 레이블 설정 */
     .fab-label { 
-      position: absolute; 
-      right: 60px; /* 버튼 크기 + 간격 고려 */
-      top: 50%;
-      transform: translateY(-50%); /* 수직 중앙 정렬 */
+      /* absolute 제거하고 static으로 변경하여 flex 흐름을 따르게 함 */
+      position: static; 
+      margin-right: 12px; /* 버튼과의 간격 */
       background: #757575; /* 하위 버튼 색상(grey darken-1)과 동일 */
       color: white; 
       padding: 6px 12px; 
@@ -99,7 +106,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.5</div>
+<div class="version-info">ver. 0.1.6</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
