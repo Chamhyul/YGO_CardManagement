@@ -55,22 +55,27 @@
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     .fixed-action-btn .main-fab i { transition: transform 0.3s ease; }
+    
+    /* FAB 활성화 시 회전 (45도, X자 모양) */
     .fixed-action-btn.active .main-fab i { transform: rotate(45deg); }
     
-    /* 하위 버튼 목록 정렬 */
+    /* 하위 버튼 목록 레이아웃 수정: 
+       Flexbox 제거 후 기본 블록/우측 정렬로 복구하여 visibility 문제 해결 
+    */
     .fixed-action-btn ul li { 
       margin-bottom: 12px; 
-      display: flex; 
-      align-items: center; /* 수직 중앙 정렬 */
-      justify-content: flex-end; 
-      flex-direction: row-reverse; /* [레이블] [버튼] 순서 */
+      text-align: right; /* 버튼 우측 정렬 */
+      position: relative; /* 레이블 배치를 위한 기준점 */
     }
     
-    /* FAB 레이블 설정 */
+    /* FAB 레이블 설정: Absolute Positioning으로 복귀 */
     .fab-label { 
-      position: relative;
-      margin-right: 12px; 
-      background: #757575;
+      position: absolute;
+      right: 52px; /* 버튼(40px) + 간격(12px) */
+      top: 50%;
+      transform: translateY(-50%); /* 정확한 수직 중앙 정렬 */
+      
+      background: #757575; /* 하위 버튼 색상 */
       color: white; 
       padding: 6px 12px; 
       border-radius: 4px;
@@ -79,6 +84,8 @@
       pointer-events: none;
       font-weight: 500;
       line-height: 1.2;
+      
+      /* 애니메이션 */
       opacity: 0; 
       transition: opacity 0.2s ease 0s; 
     }
@@ -101,7 +108,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.7</div>
+<div class="version-info">ver. 0.1.8</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -197,6 +204,7 @@
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
     
+    // FAB 초기화 (텍스트 변경 로직 제거, 회전 애니메이션만 CSS로 처리)
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
       hoverEnabled: false
