@@ -77,12 +77,9 @@
     .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
     
     .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.85rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
-    
-    /* 디버깅 화살표 버튼 스타일 */
-    .debug-btn { cursor: pointer; color: #9e9e9e; font-size: 1.2rem !important; transition: color 0.2s; }
+    .debug-btn { cursor: pointer; color: #9e9e9e; font-size: 1.2rem !important; }
     .debug-btn:hover { color: var(--primary-cyan); }
     
-    /* 체크박스 정렬 */
     .checkbox-label { margin: 0 !important; height: 20px; display: flex; align-items: center; }
     .another-input { flex: 1; height: 2.2rem !important; margin: 0 !important; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
   </style>
@@ -281,7 +278,6 @@
     }
   }
 
-  // 디버깅용 새 창 열기 함수
   function openDbDebug(el) {
     const cardNo = el.previousElementSibling.value.trim();
     if (!cardNo) { M.toast({html: '카드 번호를 먼저 입력하세요.'}); return; }
