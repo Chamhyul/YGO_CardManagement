@@ -93,17 +93,15 @@
       /* 기본(닫힘): 투명 */
       opacity: 0; 
       
-      /* ★ 퇴장(닫힐 때): 빠르게 시작해서 서서히 느려짐 (ease-out) */
+      /* 퇴장(닫힐 때): 빠르게 시작해서 서서히 느려짐 (ease-out) */
       transition: opacity 0.2s ease-out 0s;
-      
-      /* 성능 최적화 */
       will-change: opacity;
     }
     
     /* FAB 열림 상태: 불투명 */
     .fixed-action-btn.fab-open .fab-label { 
       opacity: 1; 
-      /* ★ 등장(열릴 때): 천천히 시작해서 서서히 빨라짐 (ease-in) */
+      /* 등장(열릴 때): 천천히 시작해서 서서히 빨라짐 (ease-in) */
       transition: opacity 0.25s ease-in 0s; 
     }
 
@@ -120,7 +118,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.21</div>
+<div class="version-info">ver. 0.1.22</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -219,15 +217,25 @@
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
     
-    // ★ 2. 메인 FAB 버튼 클릭 이벤트 리스너 (잠금 로직 제거, 즉시 상태 반영)
+    // ★ 2. 메인 FAB 버튼 클릭 이벤트 리스너 (즉시 반응 로직)
     const mainFabBtn = fabElem.querySelector('.main-fab');
     mainFabBtn.addEventListener('click', function() {
-      // 클릭 즉시 상태 토글 (연속성 확보)
+      // 클릭 즉시 상태 토글
       isFabOpen = !isFabOpen;
       updateFabState(fabElem);
     });
 
-    // ★ 3. Materialize FAB 초기화 및 동기화 (외부 클릭 방어)
+    // ★ 3. 하위 버튼 클릭 시 FAB 상태 리셋 (추가된 로직)
+    // 하위 버튼을 눌러서 모달을 띄우는 순간에도 아이콘이 +로 돌아와야 함
+    const subBtns = fabElem.querySelectorAll('ul li a');
+    subBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        isFabOpen = false;
+        updateFabState(fabElem);
+      });
+    });
+
+    // ★ 4. Materialize FAB 초기화 및 동기화 (외부 클릭 방어)
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
       hoverEnabled: false,
@@ -245,7 +253,7 @@
     updateDisconnectBtn(); renderRecentSearches(); refreshInitialData();
   });
 
-  // ★ 4. FAB 상태 업데이트 함수
+  // ★ 5. FAB 상태 업데이트 함수
   function updateFabState(fabElem) {
     if (isFabOpen) {
       fabElem.classList.add('fab-open');
