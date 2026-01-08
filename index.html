@@ -14,9 +14,11 @@
     .container { margin-top: 30px; max-width: 95% !important; }
     .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
     .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
+    
     .guide-trigger-wrapper { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px; }
     .guide-trigger-top { color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
     .guide-trigger-top i { font-size: 1.2rem; }
+
     .search-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: relative; }
     .search-row { display: flex; align-items: center; justify-content: center; width: 100%; }
     .search-ghost { width: 110px; flex-shrink: 0; } 
@@ -34,7 +36,6 @@
       .search-input-wrapper { flex: 1; }
       .btn-group { width: auto; margin-left: 8px; }
       .modal { width: 95% !important; max-height: 85% !important; top: 5% !important; }
-      #add-card-modal { width: 98% !important; }
     }
 
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
@@ -49,12 +50,15 @@
     .url-input-container { display: flex; align-items: center; margin-top: 20px; margin-bottom: 20px; }
     .url-input-container input { margin-bottom: 0 !important; flex-grow: 1; }
     .trash-btn { cursor: pointer; color: #9e9e9e; margin-left: 15px; }
+    
     .guide-btn { cursor: pointer; display: flex; align-items: center; color: var(--dark-cyan); font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; }
     .guide-content { display: none; background: #e0f2f1; padding: 15px; border-radius: 6px; font-size: 0.9rem; border: 1px inset #b2dfdb; }
     .guide-content ol { margin: 0; padding-left: 20px; }
+    
     .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
     .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
+    
     .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 5000px; opacity: 1; }
@@ -70,7 +74,6 @@
     .flex-select { flex: 1; min-width: 0; height: 2.2rem !important; }
     .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
     .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.85rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
-    .debug-btn { cursor: pointer; color: #9e9e9e; font-size: 1.2rem !important; }
     .checkbox-label { margin: 0 !important; height: 20px; display: flex; align-items: center; }
     .another-input { flex: 1; height: 2.2rem !important; margin: 0 !important; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
   </style>
@@ -153,7 +156,7 @@
     <p id="modal-instruction">양식에 맞는 구글 시트 링크를 입력해주세요.</p>
     <div class="url-input-container">
       <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-      <i class="material-icons trash-btn tooltipped" data-tooltip="연결 끊기" onclick="disconnectSheet()">delete</i>
+      <i class="material-icons trash-btn tooltipped" data-position="bottom" data-tooltip="연결 끊기" onclick="disconnectSheet()">delete</i>
     </div>
     <div class="guide-btn" onclick="toggleGuide()"><i id="guide-icon" class="material-icons">expand_more</i><span>양식 다운로드 및 사용법</span></div>
     <div id="guide-box" class="guide-content">
@@ -170,7 +173,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  /** ⚠️ 반드시 본인의 새 배포 URL을 복사해 넣으세요 **/
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0-4JoZ1XQq-XsxuJaZfsh7XCTCnobWT6kMXlGGaUf8iV723dqmmSRROOqsjqlX92N/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
@@ -200,7 +202,7 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
-    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
@@ -226,12 +228,7 @@
       const row = document.createElement('tr');
       row.innerHTML = `
         <td><span class="card-name-fetch">번호 입력 대기</span></td>
-        <td>
-          <div class="td-flex-container">
-            <input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력">
-            <i class="material-icons debug-btn" onclick="openDbDebug(this)">search</i>
-          </div>
-        </td>
+        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td>
         <td>
           <div class="td-flex-container">
             <select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)">
@@ -262,13 +259,6 @@
       `;
       tbody.appendChild(row);
     }
-  }
-
-  function openDbDebug(el) {
-    const cardNo = el.previousElementSibling.value.trim();
-    if (!cardNo) return;
-    const url = "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&stype=4&keyword=" + encodeURIComponent(cardNo) + "&request_locale=ko";
-    window.open(url, '_blank');
   }
 
   function syncDirectInput(sel) {
@@ -341,8 +331,9 @@
       isAppConfigured = res.isConfigured;
       if (res.isConfigured) {
         allNames = res.names;
-        allProcessingTypes = res.processingTypes.sort();
-        allLocations = res.locations.sort();
+        // 시트 순서 유지를 위해 sort() 제거
+        allProcessingTypes = res.processingTypes; 
+        allLocations = res.locations; 
         const initialData = {};
         allNames.forEach(n => initialData[n] = null);
         acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: initialData, onAutocomplete: startSearch, limit: 15, minLength: 0 });
@@ -361,46 +352,71 @@
     try { const rows = await callApi('searchCard', { name: name }); renderTable(rows); } catch (e) { showLoading(false); }
   }
 
-  /** 어나더 행 레이아웃 수정: 개별 셀로 분리하여 보관 장소 표시 **/
   function renderTable(rows) {
     showLoading(false);
     const resultArea = document.getElementById('result-area');
     if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>없음</p>"; resultArea.classList.add('show'); return; }
+    
     const groups = {};
     rows.forEach(r => {
-      const [name, cardNo, proc, qty, loc, another] = r;
-      if (!groups[cardNo]) groups[cardNo] = { locations: {}, anotherItems: [] };
+      const name = String(r[0]);
+      const cardNo = String(r[1]);
+      const proc = String(r[2]);
+      const qty = parseInt(r[3]) || 0;
+      const loc = String(r[4]);
+      const another = String(r[5] || "").trim();
+
+      if (!groups[cardNo]) groups[cardNo] = { locations: {}, anotherGroups: {} };
+      
+      // 메인 그룹화 (장소별)
       if (!groups[cardNo].locations[loc]) groups[cardNo].locations[loc] = { total: 0, procs: {} };
-      const count = parseInt(qty) || 0;
-      groups[cardNo].locations[loc].total += count;
-      groups[cardNo].locations[loc].procs[proc] = (groups[cardNo].locations[loc].procs[proc] || 0) + count;
-      if (another) groups[cardNo].anotherItems.push({ another, loc, proc, count });
+      groups[cardNo].locations[loc].total += qty;
+      groups[cardNo].locations[loc].procs[proc] = (groups[cardNo].locations[loc].procs[proc] || 0) + qty;
+      
+      // 어나더 그룹화 (어나더명 + 장소별 통합)
+      if (another) {
+        const aKey = `${another}|${loc}`;
+        if (!groups[cardNo].anotherGroups[aKey]) {
+          groups[cardNo].anotherGroups[aKey] = { another, loc, total: 0, procs: {} };
+        }
+        groups[cardNo].anotherGroups[aKey].total += qty;
+        groups[cardNo].anotherGroups[aKey].procs[proc] = (groups[cardNo].anotherGroups[aKey].procs[proc] || 0) + qty;
+      }
     });
-    const activeProcs = allProcessingTypes.filter(pt => rows.some(r => r[2] === pt));
+
+    const activeProcs = allProcessingTypes.filter(pt => rows.some(r => String(r[2]).trim() === pt));
+    
     let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`;
     activeProcs.forEach(() => html += `<col class="col-proc">`);
     html += `</colgroup><thead><tr><th>번호</th><th>장소</th><th>총합</th>`;
-    activeProcs.forEach(pt => html += `<th>${pt.charAt(0)}</th>`);
+    // 헤더에서 글자 전체 출력 (pt.charAt(0) 제거)
+    activeProcs.forEach(pt => html += `<th>${pt}</th>`);
     html += `</tr></thead><tbody>`;
+
     Object.keys(groups).forEach(cardNo => {
       const g = groups[cardNo];
       const locList = Object.keys(g.locations);
       const rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');
+      
       locList.forEach((loc, idx) => {
         const item = g.locations[loc];
         html += `<tr class="main-row card-${rowId}">`;
-        if (idx === 0) html += `<td rowspan="${locList.length}">${cardNo}${g.anotherItems.length > 0 ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</td>`;
+        if (idx === 0) {
+          const hasAnother = Object.keys(g.anotherGroups).length > 0;
+          html += `<td rowspan="${locList.length}">${cardNo}${hasAnother ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</td>`;
+        }
         html += `<td>${loc}</td><td>${item.total}</td>`;
         activeProcs.forEach(pt => html += `<td>${item.procs[pt] || 0}</td>`);
         html += `</tr>`;
       });
-      g.anotherItems.forEach(ai => {
-        // 병합된 셀이 아닌 개별 셀로 배치하여 장소와 수량이 정확한 열에 오도록 수정
+
+      // 통합된 어나더 행 출력
+      Object.values(g.anotherGroups).forEach(ag => {
         html += `<tr class="another-row ${rowId}-sub" style="display:none;">`;
-        html += `<td class="another-val">↳ ${ai.another}</td>`;
-        html += `<td>${ai.loc}</td>`;
-        html += `<td>${ai.count}</td>`;
-        activeProcs.forEach(pt => { html += `<td>${ai.proc === pt ? ai.count : 0}</td>`; });
+        html += `<td class="another-val">↳ ${ag.another}</td>`;
+        html += `<td>${ag.loc}</td>`;
+        html += `<td>${ag.total}</td>`;
+        activeProcs.forEach(pt => { html += `<td>${ag.procs[pt] || 0}</td>`; });
         html += `</tr>`;
       });
     });
