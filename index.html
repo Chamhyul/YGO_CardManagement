@@ -59,23 +59,21 @@
     /* FAB 활성화 시 회전 (45도, X자 모양) */
     .fixed-action-btn.active .main-fab i { transform: rotate(45deg); }
     
-    /* 하위 버튼 목록 레이아웃 수정: 
-       Flexbox 제거 후 기본 블록/우측 정렬로 복구하여 visibility 문제 해결 
-    */
+    /* 하위 버튼 목록 정렬 */
     .fixed-action-btn ul li { 
       margin-bottom: 12px; 
-      text-align: right; /* 버튼 우측 정렬 */
-      position: relative; /* 레이블 배치를 위한 기준점 */
+      text-align: right; 
+      position: relative;
     }
     
-    /* FAB 레이블 설정: Absolute Positioning으로 복귀 */
+    /* FAB 레이블 설정 */
     .fab-label { 
       position: absolute;
-      right: 52px; /* 버튼(40px) + 간격(12px) */
+      right: 52px; 
       top: 50%;
-      transform: translateY(-50%); /* 정확한 수직 중앙 정렬 */
+      transform: translateY(-50%);
       
-      background: #757575; /* 하위 버튼 색상 */
+      background: #757575; 
       color: white; 
       padding: 6px 12px; 
       border-radius: 4px;
@@ -85,11 +83,12 @@
       font-weight: 500;
       line-height: 1.2;
       
-      /* 애니메이션 */
+      /* 비활성화(퇴장) 시: 딜레이 없이 0.3초 동안 페이드 아웃 */
       opacity: 0; 
-      transition: opacity 0.2s ease 0s; 
+      transition: opacity 0.3s ease 0s; 
     }
     
+    /* 활성화(등장) 시: 0.35초 딜레이 후 0.3초 동안 페이드 인 */
     .fixed-action-btn.active .fab-label { 
       opacity: 1; 
       transition: opacity 0.3s ease 0.35s; 
@@ -108,7 +107,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.8</div>
+<div class="version-info">ver. 0.1.9</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -204,7 +203,6 @@
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
     
-    // FAB 초기화 (텍스트 변경 로직 제거, 회전 애니메이션만 CSS로 처리)
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
       hoverEnabled: false
