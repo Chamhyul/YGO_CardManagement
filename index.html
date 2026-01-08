@@ -55,12 +55,12 @@
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     
-    /* 메인 아이콘 기본 상태 */
+    /* 메인 아이콘: 닫힐 때 즉시 회전 */
     .fixed-action-btn .main-fab i { 
       transition: transform 0.3s ease 0s; 
     }
     
-    /* 메인 아이콘 활성 상태 (회전) */
+    /* 메인 아이콘: 열릴 때 즉시 회전 */
     .fixed-action-btn.active .main-fab i { 
       transform: rotate(45deg); 
       transition: transform 0.3s ease 0s; 
@@ -89,21 +89,20 @@
       font-weight: 500;
       line-height: 1.2;
       
-      opacity: 0; /* 기본 숨김 */
-      /* 아래 active 상태가 없을 때(즉 닫힐 때)는 JS로 quick-hide 클래스가 붙으므로 이 transition은 무시될 수 있음 */
+      opacity: 0; 
       transition: opacity 0.2s ease 0s; 
     }
     
-    /* 레이블 활성 상태 (등장 시 애니메이션) */
+    /* 레이블 활성 상태 (등장 시) */
     .fixed-action-btn.active .fab-label { 
       opacity: 1; 
-      transition: opacity 0.2s ease 0.3s; /* 딜레이 0.3초 후 등장 */
+      transition: opacity 0.2s ease 0.3s; 
     }
 
-    /* JS로 제어할 '즉시 퇴장' 클래스 */
+    /* JS 제어용: 닫힘 신호 발생 시 강제로 즉시 사라짐 (0.05초) */
     .fab-label.quick-hide {
       opacity: 0 !important;
-      transition: opacity 0.15s ease 0s !important; /* 딜레이 없이 즉시 사라짐 */
+      transition: opacity 0.05s linear 0s !important; 
     }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
@@ -119,7 +118,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.12</div>
+<div class="version-info">ver. 0.1.14</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -215,16 +214,16 @@
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
     
-    // FAB 초기화 및 이벤트 콜백 설정 (JS로 레이블 타이밍 제어)
+    // FAB 초기화 및 이벤트 콜백 설정
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
       hoverEnabled: false,
       onOpenStart: () => {
-        // 열리기 시작할 때: 강제 숨김 클래스 제거 (CSS 애니메이션이 작동하도록)
+        // 열리기 시작할 때: 강제 숨김 클래스 제거 (0.3초 딜레이 후 등장)
         document.querySelectorAll('.fab-label').forEach(el => el.classList.remove('quick-hide'));
       },
       onCloseStart: () => {
-        // 닫히기 시작할 때: 즉시 강제 숨김 클래스 추가
+        // 닫히기 시작할 때: 즉시 숨김 클래스 추가 (0.05초 만에 사라짐)
         document.querySelectorAll('.fab-label').forEach(el => el.classList.add('quick-hide'));
       }
     });
