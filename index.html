@@ -55,12 +55,12 @@
     /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     
-    /* 1. 메인 아이콘 기본 상태 (닫힐 때): 딜레이 없이 즉시 회전 복구 (0s) */
+    /* 메인 아이콘 기본 상태 */
     .fixed-action-btn .main-fab i { 
       transition: transform 0.3s ease 0s; 
     }
     
-    /* 2. 메인 아이콘 활성 상태 (열릴 때): 즉시 회전 (0s) */
+    /* 메인 아이콘 활성 상태 (회전) */
     .fixed-action-btn.active .main-fab i { 
       transform: rotate(45deg); 
       transition: transform 0.3s ease 0s; 
@@ -72,7 +72,7 @@
       position: relative;
     }
     
-    /* FAB 레이블 설정 */
+    /* FAB 레이블 기본 설정 */
     .fab-label { 
       position: absolute;
       right: 52px; 
@@ -89,15 +89,21 @@
       font-weight: 500;
       line-height: 1.2;
       
-      /* 3. 레이블 기본 상태 (닫힐 때): 딜레이 없이 0.2초간 페이드 아웃 */
-      opacity: 0; 
+      opacity: 0; /* 기본 숨김 */
+      /* 아래 active 상태가 없을 때(즉 닫힐 때)는 JS로 quick-hide 클래스가 붙으므로 이 transition은 무시될 수 있음 */
       transition: opacity 0.2s ease 0s; 
     }
     
-    /* 4. 레이블 활성 상태 (열릴 때): 0.3초 딜레이 후 0.2초간 페이드 인 */
+    /* 레이블 활성 상태 (등장 시 애니메이션) */
     .fixed-action-btn.active .fab-label { 
       opacity: 1; 
-      transition: opacity 0.2s ease 0.3s; 
+      transition: opacity 0.2s ease 0.3s; /* 딜레이 0.3초 후 등장 */
+    }
+
+    /* JS로 제어할 '즉시 퇴장' 클래스 */
+    .fab-label.quick-hide {
+      opacity: 0 !important;
+      transition: opacity 0.15s ease 0s !important; /* 딜레이 없이 즉시 사라짐 */
     }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
@@ -209,9 +215,18 @@
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
     
+    // FAB 초기화 및 이벤트 콜백 설정 (JS로 레이블 타이밍 제어)
     M.FloatingActionButton.init(fabElem, {
       direction: 'top',
-      hoverEnabled: false
+      hoverEnabled: false,
+      onOpenStart: () => {
+        // 열리기 시작할 때: 강제 숨김 클래스 제거 (CSS 애니메이션이 작동하도록)
+        document.querySelectorAll('.fab-label').forEach(el => el.classList.remove('quick-hide'));
+      },
+      onCloseStart: () => {
+        // 닫히기 시작할 때: 즉시 강제 숨김 클래스 추가
+        document.querySelectorAll('.fab-label').forEach(el => el.classList.add('quick-hide'));
+      }
     });
     
     const searchInput = document.getElementById('card-search');
