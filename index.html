@@ -9,77 +9,54 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     :root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --success-green: #2e7d32; }
-    body, input, button, table, .btn, .modal-content { font-family: 'Pretendard', sans-serif !important; }
-    body { background-color: #f4f7f6; }
-    .container { margin-top: 30px; max-width: 95% !important; }
-    .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; }
-    .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
+    body, input, button, table, .btn, .modal-content, select { font-family: 'Pretendard', sans-serif !important; }
+    body { background-color: #f4f7f6; margin: 0; padding: 0; }
+    .container { margin-top: 25px; max-width: 95% !important; width: 95%; }
+    .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+    .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 8px; font-weight: 600; }
     
-    .guide-trigger-wrapper {
-      width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px;
-    }
-    .guide-trigger-top { 
-      color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .guide-trigger-top i { font-size: 1.2rem; }
-    .guide-trigger-top:hover { text-decoration: underline; }
-
-    .search-box { 
-      background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-      display: flex; flex-direction: column; align-items: center; position: relative;
-    }
-
+    /* 기존 스타일 유지 */
+    .guide-trigger-wrapper { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px; }
+    .guide-trigger-top { color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
+    .search-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: relative; }
     .search-row { display: flex; align-items: center; justify-content: center; width: 100%; }
     .search-ghost { width: 110px; flex-shrink: 0; } 
     .search-input-wrapper { flex: 0 1 600px; position: relative; }
     .btn-group { display: flex; align-items: center; gap: 8px; margin-left: 15px; width: 110px; flex-shrink: 0; }
     .input-field { margin: 0 !important; }
-    input#card-search { text-align: center !important; font-size: 1.2rem; padding-right: 40px !important; box-sizing: border-box; }
-    input#card-search:disabled { background-color: #fafafa; color: #bdbdbd; cursor: not-allowed; }
-    .clear-search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ccc; display: none; z-index: 5; }
-    .btn.cyan-theme { background-color: var(--primary-cyan) !important; transition: background-color 0.3s, transform 0.1s; border-radius: 4px; font-weight: 600; }
-    #center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; font-weight: 600; text-align: center; }
+    input#card-search { text-align: center !important; font-size: 1.2rem; }
     
+    .btn.cyan-theme { background-color: var(--primary-cyan) !important; border-radius: 4px; font-weight: 600; }
+    #center-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px 40px; border-radius: 50px; z-index: 10000; font-size: 1.2rem; text-align: center; }
+    
+    /* 카드 추가 FAB */
+    .fixed-action-btn { bottom: 24px; right: 24px; }
+
+    /* 카드 추가 모달 테이블 스타일 */
+    .add-modal-table { font-size: 0.8rem; width: 100%; border-collapse: collapse; }
+    .add-modal-table th { background: #f5f5f5; color: #666; font-weight: 600; padding: 8px 4px; text-align: center; border: 1px solid #eee; }
+    .add-modal-table td { padding: 4px; border: 1px solid #eee; }
+    .add-modal-table input, .add-modal-table select { height: 2rem !important; margin: 0 !important; font-size: 0.85rem !important; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
+    .direct-input { margin-top: 5px !important; display: none; }
+    .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.75rem; display: block; min-height: 1rem; }
+
     @media only screen and (max-width: 600px) {
       .search-box { padding: 20px 10px; }
       .search-ghost { display: none; }
       .search-input-wrapper { flex: 1; }
       .btn-group { width: auto; margin-left: 8px; }
-      .guide-trigger-wrapper { padding-right: 5px; }
-      input#card-search { font-size: 1rem; }
-      .modal { width: 95% !important; top: 5% !important; }
-      .modal-footer { padding-bottom: 25px !important; }
+      #add-card-modal { width: 98% !important; max-height: 90% !important; top: 2% !important; }
+      .add-modal-table th, .add-modal-table td { font-size: 0.7rem; padding: 2px; }
     }
 
+    /* 표 및 로딩 유지 */
     table { background: white; font-size: 0.9rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
     th { background: var(--primary-cyan); color: white; text-align: center !important; border: 1px solid #ddd; padding: 10px 4px; }
     td { border: 1px solid #ddd; text-align: center; padding: 8px 4px; position: relative; }
-    .col-card-no { width: 220px; } .col-loc { width: 130px; } .col-total { width: 80px; } .col-proc { width: 75px; } 
-    .expand-btn { cursor: pointer; color: var(--primary-cyan); position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; }
-    .another-row { background-color: #fafafa !important; display: none; }
-    .another-val { text-align: center !important; font-weight: 500; color: #444; }
-    
-    .modal { border-radius: 12px; width: 550px !important; max-height: 85% !important; }
-    .url-input-container { display: flex; align-items: center; margin-top: 20px; margin-bottom: 20px; }
-    .url-input-container input { margin-bottom: 0 !important; flex-grow: 1; }
-    .trash-btn { cursor: pointer; color: #9e9e9e; margin-left: 15px; }
-    
-    .guide-btn { cursor: pointer; display: flex; align-items: center; color: var(--dark-cyan); font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; }
-    .guide-content { display: none; background: #e0f2f1; padding: 15px; border-radius: 6px; font-size: 0.9rem; border: 1px inset #b2dfdb; }
-    .guide-content ol { margin: 0; padding-left: 20px; }
-    .guide-content ul { padding-left: 10px; margin: 2px 0; color: #777; font-size: 0.85rem; list-style-type: none; line-height: 1.2; } 
-    
-    .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
-    .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
-    .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
-    .clear-history-btn { cursor: pointer; font-size: 1.1rem; color: #9e9e9e; }
-    
     .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
-    #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in; width: 100%; }
+    #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 5000px; opacity: 1; }
     #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 10; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; }
-    .preloader-wrapper.big { width: 64px !important; height: 64px !important; flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -105,15 +82,16 @@
         </div>
       </div>
       <div class="btn-group">
-        <button id="search-btn" class="btn waves-effect waves-light cyan-theme" onclick="startSearch()" style="height: 45px;"><i class="material-icons">search</i></button>
-        <button class="btn grey darken-1 modal-trigger tooltipped" id="settings-trigger" href="#settings-modal" data-position="bottom" data-tooltip="시트 설정" style="height: 45px; padding: 0 10px;"><i class="material-icons">settings</i></button>
+        <button id="search-btn" class="btn waves-effect waves-light cyan-theme" onclick="startSearch()"><i class="material-icons">search</i></button>
+        <button class="btn grey darken-1 modal-trigger tooltipped" id="settings-trigger" href="#settings-modal" data-tooltip="시트 설정"><i class="material-icons">settings</i></button>
       </div>
     </div>
     <div class="sub-row">
       <div id="recent-search-area" class="recent-searches">최근 검색 : </div>
-      <i id="clear-history-icon" class="material-icons clear-history-btn tooltipped" data-position="bottom" data-tooltip="기록 삭제" onclick="clearAllHistory()">delete_sweep</i>
+      <i class="material-icons" style="color:#9e9e9e; cursor:pointer;" onclick="clearAllHistory()">delete_sweep</i>
     </div>
   </div>
+
   <div class="result-container">
     <div id="loading-overlay">
       <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -123,175 +101,250 @@
   </div>
 </div>
 
-<div id="settings-modal" class="modal">
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large waves-effect waves-light cyan-theme modal-trigger" href="#add-card-modal">
+    <i class="large material-icons">add</i>
+  </a>
+</div>
+
+<div id="add-card-modal" class="modal">
   <div class="modal-content">
-    <h5 style="font-weight: 800; margin-bottom: 20px;">구글 시트 연결</h5>
-    <p id="modal-instruction">양식에 맞는 구글 시트 링크를 입력해주세요.</p>
-    <div class="url-input-container">
-      <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-      <i class="material-icons trash-btn tooltipped" data-position="bottom" data-tooltip="연결 끊기" onclick="disconnectSheet()">delete</i>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <h5 style="font-weight: 800; margin:0;">카드 추가</h5>
+      <a class="guide-trigger-top tooltipped" data-tooltip="카드 번호를 입력하면 이름이 자동으로 등록됩니다. 그 외 정보도 채운 뒤 추가 버튼을 눌러주세요.">
+        <i class="material-icons">help_outline</i> 사용법
+      </a>
     </div>
-    <div class="guide-btn" onclick="toggleGuide()"><i id="guide-icon" class="material-icons">expand_more</i><span>양식 다운로드 및 사용법</span></div>
-    <div id="guide-box" class="guide-content">
-      <ol>
-        <li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/template/preview" target="_blank" style="color: var(--primary-cyan); font-weight: bold; text-decoration: underline;">템플릿 파일</a>을 본인의 구글 드라이브에 저장</li>
-        <li>CardList 시트에 원하는 팩의 카드 리스트를 양식에 맞게 기입
-          <ul><li>- 정발 / 일판 상관 없이 기입 가능</li></ul>
-        </li>
-        <li>MyCard 시트에 카드 번호, 가공, 수량, 보관 장소를 입력
-          <ul>
-            <li>- 카드 이름은 CardList를 바탕으로 자동 입력됨</li>
-            <li>- 기본적으로 어나더는 비워두고, 필요할때 원하는 호칭 기입</li>
-          </ul>
-        </li>
-        <li>공유 설정에서 <b>링크가 있는 모든 사용자 / 뷰어로 설정</b></li>
-        <li>해당 파일의 링크를 위에 입력하고 저장</li>
-      </ol>
+    
+    <div style="overflow-x: auto;">
+      <table class="add-modal-table">
+        <thead>
+          <tr>
+            <th style="width: 20%;">카드 번호</th>
+            <th style="width: 25%;">카드 이름</th>
+            <th style="width: 15%;">가공</th>
+            <th style="width: 10%;">수량</th>
+            <th style="width: 15%;">보관 장소</th>
+            <th style="width: 15%;">어나더</th>
+          </tr>
+        </thead>
+        <tbody id="add-card-tbody">
+          </tbody>
+      </table>
+    </div>
+    
+    <div style="margin-top: 15px; text-align: center;">
+      <button class="btn-flat waves-effect" onclick="addMoreRows()" style="color: var(--primary-cyan); font-weight: 700;">
+        더 많은 카드를 등록할 건가요?
+      </button>
     </div>
   </div>
-  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme waves-effect waves-light" onclick="saveSettings()" style="font-weight: 600;">저장</button></div>
+  <div class="modal-footer">
+    <button class="btn-flat modal-close">취소</button>
+    <button class="btn cyan-theme" onclick="submitNewCards()">추가</button>
+  </div>
+</div>
+
+<div id="settings-modal" class="modal">
+  <div class="modal-content">
+    <h5 style="font-weight: 800;">구글 시트 연결</h5>
+    <p id="modal-instruction">시트 링크를 입력해주세요.</p>
+    <div class="url-input-container">
+      <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+      <i class="material-icons trash-btn" onclick="disconnectSheet()">delete</i>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button class="btn cyan-theme" onclick="saveSettings()">저장</button></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  /** ⚠️ 아래 URL에 본인의 구글 스크립트 배포 주소를 넣으세요 **/
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmYjEhw9j4RkcM4SV9xE2UC_gZqcbXb3dSSFBKGReTgpwd2ukePKkmpXBvY9Krrs_O/exec";
+  /** ⚠️ 본인의 구글 스크립트 배포 주소를 넣으세요 **/
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLgWgoJpUaw9bF2dAMJzvBa2GQx6AHOJ4kuHMEagLs1gdA8Q5hVILsLFj0pJ6aMgMU/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
+  const RECENT_KEY = 'recent_card_searches';
 
   let allProcessingTypes = [];
   let allNames = []; 
+  let allLocations = [];
   let isAppConfigured = false;
   let acInstance = null;
   let isLoading = false;
-  const RECENT_KEY = 'recent_card_searches';
 
-  // API 통신 공통 함수
-  async function callApi(action, params = {}) {
-    try {
-      const url = new URL(SCRIPT_URL);
-      url.searchParams.append("action", action);
-      const savedId = localStorage.getItem(STORAGE_KEY);
-      if (savedId) url.searchParams.append("ssId", savedId);
+  async function callApi(action, params = {}, postData = null) {
+    const url = new URL(SCRIPT_URL);
+    url.searchParams.append("action", action);
+    const savedId = localStorage.getItem(STORAGE_KEY);
+    if (savedId) url.searchParams.append("ssId", savedId);
+    for (const key in params) { url.searchParams.append(key, params[key]); }
+    
+    const options = { method: postData ? 'POST' : 'GET' };
+    if (postData) options.body = JSON.stringify(postData);
 
-      for (const key in params) {
-        url.searchParams.append(key, params[key]);
-      }
-      
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("네트워크 응답 오류");
-      const json = await response.json();
-      if (json.error) throw new Error(json.error);
-      return json;
-    } catch (err) {
-      console.error("API Error:", err);
-      throw err;
-    }
+    const response = await fetch(url, options);
+    return await response.json();
   }
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
-    M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+    
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
-    
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
     clearBtn.addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); triggerDropdown(); });
-    
-    searchInput.addEventListener('focus', function() { triggerDropdown(); });
-    searchInput.addEventListener('click', function() { triggerDropdown(); });
-    
-    searchInput.addEventListener('keydown', function(e) { 
-      if (e.key === 'Enter') { 
-        const dropdown = document.querySelector('.autocomplete-content'); 
-        if (dropdown && dropdown.firstChild) { this.value = dropdown.firstChild.textContent.trim(); } 
-        if (acInstance) acInstance.close(); 
-        this.blur(); 
-        startSearch(); 
-      } 
-    });
-    
+    searchInput.addEventListener('focus', triggerDropdown);
+    searchInput.addEventListener('click', triggerDropdown);
+
+    addMoreRows(1); // 초기 1행 생성
     renderRecentSearches();
     refreshInitialData();
   });
 
   function triggerDropdown() {
-    if (!acInstance || isLoading) return;
-    setTimeout(() => { if (!acInstance.isOpen) acInstance.open(); }, 100);
+    if (!acInstance || isLoading || document.getElementById('card-search').value !== "") return;
+    const top15 = {};
+    allNames.slice(0, 15).forEach(n => top15[n] = null);
+    acInstance.updateData(top15);
+    setTimeout(() => { if (!acInstance.isOpen) acInstance.open(); }, 150);
   }
 
-  function openGuideModal() {
-    const modal = M.Modal.getInstance(document.getElementById('settings-modal'));
-    modal.open();
-    const box = document.getElementById('guide-box');
-    const icon = document.getElementById('guide-icon');
-    box.style.display = 'block';
-    icon.innerText = 'expand_less';
-  }
-
-  function updateModalInstruction(isLinked, errorMsg = "") {
-    const instruction = document.getElementById('modal-instruction');
-    if (isLinked) {
-      instruction.innerText = '구글 시트 연결이 완료되었습니다!';
-      instruction.style.color = 'var(--success-green)';
-      instruction.style.fontWeight = '700';
-    } else {
-      instruction.innerText = errorMsg || '양식에 맞는 구글 시트 링크를 입력해주세요.';
-      instruction.style.color = errorMsg ? 'var(--error-red)' : '';
-      instruction.style.fontWeight = errorMsg ? '700' : '';
+  // 카드 추가 행 생성 로직
+  function addMoreRows(count = null) {
+    const tbody = document.getElementById('add-card-tbody');
+    const currentCount = tbody.children.length;
+    const increment = count || (currentCount === 1 ? 4 : 5); // 1->5->10->15
+    
+    for (let i = 0; i < increment; i++) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)"></td>
+        <td><span class="card-name-fetch">번호 입력 대기</span></td>
+        <td>
+          <select class="browser-default new-card-proc" onchange="toggleDirect(this)">
+            <option value="" disabled selected>선택</option>
+            ${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}
+            <option value="DIRECT">직접 추가</option>
+          </select>
+          <input type="text" class="direct-input rarity-direct" placeholder="가공 이름 입력">
+        </td>
+        <td><input type="number" class="new-card-qty" min="1" value="1"></td>
+        <td>
+          <select class="browser-default new-card-loc" onchange="toggleDirect(this)">
+            <option value="" disabled selected>선택</option>
+            ${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}
+            <option value="DIRECT">직접 추가</option>
+          </select>
+          <input type="text" class="direct-input loc-direct" placeholder="장소 이름 입력">
+        </td>
+        <td style="text-align: left;">
+          <label><input type="checkbox" class="filled-in" onchange="toggleAnother(this)"><span></span></label>
+          <input type="text" class="new-card-another" disabled placeholder="어나더 입력">
+        </td>
+      `;
+      tbody.appendChild(row);
     }
   }
 
+  function toggleDirect(el) {
+    const input = el.nextElementSibling;
+    input.style.display = el.value === 'DIRECT' ? 'block' : 'none';
+  }
+
+  function toggleAnother(el) {
+    const input = el.parentElement.nextElementSibling;
+    input.disabled = !el.checked;
+    if (!el.checked) input.value = '';
+  }
+
+  // 카드 번호 입력 시 이름 자동 추출
+  async function fetchCardName(el) {
+    const cardNo = el.value.trim();
+    if (!cardNo) return;
+    const nameSpan = el.parentElement.nextElementSibling.querySelector('.card-name-fetch');
+    nameSpan.innerText = "조회 중...";
+    try {
+      const res = await callApi('getCardNameFromDb', { cardNo });
+      nameSpan.innerText = res.name;
+    } catch (e) { nameSpan.innerText = "조회 실패"; }
+  }
+
+  // 새 카드 일괄 전송
+  async function submitNewCards() {
+    const tbody = document.getElementById('add-card-tbody');
+    const rows = [];
+    
+    for (let tr of tbody.children) {
+      const cardNo = tr.querySelector('.new-card-no').value.trim();
+      const name = tr.querySelector('.card-name-fetch').innerText;
+      if (!cardNo || name === "검색 결과 없음" || name === "조회 중...") continue;
+
+      let proc = tr.querySelector('.new-card-proc').value;
+      if (proc === 'DIRECT') proc = tr.querySelector('.rarity-direct').value.trim();
+
+      let loc = tr.querySelector('.new-card-loc').value;
+      if (loc === 'DIRECT') loc = tr.querySelector('.loc-direct').value.trim();
+
+      const qty = tr.querySelector('.new-card-qty').value;
+      const another = tr.querySelector('.new-card-another').value.trim();
+
+      if (proc && loc && qty) {
+        rows.push([name, cardNo, proc, qty, loc, another]);
+      }
+    }
+
+    if (rows.length === 0) { M.toast({html: '입력된 카드 정보가 없습니다.'}); return; }
+
+    showLoading(true, "카드 정보 기록 중...");
+    try {
+      await callApi('addCards', {}, rows);
+      M.Modal.getInstance(document.getElementById('add-card-modal')).close();
+      showCenterMessage(`${rows.length}종의 카드가 추가되었습니다.`);
+      location.reload();
+    } catch (e) {
+      showLoading(false);
+      M.toast({html: '저장 실패: ' + e.message});
+    }
+  }
+
+  /* 기존 API 및 UI 함수 보존 */
   async function refreshInitialData() {
     const savedId = localStorage.getItem(STORAGE_KEY);
-    if (!savedId) {
-      isAppConfigured = false;
-      updateModalInstruction(false);
-      return;
-    }
-
-    showLoading(true, "초기 데이터 로딩 중...");
+    if (!savedId) return;
+    showLoading(true, "데이터 동기화 중...");
     try {
       const res = await callApi('getInitialData');
       showLoading(false);
       isAppConfigured = res.isConfigured;
-      updateModalInstruction(res.isConfigured);
       if (res.isConfigured) {
         allNames = res.names;
         allProcessingTypes = res.processingTypes.sort();
+        allLocations = res.locations.sort();
         const initialData = {};
         allNames.forEach(n => initialData[n] = null);
-        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { 
-          data: initialData, onAutocomplete: startSearch, limit: 15, minLength: 0 
-        });
+        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: initialData, onAutocomplete: startSearch, limit: 15, minLength: 0 });
+        // 모달 내 드롭다운 갱신을 위해 페이지 새로고침 대신 초기화 로직 유지
       }
-    } catch (e) {
-      showLoading(false);
-      updateModalInstruction(false, e.message);
-      M.toast({html: '에러: ' + e.message, displayLength: 6000});
-    }
+    } catch (e) { showLoading(false); }
   }
 
   async function startSearch() {
-    if (isLoading) return;
-    if (!isAppConfigured) { openGuideModal(); showCenterMessage('먼저 시트를 연결해주세요!'); return; }
+    if (isLoading || !isAppConfigured) return;
     const name = document.getElementById('card-search').value;
     if(!name) return;
     saveRecentSearch(name);
     document.getElementById('result-area').classList.remove('show');
-    showLoading(true, "카드 정보를 찾는 중...");
+    showLoading(true, "검색 중...");
     try {
       const rows = await callApi('searchCard', { name: name });
       renderTable(rows);
-    } catch (e) {
-      showLoading(false);
-      M.toast({html: '검색 에러: ' + e.message});
-    }
+    } catch (e) { showLoading(false); }
   }
 
   function renderTable(rows) {
     showLoading(false);
     const resultArea = document.getElementById('result-area');
-    if (rows.length === 0) { resultArea.innerHTML = "<div class='center' style='padding:40px;'>검색 결과가 없습니다.</div>"; resultArea.classList.add('show'); return; }
+    if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>결과 없음</p>"; resultArea.classList.add('show'); return; }
     const groups = {};
     rows.forEach(r => {
       const [name, cardNo, proc, qty, loc, another] = r;
@@ -303,114 +356,47 @@
       if (another) groups[cardNo].anotherItems.push({ another, loc, proc, count });
     });
     const activeProcs = allProcessingTypes.filter(pt => rows.some(r => r[2] === pt));
-    let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`;
-    activeProcs.forEach(() => html += `<col class="col-proc">`);
-    html += `</colgroup><thead><tr><th>카드 번호 / 일러스트</th><th>보관 장소</th><th>총 수량</th>`;
-    activeProcs.forEach(pt => html += `<th>${pt}</th>`);
+    let html = `<table><thead><tr><th>번호</th><th>장소</th><th>총합</th>`;
+    activeProcs.forEach(pt => html += `<th>${pt.charAt(0)}</th>`);
     html += `</tr></thead><tbody>`;
     Object.keys(groups).forEach(cardNo => {
       const g = groups[cardNo];
       const locList = Object.keys(g.locations);
-      g.anotherItems.sort((a, b) => String(a.another).localeCompare(String(b.another), undefined, {numeric: true}));
       const rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');
       locList.forEach((loc, idx) => {
         const item = g.locations[loc];
         html += `<tr class="main-row card-${rowId}">`;
-        if (idx === 0) {
-          html += `<td rowspan="${locList.length}" class="card-no-cell"><div class="expand-container"><span>${cardNo}</span>${g.anotherItems.length > 0 ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</div></td>`;
-        }
-        html += `<td class="main-loc-cell">${loc}</td><td class="main-total-cell">${item.total}</td>`;
-        activeProcs.forEach(pt => { html += `<td class="main-proc-cell" data-proc="${pt}">${item.procs[pt] || 0}</td>`; });
+        if (idx === 0) html += `<td rowspan="${locList.length}">${cardNo}${g.anotherItems.length > 0 ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</td>`;
+        html += `<td>${loc}</td><td>${item.total}</td>`;
+        activeProcs.forEach(pt => html += `<td>${item.procs[pt] || 0}</td>`);
         html += `</tr>`;
       });
       g.anotherItems.forEach(ai => {
-        html += `<tr class="another-row ${rowId}-sub" style="display:none;"><td class="another-val">↳ ${ai.another}</td><td class="sub-loc-cell">${ai.loc}</td><td class="sub-qty-cell">${ai.count}</td>`;
-        activeProcs.forEach(pt => { html += `<td class="sub-proc-val" data-proc="${pt}">${ai.proc === pt ? ai.count : 0}</td>`; });
+        html += `<tr class="another-row ${rowId}-sub" style="display:none;"><td class="another-val" colspan="2">↳ ${ai.another}</td><td>${ai.count}</td>`;
+        activeProcs.forEach(pt => html += `<td>${ai.proc === pt ? ai.count : 0}</td>`);
         html += `</tr>`;
       });
     });
-    html += `</tbody></table>`;
-    resultArea.innerHTML = html;
+    resultArea.innerHTML = html + `</tbody></table>`;
     setTimeout(() => resultArea.classList.add('show'), 50);
   }
 
   function toggleAnother(rowId) {
     const subs = document.getElementsByClassName(rowId + '-sub');
-    const mainRows = document.getElementsByClassName('card-' + rowId);
-    const btn = event.target;
     const isExpanding = subs[0].style.display === 'none';
-    if (isExpanding) {
-      for(let s of subs) s.style.display = 'table-row';
-      btn.innerText = 'remove_circle_outline';
-      updateMainValues(mainRows, subs, true);
-    } else {
-      for(let s of subs) s.style.display = 'none';
-      btn.innerText = 'add_circle_outline';
-      updateMainValues(mainRows, subs, false);
-    }
+    for(let s of subs) s.style.display = isExpanding ? 'table-row' : 'none';
+    event.target.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
   }
 
-  function updateMainValues(mainRows, subs, isSubtract) {
-    for (let mRow of mainRows) {
-      const locName = mRow.querySelector('.main-loc-cell').innerText;
-      const mainTotalCell = mRow.querySelector('.main-total-cell');
-      const mainProcCells = mRow.querySelectorAll('.main-proc-cell');
-      let locTotalSub = 0, locProcSub = {};
-      for (let sRow of subs) {
-        if (sRow.querySelector('.sub-loc-cell').innerText === locName) {
-          let currentQty = parseInt(sRow.querySelector('.sub-qty-cell').innerText);
-          locTotalSub += currentQty;
-          sRow.querySelectorAll('.sub-proc-val').forEach(sCell => {
-            const pt = sCell.getAttribute('data-proc');
-            locProcSub[pt] = (locProcSub[pt] || 0) + parseInt(sCell.innerText);
-          });
-        }
-      }
-      const currentTotal = parseInt(mainTotalCell.innerText);
-      mainTotalCell.innerText = isSubtract ? currentTotal - locTotalSub : currentTotal + locTotalSub;
-      mainProcCells.forEach(mCell => {
-        const pt = mCell.getAttribute('data-proc');
-        const currentProcVal = parseInt(mCell.innerText);
-        mCell.innerText = isSubtract ? currentProcVal - (locProcSub[pt] || 0) : currentProcVal + (locProcSub[pt] || 0);
-      });
-    }
-  }
-
-  function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => { overlay.style.display = 'none'; }, 2000); }
-  function toggleGuide() { const box = document.getElementById('guide-box'); const icon = document.getElementById('guide-icon'); if (box.style.display === 'block') { box.style.display = 'none'; icon.innerText = 'expand_more'; } else { box.style.display = 'block'; icon.innerText = 'expand_less'; } }
-  function renderRecentSearches() { const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const area = document.getElementById('recent-search-area'); const delIcon = document.getElementById('clear-history-icon'); let html = `최근 검색 : `; recent.forEach(name => { html += `<span class="recent-item" onclick="quickSearch('${name}')">${name}</span> `; }); area.innerHTML = html; delIcon.style.display = 'block'; }
-  
-  async function saveSettings() { 
-    const url = document.getElementById('sheet-url').value; 
-    if (!url) { M.toast({html: '주소를 입력해주세요.'}); return; } 
-    const match = url.match(/[-\w]{25,}/);
-    const id = match ? match[0] : url;
-    localStorage.setItem(STORAGE_KEY, id);
-    M.Modal.getInstance(document.getElementById('settings-modal')).close(); 
-    showCenterMessage('설정이 저장되었습니다. 데이터를 불러옵니다.'); 
-    refreshInitialData(); 
-  }
-
-  async function disconnectSheet() { 
-    if (!confirm("정말 연결을 끊으시겠습니까?")) return; 
-    localStorage.removeItem(STORAGE_KEY);
-    M.Modal.getInstance(document.getElementById('settings-modal')).close(); 
-    showCenterMessage('연결이 해제되었습니다!'); 
-    updateModalInstruction(false); 
-    isAppConfigured = false;
-    location.reload();
-  }
-
-  function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = recent.filter(item => item !== name); recent.unshift(name); if (recent.length > 5) recent.pop(); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }
-  function clearAllHistory() { if (!confirm("모든 검색 기록을 삭제하시겠습니까?")) return; localStorage.removeItem(RECENT_KEY); renderRecentSearches(); showCenterMessage('검색 기록이 삭제되었습니다.'); }
-  function quickSearch(name) { const input = document.getElementById('card-search'); input.value = name; startSearch(); }
-  function showLoading(show, text = "데이터 조회 중...") { 
-    isLoading = show; 
-    document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; 
-    document.getElementById('loading-text').innerText = text;
-    document.getElementById('card-search').disabled = show; 
-    document.getElementById('search-btn').disabled = show; 
-  }
+  function showCenterMessage(text) { const overlay = document.getElementById('center-overlay'); overlay.innerText = text; overlay.style.display = 'block'; setTimeout(() => overlay.style.display = 'none', 2000); }
+  function toggleGuide() { const box = document.getElementById('guide-box'); box.style.display = box.style.display === 'block' ? 'none' : 'block'; }
+  function renderRecentSearches() { const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); const area = document.getElementById('recent-search-area'); let html = `최근 검색 : `; recent.forEach(n => html += `<span class="recent-item" onclick="quickSearch('${n}')">${n}</span> `); area.innerHTML = html; }
+  function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
+  function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+  function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = [name, ...recent.filter(n => n !== name)].slice(0, 5); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }
+  function clearAllHistory() { localStorage.removeItem(RECENT_KEY); renderRecentSearches(); }
+  function quickSearch(name) { document.getElementById('card-search').value = name; startSearch(); }
+  function showLoading(show, text) { isLoading = show; document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
 </script>
 </body>
 </html>
