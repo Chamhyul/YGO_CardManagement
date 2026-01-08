@@ -93,18 +93,18 @@
       /* 기본(닫힘): 투명 */
       opacity: 0; 
       
-      /* ★ 핵심: 딜레이 없이(0s) 가감속(ease-in-out)을 적용하여 연속성 확보 */
-      transition: opacity 0.25s ease-in-out 0s;
+      /* ★ 퇴장(닫힐 때): 빠르게 시작해서 서서히 느려짐 (ease-out) */
+      transition: opacity 0.2s ease-out 0s;
       
-      /* 성능 최적화: 브라우저에게 투명도 변화 예고 */
+      /* 성능 최적화 */
       will-change: opacity;
     }
     
     /* FAB 열림 상태: 불투명 */
     .fixed-action-btn.fab-open .fab-label { 
       opacity: 1; 
-      /* 열릴 때도 동일한 조건 (대칭) */
-      transition: opacity 0.25s ease-in-out 0s; 
+      /* ★ 등장(열릴 때): 천천히 시작해서 서서히 빨라짐 (ease-in) */
+      transition: opacity 0.25s ease-in 0s; 
     }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
@@ -120,7 +120,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.1.20</div>
+<div class="version-info">ver. 0.1.21</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
