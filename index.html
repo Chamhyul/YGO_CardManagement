@@ -23,7 +23,6 @@
     .search-ghost { width: 110px; flex-shrink: 0; } 
     .search-input-wrapper { flex: 0 1 600px; position: relative; }
     .btn-group { display: flex; align-items: center; gap: 8px; margin-left: 15px; width: 110px; flex-shrink: 0; }
-    .input-field { margin: 0 !important; }
     input#card-search { text-align: center !important; font-size: 1.2rem; padding-right: 40px !important; box-sizing: border-box; }
     .clear-search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ccc; display: none; z-index: 5; }
     .btn.cyan-theme { background-color: var(--primary-cyan) !important; border-radius: 4px; font-weight: 600; }
@@ -62,9 +61,7 @@
     
     .btn.disabled, .btn:disabled { background-color: var(--disabled-grey) !important; color: #fff !important; pointer-events: none; }
 
-    /* 로딩창 z-index 수정 (모달 위로 오게 함) */
     #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; }
-    .result-container { position: relative; width: 100%; margin-top: 20px; min-height: 250px; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
 
@@ -84,7 +81,6 @@
 <body>
 
 <div id="center-overlay"></div>
-
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
   <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 처리 중...</p>
@@ -92,10 +88,7 @@
 
 <div class="container">
   <h4 class="app-title">유희왕 카드 관리 <span class="beta-tag">Beta</span></h4>
-  <div class="guide-trigger-wrapper">
-    <button class="guide-trigger-top" onclick="openGuideFromMain()"><i class="material-icons">help_outline</i> 사용법</button>
-  </div>
-
+  <div class="guide-trigger-wrapper"><button class="guide-trigger-top" onclick="openGuideFromMain()"><i class="material-icons">help_outline</i> 사용법</button></div>
   <div class="search-box">
     <div class="search-row">
       <div class="search-ghost"></div>
@@ -107,22 +100,18 @@
       </div>
       <div class="btn-group">
         <button id="search-btn" class="btn waves-effect waves-light cyan-theme" onclick="startSearch()" style="height: 45px;"><i class="material-icons">search</i></button>
-        <button class="btn grey darken-1 modal-trigger tooltipped" id="settings-trigger" href="#settings-modal" data-position="bottom" data-tooltip="시트 설정" style="height: 45px; padding: 0 10px;"><i class="material-icons">settings</i></button>
+        <button class="btn grey darken-1 modal-trigger" href="#settings-modal" style="height: 45px; padding: 0 10px;"><i class="material-icons">settings</i></button>
       </div>
     </div>
     <div class="sub-row">
       <div id="recent-search-area" class="recent-searches">최근 검색 : </div>
-      <i id="clear-history-icon" class="material-icons clear-history-btn tooltipped" data-position="bottom" data-tooltip="기록 삭제" onclick="clearAllHistory()">delete_sweep</i>
+      <i id="clear-history-icon" class="material-icons clear-history-btn" onclick="clearAllHistory()">delete_sweep</i>
     </div>
   </div>
-  <div class="result-container">
-    <div id="result-area"></div>
-  </div>
+  <div class="result-container"><div id="result-area"></div></div>
 </div>
 
-<div class="fixed-action-btn">
-  <a class="btn-floating btn-large waves-effect waves-light cyan-theme modal-trigger" href="#add-card-modal"><i class="large material-icons">add</i></a>
-</div>
+<div class="fixed-action-btn"><a class="btn-floating btn-large waves-effect waves-light cyan-theme modal-trigger" href="#add-card-modal"><i class="large material-icons">add</i></a></div>
 
 <div id="settings-modal" class="modal">
   <div class="modal-content">
@@ -137,10 +126,7 @@
       </ol>
       <p style="font-size:0.85rem; color:#666; margin-top:10px;">* 이 앱은 공유된 파일 이외의 정보를 저장하거나 수집하지 않으며, 오직 로컬 스토리지에만 기록됩니다.</p>
     </div>
-    <div class="url-input-container">
-      <input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." oninput="validateSheetLink()">
-      <div id="valid-mark" class="valid-icon"></div>
-    </div>
+    <div class="url-input-container"><input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." oninput="validateSheetLink()"><div id="valid-mark" class="valid-icon"></div></div>
     <div id="status-msg" class="status-msg"></div>
   </div>
   <div class="modal-footer" style="display: flex; justify-content: space-between; padding: 0 24px 20px 24px; align-items: center; height: auto;">
@@ -160,10 +146,7 @@
     </div>
     <div style="margin-top: 20px; text-align: center;"><button class="btn-flat waves-effect" onclick="addMoreRows()" style="color: var(--primary-cyan); font-weight: 700;">더 많은 카드를 등록할 건가요?</button></div>
   </div>
-  <div class="modal-footer">
-    <button class="btn-flat modal-close">취소</button>
-    <button id="add-submit-btn" class="btn cyan-theme" onclick="submitNewCards()">추가</button>
-  </div>
+  <div class="modal-footer"><button class="btn-flat modal-close">취소</button><button id="add-submit-btn" class="btn cyan-theme" onclick="submitNewCards()">추가</button></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -186,7 +169,7 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     M.Modal.init(document.querySelectorAll('.modal'));
-    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'), { position: 'bottom' });
     const searchInput = document.getElementById('card-search');
     const clearBtn = document.getElementById('clear-btn');
     searchInput.addEventListener('input', function() { clearBtn.style.display = this.value.length > 0 ? 'block' : 'none'; });
@@ -194,37 +177,35 @@
     searchInput.addEventListener('focus', triggerDropdown);
     searchInput.addEventListener('click', triggerDropdown);
     
+    // 실시간 추천 검색어 및 엔터 처리 강화
     searchInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         const dropdown = document.querySelector('.autocomplete-content');
-        if (dropdown && dropdown.firstChild) this.value = dropdown.firstChild.innerText.trim();
-        if (acInstance) acInstance.close(); this.blur(); startSearch();
+        if (dropdown && dropdown.firstChild) {
+          const firstVisible = dropdown.querySelector('li:not(.hide)');
+          if (firstVisible) this.value = firstVisible.innerText.trim();
+        }
+        if (acInstance) acInstance.close();
+        this.blur();
+        startSearch();
       }
     });
+
     updateDisconnectBtn(); renderRecentSearches(); refreshInitialData();
   });
 
-  function updateDisconnectBtn() {
-    const btn = document.getElementById('disconnect-btn');
-    if (localStorage.getItem(STORAGE_KEY)) btn.classList.remove('disabled'); else btn.classList.add('disabled');
-  }
-
-  function toggleGuide(forceOpen = false) {
-    const btn = document.getElementById('guide-accordion-btn'); const box = document.getElementById('guide-box');
-    const isOpen = forceOpen || box.style.display === 'none';
-    box.style.display = isOpen ? 'block' : 'none'; if (isOpen) btn.classList.add('active'); else btn.classList.remove('active');
-  }
-
+  function updateDisconnectBtn() { const btn = document.getElementById('disconnect-btn'); if (localStorage.getItem(STORAGE_KEY)) btn.classList.remove('disabled'); else btn.classList.add('disabled'); }
+  function toggleGuide(forceOpen = false) { const btn = document.getElementById('guide-accordion-btn'); const box = document.getElementById('guide-box'); const isOpen = forceOpen || box.style.display === 'none'; box.style.display = isOpen ? 'block' : 'none'; if (isOpen) btn.classList.add('active'); else btn.classList.remove('active'); }
   function openGuideFromMain() { M.Modal.getInstance(document.getElementById('settings-modal')).open(); toggleGuide(true); }
 
   function validateSheetLink() {
     clearTimeout(validationTimeout); const url = document.getElementById('sheet-url').value.trim();
-    const mark = document.getElementById('valid-mark'); const msg = document.getElementById('status-msg'); const confirmBtn = document.getElementById('confirm-btn');
+    const mark = document.getElementById('valid-mark'), msg = document.getElementById('status-msg'), confirmBtn = document.getElementById('confirm-btn');
     if (!url) { mark.style.display = 'none'; msg.innerText = ''; confirmBtn.classList.add('disabled'); return; }
     const match = url.match(/[-\w]{25,}/);
     if (!match) { mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>'; mark.style.display = 'block'; msg.innerText = '구글 시트 링크를 적어주세요.'; msg.style.color = 'var(--error-red)'; confirmBtn.classList.add('disabled'); return; }
     validationTimeout = setTimeout(async () => {
-      msg.innerText = '확인 중...'; msg.style.color = '#777';
+      msg.innerText = '권한 확인 중...'; msg.style.color = '#777';
       try {
         const res = await callApi('checkSheet', { targetId: match[0] });
         if (res.status === 'OK') { mark.innerHTML = '<i class="material-icons" style="color: var(--success-green)">check_circle</i>'; msg.innerText = '유효한 시트입니다.'; msg.style.color = 'var(--success-green)'; confirmBtn.classList.remove('disabled'); } 
@@ -234,13 +215,17 @@
     }, 500);
   }
 
-  // 실시간 추천 검색어 필터링 로직 수정
+  // 추천 검색어 데이터 완전 초기화 및 갱신 로직
   function triggerDropdown() {
     if (!acInstance || isLoading) return;
-    // 빈 값일 때도 전체 목록 중 상위 15개를 보여주기 위해 업데이트
-    if (document.getElementById('card-search').value === "") {
+    const input = document.getElementById('card-search');
+    if (input.value === "") {
       const top15 = {}; allNames.slice(0, 15).forEach(n => top15[n] = null);
       acInstance.updateData(top15);
+    } else {
+      // 입력값이 있을 때 전체 데이터에서 실시간 필터링되도록 보장
+      const fullData = {}; allNames.forEach(n => fullData[n] = null);
+      acInstance.updateData(fullData);
     }
     setTimeout(() => { if (!acInstance.isOpen) acInstance.open(); }, 150);
   }
@@ -271,7 +256,6 @@
     try { const res = await callApi('getCardNameFromDb', { cardNo }); nameSpan.innerText = res.name; } catch (e) { nameSpan.innerText = "조회 실패"; }
   }
 
-  // 카드 추가 중 UI 처리 강화
   async function submitNewCards() {
     const tbody = document.getElementById('add-card-tbody'); const rows = [];
     for (let tr of tbody.children) {
@@ -283,19 +267,11 @@
       if (proc && loc && qty) rows.push([name, cardNo, proc, qty, loc, another]);
     }
     if (rows.length === 0) return;
-    
-    // UI 비활성화 및 로딩 표시
     const submitBtn = document.getElementById('add-submit-btn');
     submitBtn.classList.add('disabled');
     showLoading(true, "시트에 카드 기록 중...");
-
-    try { 
-      await callApi('addCards', {}, rows); 
-      M.Modal.getInstance(document.getElementById('add-card-modal')).close(); 
-      location.reload(); 
-    } catch (e) { 
-      showLoading(false); submitBtn.classList.remove('disabled'); 
-    }
+    try { await callApi('addCards', {}, rows); M.Modal.getInstance(document.getElementById('add-card-modal')).close(); location.reload(); } 
+    catch (e) { showLoading(false); submitBtn.classList.remove('disabled'); }
   }
 
   async function refreshInitialData() {
@@ -305,9 +281,10 @@
       const res = await callApi('getInitialData'); showLoading(false); isAppConfigured = res.isConfigured;
       if (res.isConfigured) {
         allNames = res.names; allProcessingTypes = res.processingTypes; allLocations = res.locations; 
-        // 실시간 필터링을 위해 전체 데이터를 전달
         const fullData = {}; allNames.forEach(n => fullData[n] = null);
-        acInstance = M.Autocomplete.init(document.getElementById('card-search'), { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 });
+        // Autocomplete 초기화 방식 완전 초기화
+        const searchInput = document.getElementById('card-search');
+        acInstance = M.Autocomplete.init(searchInput, { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 });
         if(document.getElementById('add-card-tbody').children.length === 0) addMoreRows(1);
       }
     } catch (e) { showLoading(false); }
