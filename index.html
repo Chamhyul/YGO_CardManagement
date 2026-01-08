@@ -14,10 +14,8 @@
     .container { margin-top: 30px; max-width: 95% !important; }
     .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
     .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
-    
     .guide-trigger-wrapper { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px; }
     .guide-trigger-top { color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
-
     .search-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: relative; }
     .search-row { display: flex; align-items: center; justify-content: center; width: 100%; }
     .search-ghost { width: 110px; flex-shrink: 0; } 
@@ -26,7 +24,6 @@
     input#card-search { text-align: center !important; font-size: 1.2rem; padding-right: 40px !important; box-sizing: border-box; }
     .clear-search-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ccc; display: none; z-index: 5; }
     .btn.cyan-theme { background-color: var(--primary-cyan) !important; border-radius: 4px; font-weight: 600; }
-    
     @media only screen and (max-width: 600px) { .search-box { padding: 20px 10px; } .search-ghost { display: none; } .search-input-wrapper { flex: 1; } .btn-group { width: auto; margin-left: 8px; } .modal { width: 95% !important; max-height: 90% !important; top: 5% !important; } }
     table { background: white; font-size: 0.85rem; table-layout: fixed; width: 100%; border-collapse: collapse; }
     th { background: var(--primary-cyan); color: white; text-align: center !important; border: 1px solid #ddd; padding: 8px 2px; font-size: 0.8rem; word-break: break-all; }
@@ -38,16 +35,7 @@
     .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
     .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
-    .clear-history-btn { cursor: pointer; font-size: 1.1rem; color: #9e9e9e; }
-
-    /* 화면 중앙 안내 메시지 스타일 */
-    #center-message { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 18px 30px; border-radius: 50px; z-index: 12000; font-size: 1.1rem; font-weight: 600; text-align: center; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-    
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
-    /* 모달 타이틀과 설명 사이 행간 넓힘 */
-    .modal-content h5 { margin-bottom: 25px !important; } 
-    .modal-subtitle { color: #666; font-size: 0.95rem; margin-top: -20px; margin-bottom: 25px; display: block; }
-
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
     .url-input-container input { margin-bottom: 0 !important; padding-right: 40px !important; }
     .valid-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: none; }
@@ -60,25 +48,29 @@
     #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.85); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; }
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
+    #center-message { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 18px 30px; border-radius: 50px; z-index: 12000; font-size: 1.1rem; font-weight: 600; text-align: center; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-    /* FAB 레이블 애니메이션 수정 */
+    /* FAB 레이블 위치 및 애니메이션 수정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     .fixed-action-btn .main-fab i { transition: transform 0.3s ease; }
     .fixed-action-btn.active .main-fab i { transform: rotate(180deg); }
-    .fixed-action-btn ul li { position: relative; }
+    .fixed-action-btn ul li { position: relative; margin-bottom: 15px; }
+    
     .fab-label { 
-      position: absolute; right: 55px; top: 12px;
+      position: absolute; right: 55px; top: 50%; transform: translateY(-50%); /* 시각적 중앙 정렬 */
       background: rgba(0,0,0,0.65); color: white; padding: 4px 12px; border-radius: 4px;
       font-size: 0.85rem; white-space: nowrap; pointer-events: none;
-      opacity: 0; transition: opacity 0.2s ease; font-weight: 500;
-      transition-delay: 0s; /* 닫힐 때는 즉시 사라짐 */
+      opacity: 0; transition: opacity 0.1s ease; font-weight: 500; /* 사라질 때: 0.1s 즉시 사라짐 */
     }
     .fixed-action-btn.active .fab-label { 
       opacity: 1; 
-      transition-delay: 0.3s; /* 버튼 등장 후 나타남 */
+      transition: opacity 0.3s ease;
+      transition-delay: 0.3s; /* 나타날 때: 버튼 애니메이션 후 등장 */
     }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
+    .modal-content h5 { margin-bottom: 25px !important; } /* 행간 넓힘 */
+    .modal-subtitle { color: #666; font-size: 0.95rem; margin-top: -20px; margin-bottom: 25px; display: block; }
     .add-modal-table { font-size: 0.82rem; width: 100%; border-collapse: collapse; table-layout: fixed; }
     .add-modal-table th { background: #f5f5f5; color: #666; font-weight: 700; padding: 10px 4px; text-align: center; border: 1px solid #ddd; }
     .add-modal-table td { padding: 6px 4px; border: 1px solid #ddd; }
@@ -86,17 +78,15 @@
     .flex-select { flex: 1; min-width: 0; height: 2.2rem !important; font-size: 0.85rem; }
     .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
     .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.8rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
-    .owned-qty-val { font-weight: 800; color: var(--dark-cyan); }
+    
+    /* 보유 수량 스타일 수정 (일반 검은색) */
+    .owned-qty-val { font-weight: 400; color: #000; }
   </style>
 </head>
 <body>
 
 <div id="center-message"></div>
-
-<div id="loading-overlay">
-  <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
-  <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 로드 중...</p>
-</div>
+<div id="loading-overlay"><div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div><p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 로드 중...</p></div>
 
 <div class="container">
   <h4 class="app-title">유희왕 카드 관리 <span class="beta-tag">Beta</span></h4>
@@ -153,16 +143,22 @@
 </div>
 
 <div id="discard-card-modal" class="modal">
-  <div class="modal-content"><h5 style="font-weight: 800;">카드 폐기</h5><p class="center" style="color: #9e9e9e; margin-top: 50px;">서비스 준비 중입니다.</p></div>
+  <div class="modal-content"><h5 style="font-weight: 800; margin-bottom: 25px;">카드 폐기</h5><p class="center" style="color: #9e9e9e; margin-top: 50px;">서비스 준비 중입니다.</p></div>
   <div class="modal-footer"><button class="btn-flat modal-close">닫기</button></div>
 </div>
 
 <div id="settings-modal" class="modal">
   <div class="modal-content">
-    <h5 style="font-weight: 800;">사용법 및 연결</h5>
+    <h5 style="font-weight: 800; margin-bottom: 10px;">사용법 및 연결</h5>
     <p style="color: #555; line-height: 1.5; margin-bottom: 25px;">이 앱은 구글 시트를 기반으로 사용자가 보유한 카드를 등록하여, 실물 카드 관리를 보조합니다.<br>양식에 맞는 구글 시트 링크를 입력해주세요.</p>
     <div class="guide-btn" id="guide-accordion-btn" onclick="toggleGuide()"><i class="material-icons">keyboard_arrow_right</i><span>양식 다운로드 및 사용법</span></div>
-    <div id="guide-box" class="guide-content"><ol><li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/copy" target="_blank" style="color: var(--primary-cyan); font-weight: 800; text-decoration: underline;">링크</a>를 눌러 양식 시트를 구글 드라이브에 복사합니다.</li><li>해당 파일을 **링크가 있는 모든 사용자 / 편집자**로 공유 설정을 변경합니다.</li><li>해당 파일의 공유 링크를 입력 후 확인을 눌러주세요.</li></ol></div>
+    <div id="guide-box" class="guide-content">
+      <ol>
+        <li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/copy" target="_blank" style="color: var(--primary-cyan); font-weight: 800; text-decoration: underline;">링크</a>를 눌러 양식 시트를 구글 드라이브에 복사합니다.</li>
+        <li>해당 파일을 <b>링크가 있는 모든 사용자 / 편집자</b>로 공유 설정을 변경합니다.</li>
+        <li>해당 파일의 공유 링크를 입력 후 확인을 눌러주세요.</li>
+      </ol>
+    </div>
     <div class="url-input-container"><input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." oninput="validateSheetLink()"><div id="valid-mark" class="valid-icon"></div></div>
     <div id="status-msg" class="status-msg"></div>
   </div>
@@ -183,24 +179,42 @@
   let isAppConfigured = false, acInstance = null, isLoading = false, validationTimeout = null;
 
   document.addEventListener('DOMContentLoaded', function() {
-    M.Modal.init(document.querySelectorAll('.modal'));
+    // 모달 초기화: onCloseEnd 콜백을 사용하여 모달이 닫힐 때 내용 초기화
+    M.Modal.init(document.querySelectorAll('.modal'), {
+      onCloseEnd: function(el) { resetModalContent(el.id); }
+    });
     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+    
+    // FAB 아이콘 토글 및 애니메이션 로직 강화
     const fabElem = document.getElementById('fab-menu');
     const fabIcon = document.getElementById('fab-icon');
-    
-    // FAB 아이콘 토글 로직
     M.FloatingActionButton.init(fabElem, {
       direction: 'top', hoverEnabled: false,
       onOpenStart: () => { fabIcon.innerText = 'remove'; },
       onCloseStart: () => { fabIcon.innerText = 'add'; }
     });
+    
+    // 버튼 클릭으로 닫힐 때도 아이콘 복구 보장
+    fabElem.querySelectorAll('ul li a').forEach(a => { a.addEventListener('click', () => { setTimeout(() => { fabIcon.innerText = 'add'; }, 150); }); });
 
     const searchInput = document.getElementById('card-search');
     searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { const dropdown = document.querySelector('.autocomplete-content'); if (dropdown) { const first = dropdown.querySelector('li:not(.hide)'); if (first) this.value = first.innerText.trim(); } if (acInstance) acInstance.close(); this.blur(); startSearch(); } });
     updateDisconnectBtn(); renderRecentSearches(); refreshInitialData();
   });
 
-  // 메시지를 화면 중앙에 표시하는 함수
+  // 모달 닫힐 때 입력값 초기화 함수
+  function resetModalContent(modalId) {
+    if (modalId === 'add-card-modal') {
+      document.getElementById('add-card-tbody').innerHTML = '';
+      addMoreRows(1); // 기본 1줄 복구
+    } else if (modalId === 'manage-card-modal') {
+      document.getElementById('manage-card-tbody').innerHTML = '';
+      addManageRows(1); // 기본 1줄 복구
+    } else if (modalId === 'discard-card-modal') {
+      // 추후 구현 시 초기화 로직 추가
+    }
+  }
+
   function showCenterMessage(text, isError = false) {
     const el = document.getElementById('center-message');
     el.innerText = text;
@@ -211,9 +225,12 @@
 
   function checkAuthAndOpen(modalId) {
     if (!localStorage.getItem(STORAGE_KEY)) { showCenterMessage("먼저 구글 시트를 연결해주세요!", true); return; }
+    // 모달을 열 때 비어있으면 기본 행 추가 (초기화 로직과 안전장치 이중 구성)
     if (modalId === '#manage-card-modal' && document.getElementById('manage-card-tbody').children.length === 0) addManageRows(1);
     if (modalId === '#add-card-modal' && document.getElementById('add-card-tbody').children.length === 0) addMoreRows(1);
-    M.Modal.getInstance(document.querySelector(modalId)).open();
+    
+    const instance = M.Modal.getInstance(document.querySelector(modalId));
+    if (instance) instance.open();
   }
 
   async function callApi(action, params = {}, postData = null) {
@@ -255,7 +272,6 @@
     acInstance = M.Autocomplete.init(searchInput, { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 });
   }
 
-  // 카드 관리 모달 로직 (보유 수량 실시간 반영)
   function addManageRows(count = null) {
     const tbody = document.getElementById('manage-card-tbody');
     const increment = count || (tbody.children.length === 1 ? 4 : 5);
@@ -296,7 +312,6 @@
     const proc = row.querySelector('.manage-proc').value, another = row.querySelector('.manage-another').value, loc = row.querySelector('.manage-loc').value;
     const qtySpan = row.querySelector('.owned-qty-val');
     if (!cardNo || !proc || !loc) { qtySpan.innerText = '-'; return; }
-    // 어나더 값은 '기본'이 선택된 경우 빈 문자열로 처리하여 필터링
     const targetAnother = another === "기본" ? "" : another;
     const sum = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[2]) === proc && String(r[4]) === loc && String(r[5] || "") === targetAnother).reduce((acc, curr) => acc + (parseInt(curr[3]) || 0), 0);
     qtySpan.innerText = sum;
