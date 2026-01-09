@@ -11,7 +11,13 @@
     :root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --warning-yellow: #fbc02d; --success-green: #2e7d32; --disabled-grey: #bdbdbd; }
     body, input, button, table, .btn, .modal-content, select { font-family: 'Pretendard', sans-serif !important; }
     body { background-color: #f4f7f6; }
+    
+    /* 버전 및 제작자 정보 스타일 */
     .version-info { position: absolute; top: 8px; left: 12px; font-size: 0.75rem; color: #aaa; font-weight: 600; z-index: 10; }
+    .maker-info { position: absolute; top: 8px; right: 12px; font-size: 0.75rem; color: #aaa; font-weight: 600; z-index: 10; }
+    .maker-info a { color: #aaa; text-decoration: none; }
+    .maker-info a:hover { text-decoration: underline; color: var(--dark-cyan); }
+
     .container { margin-top: 30px; max-width: 95% !important; }
     .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
     .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
@@ -73,7 +79,9 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.10</div>
+<div class="version-info">ver. 0.2.11</div>
+<div class="maker-info">Made by <a href="https://www.youtube.com/@참혈" target="_blank">참혈</a></div>
+
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
   <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 로드 중...</p>
@@ -165,7 +173,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-  // ★ 새로운 배포 URL 적용
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVmeLo3rTtOmVeUS77HwPyJSU_8npkE4PYGk2_QAqa8pFJiSv_e7bi6X-yZNiXvJujOA/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
@@ -324,14 +331,7 @@
     let increment = count; if (increment === null) { increment = (tbody.children.length === 1) ? 4 : 5; }
     for (let i = 0; i < increment; i++) {
       const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td>
-        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td>
-        <td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td>
-        <td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td>
-        <td><input type="number" class="new-card-qty" min="1" value="1" disabled></td>
-        <td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)" disabled><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>
-      `;
+      row.innerHTML = `<td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td><td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td><td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td><td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td><td><input type="number" class="new-card-qty" min="1" value="1" disabled></td><td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)" disabled><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>`;
       tbody.appendChild(row);
     }
   }
