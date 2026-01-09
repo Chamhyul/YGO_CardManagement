@@ -12,15 +12,11 @@
     :root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --warning-yellow: #fbc02d; --success-green: #2e7d32; --disabled-grey: #bdbdbd; }
     body, input, button, table, .btn, .modal-content, select { font-family: 'Pretendard', sans-serif !important; }
     body { background-color: #f4f7f6; }
-    
     .version-info { position: absolute; top: 8px; left: 12px; font-size: 0.75rem; color: #aaa; font-weight: 600; z-index: 10; }
-    
-    /* 제작자 정보 스타일 수정 (아이콘 정렬) */
     .maker-info { position: absolute; top: 8px; right: 12px; font-size: 0.75rem; color: #aaa; font-weight: 600; z-index: 10; display: flex; align-items: center; gap: 4px; }
     .maker-info a { color: #aaa; text-decoration: none; display: flex; align-items: center; gap: 3px; transition: color 0.2s; }
-    .maker-info a:hover { color: #ff0000; } /* 유튜브 레드 색상으로 호버 효과 */
+    .maker-info a:hover { color: #ff0000; }
     .maker-info i.fa-youtube { font-size: 1rem; }
-
     .container { margin-top: 30px; max-width: 95% !important; }
     .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
     .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
@@ -82,13 +78,8 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.12</div>
-<div class="maker-info">
-  Made by 
-  <a href="https://www.youtube.com/@참혈" target="_blank">
-    <i class="fab fa-youtube"></i>참혈
-  </a>
-</div>
+<div class="version-info">ver. 0.2.13</div>
+<div class="maker-info">Made by <a href="https://www.youtube.com/@참혈" target="_blank"><i class="fab fa-youtube"></i>참혈</a></div>
 
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -120,13 +111,7 @@
     <span class="modal-subtitle">카드의 보관 장소를 변경할 수 있습니다.</span>
     <div style="overflow-x: auto;">
       <table class="add-modal-table">
-        <thead>
-          <tr>
-            <th style="width: 20%;">카드 이름</th><th style="width: 12%;">카드 번호</th><th style="width: 10%;">어나더</th>
-            <th style="width: 10%;">가공</th><th style="width: 13%;">보관 위치</th><th style="width: 18%;">이동 위치</th>
-            <th style="width: 8%;">보관 수량</th><th style="width: 9%;">이동 수량</th>
-          </tr>
-        </thead>
+        <thead><tr><th style="width: 20%;">카드 이름</th><th style="width: 12%;">카드 번호</th><th style="width: 10%;">어나더</th><th style="width: 10%;">가공</th><th style="width: 13%;">보관 위치</th><th style="width: 18%;">이동 위치</th><th style="width: 8%;">보관 수량</th><th style="width: 9%;">이동 수량</th></tr></thead>
         <tbody id="manage-card-tbody"></tbody>
       </table>
     </div>
@@ -161,16 +146,7 @@
     <span class="modal-subtitle">원하는 카드를 추가할 수 있습니다.</span>
     <div style="overflow-x: auto;">
       <table class="add-modal-table">
-        <thead>
-            <tr>
-                <th style="width: 25%;">카드 이름</th>
-                <th style="width: 18%;">카드 번호</th>
-                <th style="width: 15%;">가공</th>
-                <th style="width: 17%;">보관 위치</th>
-                <th style="width: 10%;">수량</th>
-                <th style="width: 15%;">어나더</th>
-            </tr>
-        </thead>
+        <thead><tr><th style="width: 25%;">카드 이름</th><th style="width: 18%;">카드 번호</th><th style="width: 15%;">가공</th><th style="width: 17%;">보관 위치</th><th style="width: 10%;">수량</th><th style="width: 15%;">어나더</th></tr></thead>
         <tbody id="add-card-tbody"></tbody>
       </table>
     </div>
@@ -356,9 +332,14 @@
     nameSpan.innerText = "조회 중..."; 
     try { 
       const res = await callApi('getCardNameFromDb', { cardNo }); 
-      if (res.name === "결과 없음" || res.name === "접속 오류" || res.name.includes("  ")) { nameSpan.innerText = "유효하지 않은 카드 번호"; controls.forEach(c => c.disabled = true); } 
-      else { nameSpan.innerText = res.name; controls.forEach(c => c.disabled = false); }
-    } catch (e) { nameSpan.innerText = "유효하지 않은 카드 번호"; controls.forEach(c => c.disabled = true); } 
+      // ★ 백엔드에서 반환된 강화된 메세지를 그대로 출력
+      nameSpan.innerText = res.name;
+      if (res.name === "유효하지 않은 카드 번호" || res.name === "접속 오류" || res.name === "카드 번호를 확인하세요!" || res.name === "결과 없음") {
+        controls.forEach(c => c.disabled = true);
+      } else {
+        controls.forEach(c => c.disabled = false);
+      }
+    } catch (e) { nameSpan.innerText = "접속 오류"; controls.forEach(c => c.disabled = true); } 
   }
   function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
   function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
@@ -371,7 +352,7 @@
     const tbody = document.getElementById('add-card-tbody'); const rows = [];
     for (let tr of tbody.children) {
       const cardNo = tr.querySelector('.new-card-no').value.trim(); const name = tr.querySelector('.card-name-fetch').innerText;
-      if (!cardNo || name === "카드 번호를 입력해주세요." || name === "유효하지 않은 카드 번호" || name === "조회 중...") continue;
+      if (!cardNo || name.includes("입력해주세요") || name.includes("확인하세요") || name.includes("유효하지 않은") || name === "조회 중...") continue;
       let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
       let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
       const qty = tr.querySelector('.new-card-qty').value; const another = tr.querySelector('.new-card-another').value.trim();
