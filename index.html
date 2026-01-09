@@ -73,7 +73,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.8</div>
+<div class="version-info">ver. 0.2.9</div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
   <p id="loading-text" style="margin-top: 20px; font-weight: bold; color: var(--dark-cyan);">데이터 로드 중...</p>
@@ -129,7 +129,7 @@
     <h5 style="font-weight: 800; margin-bottom: 10px;">사용법 및 연결</h5>
     <p style="color: #555; line-height: 1.5; margin-bottom: 20px;">이 앱은 구글 시트를 기반으로 사용자가 보유한 카드를 등록하여, 실물 카드 관리를 보조합니다.<br>양식에 맞는 구글 시트 링크를 입력해주세요.</p>
     <div class="guide-btn" id="guide-accordion-btn" onclick="toggleGuide()"><i class="material-icons">keyboard_arrow_right</i><span>양식 다운로드 및 사용법</span></div>
-    <div id="guide-box" class="guide-content"><ol><li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/copy" target="_blank" style="color: var(--primary-cyan); font-weight: 800; text-decoration: underline;">링크</a>를 눌러 양식 시트를 구글 드라이브에 복사합니다.</li><li>해당 파일을 **링크가 있는 모든 사용자 / 편집자**로 공유 설정을 변경합니다.</li><li>해당 파일의 공유 링크를 입력 후 확인을 눌러주세요.</li></ol></div>
+    <div id="guide-box" class="guide-content"><ol><li><a href="https://docs.google.com/spreadsheets/d/16AVBIJvass2Zl6f4IwMpK5KcZkPOuGATWfo0FIdeOdw/copy" target="_blank" style="color: var(--primary-cyan); font-weight: 800; text-decoration: underline;">링크</a>를 눌러 양식 시트를 구글 드라이브에 복사합니다.</li><li>해당 파일을 <b>링크가 있는 모든 사용자 / 편집자</b>로 공유 설정을 변경합니다.</li><li>해당 파일의 공유 링크를 입력 후 확인을 눌러주세요.</li></ol></div>
     <div class="url-input-container"><input type="text" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." oninput="validateSheetLink()"><div id="valid-mark" class="valid-icon"></div></div>
     <div id="status-msg" class="status-msg"></div>
   </div>
@@ -248,13 +248,9 @@
     });
   }
 
-  // ★ 1-5-10-15 행 추가 로직 적용 (Manage)
   function addManageRows(count = null) {
     const tbody = document.getElementById('manage-card-tbody');
-    let increment = count;
-    if (increment === null) {
-      increment = (tbody.children.length === 1) ? 4 : 5;
-    }
+    let increment = count; if (increment === null) { increment = (tbody.children.length === 1) ? 4 : 5; }
     for (let i = 0; i < increment; i++) {
       const row = document.createElement('tr');
       row.innerHTML = `<td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td><td><input type="text" class="manage-card-no" onblur="updateManageDropdowns(this)" placeholder="번호 입력"></td><td><select class="browser-default manage-another flex-select" onchange="updateManageProcessing(this)" disabled><option value="">선택</option></select></td><td><select class="browser-default manage-proc flex-select" onchange="updateManageStorage(this)" disabled><option value="">선택</option></select></td><td><select class="browser-default manage-loc flex-select" onchange="updateManageMoveLoc(this)" disabled><option value="">선택</option></select></td><td><div class="td-flex-container"><select class="browser-default move-loc flex-select" onchange="syncDirectInputManage(this)" disabled><option value="" disabled selected>선택</option></select><input type="text" class="direct-input loc-direct flex-input" placeholder="새 위치"></div></td><td><span class="storage-qty-disp">-</span></td><td><input type="number" class="move-qty" min="1" disabled style="height:2.2rem !important; text-align:center;"></td>`;
@@ -322,16 +318,19 @@
     try { const res = await callApi('moveCards', {}, moves); M.Modal.getInstance(document.getElementById('manage-card-modal')).close(); showLoading(false); M.toast({html: '카드 이동 완료!', displayLength: 1500, classes: 'cyan darken-2'}); setTimeout(() => location.reload(), 1500); } catch (e) { showLoading(false); btn.classList.remove('disabled'); M.toast({html: '처리 중 오류 발생', classes: 'red darken-2 rounded'}); }
   }
 
-  // ★ 1-5-10-15 행 추가 로직 적용 (Add)
   function addMoreRows(count = null) {
     const tbody = document.getElementById('add-card-tbody');
-    let increment = count;
-    if (increment === null) {
-      increment = (tbody.children.length === 1) ? 4 : 5;
-    }
+    let increment = count; if (increment === null) { increment = (tbody.children.length === 1) ? 4 : 5; }
     for (let i = 0; i < increment; i++) {
       const row = document.createElement('tr');
-      row.innerHTML = `<td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td><td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td><td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td><td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td><td><input type="number" class="new-card-qty" min="1" value="1" disabled></td><td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)" disabled><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>`;
+      row.innerHTML = `
+        <td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td>
+        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td>
+        <td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td>
+        <td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)" disabled><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td>
+        <td><input type="number" class="new-card-qty" min="1" value="1" disabled></td>
+        <td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)" disabled><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>
+      `;
       tbody.appendChild(row);
     }
   }
@@ -340,6 +339,7 @@
   function updateDisconnectBtn() { const btn = document.getElementById('disconnect-btn'); if (localStorage.getItem(STORAGE_KEY)) btn.classList.remove('disabled'); else btn.classList.add('disabled'); }
   function toggleGuide(forceOpen = null) { const btn = document.getElementById('guide-accordion-btn'); const box = document.getElementById('guide-box'); const isOpen = (forceOpen !== null) ? forceOpen : box.style.display === 'none'; box.style.display = isOpen ? 'block' : 'none'; if (isOpen) btn.classList.add('active'); else btn.classList.remove('active'); }
   function openGuideFromMain() { M.Modal.getInstance(document.getElementById('settings-modal')).open(); toggleGuide(true); }
+  
   async function fetchCardName(el) { 
     const row = el.closest('tr'); const cardNo = el.value.trim(); const nameSpan = row.querySelector('.card-name-fetch'); 
     const controls = [row.querySelector('.new-card-proc'), row.querySelector('.new-card-loc'), row.querySelector('.new-card-qty'), row.querySelector('.filled-in')];
@@ -357,7 +357,7 @@
   function saveRecentSearch(name) { let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); recent = [name, ...recent.filter(n => n !== name)].slice(0, 5); localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); renderRecentSearches(); }
   function clearAllHistory() { localStorage.removeItem(RECENT_KEY); renderRecentSearches(); }
   function quickSearch(name) { document.getElementById('card-search').value = name; startSearch(); }
-  function showLoading(show, text) { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
+  function showLoading(show, text) { isLoading = show; document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; document.getElementById('loading-text').innerText = text; }
   async function submitNewCards() {
     const tbody = document.getElementById('add-card-tbody'); const rows = [];
     for (let tr of tbody.children) {
