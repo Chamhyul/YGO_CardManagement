@@ -39,10 +39,10 @@
     .expand-btn { cursor: pointer; color: var(--primary-cyan); position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 1.3rem; }
     .another-row { background-color: #fafafa !important; display: none; }
     .another-val { text-align: center !important; font-weight: 500; color: #444; }
-    .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
-    .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
-    .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
-    .clear-history-btn { cursor: pointer; color: #9e9e9e; transition: color 0.2s; }
+    .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: flex-start; margin-top: 15px; min-height: 40px; }
+    .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; line-height: 1.6; }
+    .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; white-space: nowrap; display: inline-block; }
+    .clear-history-btn { cursor: pointer; color: #9e9e9e; transition: color 0.2s; margin-top: 4px; }
     .clear-history-btn:hover { color: #616161; }
 
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
@@ -59,11 +59,9 @@
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
 
-    /* 토스트 중앙 정렬 */
     #toast-container { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; right: auto !important; bottom: auto !important; max-width: 90%; width: auto !important; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .toast { border-radius: 24px !important; text-align: center; justify-content: center; margin-top: 10px; }
 
-    /* FAB 설정 */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     .fixed-action-btn .main-fab i { transition: transform 0.3s ease-in-out 0s; }
     .fixed-action-btn.fab-open .main-fab i { transform: rotate(45deg); }
@@ -86,7 +84,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.2</div>
+<div class="version-info">ver. 0.2.4</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -107,14 +105,14 @@
   <a class="btn-floating btn-large cyan-theme main-fab"><i id="fab-icon" class="large material-icons">add</i></a>
   <ul>
     <li><a class="btn-floating grey darken-1" onclick="checkAuthAndOpen('#add-card-modal')"><i class="material-icons">library_add</i></a><span class="fab-label">카드 추가</span></li>
-    <li><a class="btn-floating grey darken-1" onclick="checkAuthAndOpen('#manage-card-modal')"><i class="material-icons">import_export</i></a><span class="fab-label">카드 관리</span></li>
+    <li><a class="btn-floating grey darken-1" onclick="checkAuthAndOpen('#manage-card-modal')"><i class="material-icons">import_export</i></a><span class="fab-label">카드 이동</span></li>
     <li><a class="btn-floating grey darken-1" onclick="checkAuthAndOpen('#discard-card-modal')"><i class="material-icons">delete_outline</i></a><span class="fab-label">카드 폐기</span></li>
   </ul>
 </div>
 
 <div id="manage-card-modal" class="modal">
   <div class="modal-content">
-    <h5 style="font-weight: 800; margin-bottom: 10px;">카드 관리</h5>
+    <h5 style="font-weight: 800; margin-bottom: 10px;">카드 이동</h5>
     <span class="modal-subtitle">카드의 보관 장소를 변경할 수 있습니다.</span>
     <div style="overflow-x: auto;">
       <table class="add-modal-table">
@@ -171,7 +169,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
   // ★ 배포 시 반드시 새로운 배포를 생성하여 URL을 갱신하세요 ★
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVmeLo3rTtOmVeUS77HwPyJSU_8npkE4PYGk2_QAqa8pFJiSv_e7bi6X-yZNiXvJujOA/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgOQN7QaR9vqUb0xmmeygmhIxuX6Th2LqZZ0kDmIKFa9RrR3zYBrFxVpdJRa9nXkYC/exec";
   const STORAGE_KEY = 'yugioh_spreadsheet_id';
   const RECENT_KEY = 'recent_card_searches';
 
@@ -246,7 +244,6 @@
       }
     });
 
-    // 헤더에 표시할 가공 목록 필터링
     const activeProcs = allProcessingTypes.filter(pt => rows.some(r => String(r[2]).trim() === pt));
     
     let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`; 
