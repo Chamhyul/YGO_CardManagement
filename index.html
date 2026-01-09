@@ -11,6 +11,8 @@
     :root { --primary-cyan: #009688; --dark-cyan: #00796b; --error-red: #f44336; --warning-yellow: #fbc02d; --success-green: #2e7d32; --disabled-grey: #bdbdbd; }
     body, input, button, table, .btn, .modal-content, select { font-family: 'Pretendard', sans-serif !important; }
     body { background-color: #f4f7f6; }
+    
+    /* 버전 표기 */
     .version-info { position: absolute; top: 8px; left: 12px; font-size: 0.75rem; color: #aaa; font-weight: 600; z-index: 10; }
     
     .container { margin-top: 30px; max-width: 95% !important; }
@@ -40,7 +42,6 @@
     .sub-row { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; min-height: 40px; }
     .recent-searches { font-size: 0.9rem; color: #666; display: flex; gap: 10px; align-items: center; }
     .recent-item { cursor: pointer; color: var(--primary-cyan); text-decoration: underline; font-weight: 500; }
-    
     .clear-history-btn { cursor: pointer; color: #9e9e9e; transition: color 0.2s; }
     .clear-history-btn:hover { color: #616161; }
 
@@ -58,6 +59,7 @@
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
     #result-area.show { max-height: 10000px; opacity: 1; }
 
+    /* 토스트 중앙 정렬 */
     #toast-container { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; right: auto !important; bottom: auto !important; max-width: 90%; width: auto !important; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .toast { border-radius: 24px !important; text-align: center; justify-content: center; margin-top: 10px; }
 
@@ -84,7 +86,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.1</div>
+<div class="version-info">ver. 0.2.2</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -118,14 +120,9 @@
       <table class="add-modal-table">
         <thead>
           <tr>
-            <th style="width: 20%;">카드 이름</th>
-            <th style="width: 12%;">카드 번호</th>
-            <th style="width: 10%;">어나더</th>
-            <th style="width: 10%;">가공</th>
-            <th style="width: 13%;">보관 위치</th>
-            <th style="width: 18%;">이동 위치</th>
-            <th style="width: 8%;">보관 수량</th>
-            <th style="width: 9%;">이동 수량</th>
+            <th style="width: 20%;">카드 이름</th><th style="width: 12%;">카드 번호</th><th style="width: 10%;">어나더</th>
+            <th style="width: 10%;">가공</th><th style="width: 13%;">보관 위치</th><th style="width: 18%;">이동 위치</th>
+            <th style="width: 8%;">보관 수량</th><th style="width: 9%;">이동 수량</th>
           </tr>
         </thead>
         <tbody id="manage-card-tbody"></tbody>
@@ -217,6 +214,74 @@
   function validateSheetLink() { clearTimeout(validationTimeout); const url = document.getElementById('sheet-url').value.trim(); const mark = document.getElementById('valid-mark'), msg = document.getElementById('status-msg'), confirmBtn = document.getElementById('confirm-btn'); if (!url) { mark.style.display = 'none'; msg.innerText = ''; confirmBtn.classList.add('disabled'); return; } const match = url.match(/[-\w]{25,}/); if (!match) { mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>'; mark.style.display = 'block'; msg.innerText = '구글 시트 링크를 적어주세요.'; msg.style.color = 'var(--error-red)'; confirmBtn.classList.add('disabled'); return; } validationTimeout = setTimeout(async () => { msg.innerText = '권한 확인 중...'; try { const res = await callApi('checkSheet', { targetId: match[0] }); if (res.status === 'OK') { mark.innerHTML = '<i class="material-icons" style="color: var(--success-green)">check_circle</i>'; msg.innerText = '유효한 시트입니다.'; msg.style.color = 'var(--success-green)'; confirmBtn.classList.remove('disabled'); } else { mark.innerHTML = '<i class="material-icons" style="color: var(--warning-yellow)">warning</i>'; msg.innerText = (res.status === 'NO_EDIT_ACCESS') ? '공유 설정을 링크를 가진 모든 사용자 / 편집자로 설정해주세요.' : '접근할 수 없거나 형식이 잘못되었습니다.'; msg.style.color = 'var(--warning-yellow)'; confirmBtn.classList.add('disabled'); } mark.style.display = 'block'; } catch (e) { msg.innerText = '확인 실패'; } }, 500); }
   async function refreshInitialData() { const savedId = localStorage.getItem(STORAGE_KEY); if (!savedId) return; showLoading(true, "데이터 동기화 중..."); try { const res = await callApi('getInitialData'); showLoading(false); isAppConfigured = res.isConfigured; if (res.isConfigured) { allNames = res.names; allProcessingTypes = res.processingTypes; allLocations = res.locations; localCardDatabase = res.allCards; setupAutocomplete(); } } catch (e) { showLoading(false); } }
   function setupAutocomplete() { const searchInput = document.getElementById('card-search'); const fullData = {}; allNames.forEach(name => fullData[name] = null); acInstance = M.Autocomplete.init(searchInput, { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 }); }
+
+  /* ================== SEARCH & RENDER LOGIC (RESTORED) ================== */
+  function startSearch() { 
+    const name = document.getElementById('card-search').value; 
+    if(!name || !isAppConfigured) return; 
+    saveRecentSearch(name); 
+    const filteredRows = localCardDatabase.filter(row => String(row[0]) === name); 
+    renderTable(filteredRows); 
+  }
+
+  function renderTable(rows) {
+    showLoading(false); const resultArea = document.getElementById('result-area');
+    if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>결과 없음</p>"; resultArea.classList.add('show'); return; }
+    
+    const groups = {};
+    rows.forEach(r => {
+      // 인덱스 고정: 0:이름, 1:번호, 2:가공, 3:수량, 4:위치, 5:어나더
+      const cardNo = String(r[1]), proc = String(r[2]), qty = parseInt(r[3]) || 0, loc = String(r[4]), another = String(r[5] || "").trim();
+      if (!groups[cardNo]) groups[cardNo] = { locations: {}, anotherGroups: {} };
+      if (!groups[cardNo].locations[loc]) groups[cardNo].locations[loc] = { total: 0, procs: {} };
+      
+      groups[cardNo].locations[loc].total += qty; 
+      groups[cardNo].locations[loc].procs[proc] = (groups[cardNo].locations[loc].procs[proc] || 0) + qty;
+      
+      if (another) {
+        const aKey = `${another}|${loc}`; 
+        if (!groups[cardNo].anotherGroups[aKey]) groups[cardNo].anotherGroups[aKey] = { another, loc, total: 0, procs: {} };
+        groups[cardNo].anotherGroups[aKey].total += qty; 
+        groups[cardNo].anotherGroups[aKey].procs[proc] = (groups[cardNo].anotherGroups[aKey].procs[proc] || 0) + qty;
+      }
+    });
+
+    // 헤더에 표시할 가공 목록 필터링
+    const activeProcs = allProcessingTypes.filter(pt => rows.some(r => String(r[2]).trim() === pt));
+    
+    let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`; 
+    activeProcs.forEach(() => html += `<col class="col-proc">`);
+    html += `</colgroup><thead><tr><th>번호</th><th>장소</th><th>총합</th>`; 
+    activeProcs.forEach(pt => html += `<th>${pt}</th>`); 
+    html += `</tr></thead><tbody>`;
+    
+    Object.keys(groups).forEach(cardNo => {
+      const g = groups[cardNo]; const locList = Object.keys(g.locations); const rowId = `row-${cardNo}`.replace(/[^a-zA-Z0-9]/g, '');
+      locList.forEach((loc, idx) => {
+        const item = g.locations[loc]; html += `<tr class="main-row card-${rowId}" data-loc="${loc}">`;
+        if (idx === 0) html += `<td rowspan="${locList.length}">${cardNo}${Object.keys(g.anotherGroups).length > 0 ? `<i class="material-icons expand-btn" onclick="toggleAnother('${rowId}')">add_circle_outline</i>` : ''}</td>`;
+        html += `<td class="main-loc-cell">${loc}</td><td class="main-total-cell" data-original="${item.total}">${item.total}</td>`;
+        activeProcs.forEach(pt => { const v = item.procs[pt] || 0; html += `<td class="main-proc-cell" data-proc="${pt}" data-original="${v}">${v}</td>`; }); html += `</tr>`;
+      });
+      Object.values(g.anotherGroups).forEach(ag => { html += `<tr class="another-row ${rowId}-sub" data-another-loc="${ag.loc}" style="display:none;"><td class="another-val">↳ ${ag.another}</td><td>${ag.loc}</td><td>${ag.total}</td>`; activeProcs.forEach(pt => { html += `<td>${ag.procs[pt] || 0}</td>`; }); html += `</tr>`; });
+    });
+    
+    resultArea.innerHTML = html + `</tbody></table>`; 
+    setTimeout(() => resultArea.classList.add('show'), 50);
+  }
+
+  function toggleAnother(rowId) {
+    const subs = Array.from(document.getElementsByClassName(rowId + '-sub')); const mains = Array.from(document.getElementsByClassName('card-' + rowId));
+    const isExpanding = subs[0].style.display === 'none'; subs.forEach(s => s.style.display = isExpanding ? 'table-row' : 'none');
+    event.target.innerText = isExpanding ? 'remove_circle_outline' : 'add_circle_outline';
+    mains.forEach(mRow => {
+      const loc = mRow.getAttribute('data-loc'); const totalCell = mRow.querySelector('.main-total-cell'); const procCells = mRow.querySelectorAll('.main-proc-cell');
+      let subT = 0, subP = {};
+      subs.forEach(sRow => { if (sRow.getAttribute('data-another-loc') === loc) { subT += parseInt(sRow.cells[2].innerText) || 0; Array.from(sRow.cells).slice(3).forEach((c, i) => { const pN = procCells[i].getAttribute('data-proc'); subP[pN] = (subP[pN] || 0) + (parseInt(c.innerText) || 0); }); } });
+      if (isExpanding) { totalCell.innerText = parseInt(totalCell.getAttribute('data-original')) - subT; procCells.forEach(pC => { const pN = pC.getAttribute('data-proc'); pC.innerText = parseInt(pC.getAttribute('data-original')) - (subP[pN] || 0); }); } 
+      else { totalCell.innerText = totalCell.getAttribute('data-original'); procCells.forEach(pC => pC.innerText = pC.getAttribute('data-original')); }
+    });
+  }
 
   /* ================== Manage Logic (Updated) ================== */
   function addManageRows(count = null) {
@@ -417,8 +482,6 @@
       M.toast({html: '처리 중 오류 발생', classes: 'red darken-2 rounded'});
     }
   }
-
-  // ==========================================================
 
   function addMoreRows(count = null) {
     const tbody = document.getElementById('add-card-tbody'); const increment = count || (tbody.children.length === 1 ? 4 : 5);
