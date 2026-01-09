@@ -16,7 +16,8 @@
     .version-info { position: absolute; top: 8px; left: 12px; font-size: 0.75rem; color: #aaa; font-weight: 600; z-index: 10; }
     
     .container { margin-top: 30px; max-width: 95% !important; }
-    .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+    /* 1. 타이틀 크기 확대 */
+    .app-title { text-align: center; margin-bottom: 25px; font-weight: 800; color: #333; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; }
     .beta-tag { color: var(--error-red); font-size: 14px; margin-left: 6px; align-self: flex-start; margin-top: 10px; font-weight: 600; }
     .guide-trigger-wrapper { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px; }
     .guide-trigger-top { color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
@@ -70,10 +71,7 @@
     .fixed-action-btn.fab-open .fab-label { opacity: 1; transition: opacity 0.25s ease-in 0s; }
 
     #add-card-modal, #manage-card-modal, #discard-card-modal { width: 95% !important; max-width: 1100px !important; }
-    
-    /* 모달 서브타이틀 수정: 음수 마진 제거 및 줄 높이 적용 */
     .modal-subtitle { color: #666; font-size: 0.95rem; margin-top: 0; margin-bottom: 20px; display: block; line-height: 1.5; }
-    
     .add-modal-table { font-size: 0.82rem; width: 100%; border-collapse: collapse; }
     
     .td-flex-container { display: flex; align-items: center; gap: 4px; width: 100%; height: 100%; }
@@ -81,13 +79,21 @@
     .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
     .card-name-fetch { color: var(--dark-cyan); font-weight: 700; font-size: 0.8rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
     
-    input.manage-card-no, input.move-qty, input.loc-direct { height: 2.2rem !important; margin: 0 !important; font-size: 0.85rem !important; text-align: center; border-bottom: 1px solid #9e9e9e !important; }
+    /* 3. 모달 입력란 공통 스타일 (높이 축소, 중앙 정렬) */
+    input.manage-card-no, input.move-qty, input.loc-direct,
+    input.new-card-no, input.new-card-qty, input.new-card-another { 
+      height: 2.2rem !important; 
+      margin: 0 !important; 
+      font-size: 0.85rem !important;
+      text-align: center; /* 4. 중앙 정렬 */
+      border-bottom: 1px solid #9e9e9e !important;
+    }
     input.move-qty:disabled { color: #ccc; border-bottom: 1px dotted #ccc !important; }
   </style>
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.5</div>
+<div class="version-info">ver. 0.2.6</div>
 <div id="center-overlay"></div>
 <div id="loading-overlay">
   <div class="preloader-wrapper big active"><div class="spinner-layer spinner-teal-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
@@ -181,7 +187,14 @@
   let isFabOpen = false;
 
   document.addEventListener('DOMContentLoaded', function() {
-    M.Modal.init(document.querySelectorAll('.modal'));
+    // 7. 모달 닫힐 때 리셋 로직 적용
+    M.Modal.init(document.querySelectorAll('.modal'), {
+      onCloseEnd: function(el) {
+        if(el.id === 'add-card-modal') resetAddModal();
+        if(el.id === 'manage-card-modal') resetManageModal();
+      }
+    });
+    
     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
     const fabElem = document.getElementById('fab-menu');
     const mainFabBtn = fabElem.querySelector('.main-fab');
@@ -191,6 +204,19 @@
     M.FloatingActionButton.init(fabElem, { direction: 'top', hoverEnabled: false, onCloseStart: () => { if(isFabOpen) { isFabOpen = false; updateFabState(fabElem); } } });
     
     const searchInput = document.getElementById('card-search');
+    // 2. 검색란 입력 시 X 버튼 표시 로직
+    searchInput.addEventListener('input', function() {
+      const clearBtn = document.getElementById('clear-btn');
+      clearBtn.style.display = this.value ? 'block' : 'none';
+    });
+    
+    // 2. X 버튼 클릭 시 초기화
+    document.getElementById('clear-btn').addEventListener('click', function() {
+      searchInput.value = '';
+      this.style.display = 'none';
+      searchInput.focus();
+    });
+
     searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { const dropdown = document.querySelector('.autocomplete-content'); if (dropdown) { const firstVisible = dropdown.querySelector('li:not(.hide)'); if (firstVisible) this.value = firstVisible.innerText.trim(); } if (acInstance) acInstance.close(); this.blur(); startSearch(); } });
     updateDisconnectBtn(); renderRecentSearches(); refreshInitialData();
   });
@@ -212,11 +238,23 @@
     M.Modal.getInstance(document.querySelector(modalId)).open();
   }
 
+  // 모달 초기화 함수들
+  function resetAddModal() {
+    const tbody = document.getElementById('add-card-tbody');
+    tbody.innerHTML = '';
+    addMoreRows(4); // 기본 4줄로 복구
+  }
+  function resetManageModal() {
+    const tbody = document.getElementById('manage-card-tbody');
+    tbody.innerHTML = '';
+    addManageRows(4);
+  }
+
   function validateSheetLink() { clearTimeout(validationTimeout); const url = document.getElementById('sheet-url').value.trim(); const mark = document.getElementById('valid-mark'), msg = document.getElementById('status-msg'), confirmBtn = document.getElementById('confirm-btn'); if (!url) { mark.style.display = 'none'; msg.innerText = ''; confirmBtn.classList.add('disabled'); return; } const match = url.match(/[-\w]{25,}/); if (!match) { mark.innerHTML = '<i class="material-icons" style="color: var(--error-red)">cancel</i>'; mark.style.display = 'block'; msg.innerText = '구글 시트 링크를 적어주세요.'; msg.style.color = 'var(--error-red)'; confirmBtn.classList.add('disabled'); return; } validationTimeout = setTimeout(async () => { msg.innerText = '권한 확인 중...'; try { const res = await callApi('checkSheet', { targetId: match[0] }); if (res.status === 'OK') { mark.innerHTML = '<i class="material-icons" style="color: var(--success-green)">check_circle</i>'; msg.innerText = '유효한 시트입니다.'; msg.style.color = 'var(--success-green)'; confirmBtn.classList.remove('disabled'); } else { mark.innerHTML = '<i class="material-icons" style="color: var(--warning-yellow)">warning</i>'; msg.innerText = (res.status === 'NO_EDIT_ACCESS') ? '공유 설정을 링크를 가진 모든 사용자 / 편집자로 설정해주세요.' : '접근할 수 없거나 형식이 잘못되었습니다.'; msg.style.color = 'var(--warning-yellow)'; confirmBtn.classList.add('disabled'); } mark.style.display = 'block'; } catch (e) { msg.innerText = '확인 실패'; } }, 500); }
   async function refreshInitialData() { const savedId = localStorage.getItem(STORAGE_KEY); if (!savedId) return; showLoading(true, "데이터 동기화 중..."); try { const res = await callApi('getInitialData'); showLoading(false); isAppConfigured = res.isConfigured; if (res.isConfigured) { allNames = res.names; allProcessingTypes = res.processingTypes; allLocations = res.locations; localCardDatabase = res.allCards; setupAutocomplete(); } } catch (e) { showLoading(false); } }
   function setupAutocomplete() { const searchInput = document.getElementById('card-search'); const fullData = {}; allNames.forEach(name => fullData[name] = null); acInstance = M.Autocomplete.init(searchInput, { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 }); }
 
-  /* ================== SEARCH & RENDER LOGIC (RESTORED) ================== */
+  /* ================== SEARCH & RENDER LOGIC ================== */
   function startSearch() { 
     const name = document.getElementById('card-search').value; 
     if(!name || !isAppConfigured) return; 
@@ -231,7 +269,6 @@
     
     const groups = {};
     rows.forEach(r => {
-      // 인덱스 고정: 0:이름, 1:번호, 2:가공, 3:수량, 4:위치, 5:어나더
       const cardNo = String(r[1]), proc = String(r[2]), qty = parseInt(r[3]) || 0, loc = String(r[4]), another = String(r[5] || "").trim();
       if (!groups[cardNo]) groups[cardNo] = { locations: {}, anotherGroups: {} };
       if (!groups[cardNo].locations[loc]) groups[cardNo].locations[loc] = { total: 0, procs: {} };
@@ -248,7 +285,6 @@
     });
 
     const activeProcs = allProcessingTypes.filter(pt => rows.some(r => String(r[2]).trim() === pt));
-    
     let html = `<table><colgroup><col class="col-card-no"><col class="col-loc"><col class="col-total">`; 
     activeProcs.forEach(() => html += `<col class="col-proc">`);
     html += `</colgroup><thead><tr><th>번호</th><th>장소</th><th>총합</th>`; 
@@ -283,7 +319,7 @@
     });
   }
 
-  /* ================== Manage Logic (Updated) ================== */
+  /* ================== Manage Logic ================== */
   function addManageRows(count = null) {
     const tbody = document.getElementById('manage-card-tbody');
     const increment = count || (tbody.children.length === 1 ? 4 : 5);
@@ -318,15 +354,19 @@
       const anotherSel = row.querySelector('.manage-another');
       const anothers = [...new Set(matches.map(r => r[5] || ""))];
       
-      anotherSel.innerHTML = (anothers.includes("") ? `<option value="">기본</option>` : '') + 
-                             anothers.filter(a => a !== "").map(a => `<option value="${a}">${a}</option>`).join('');
-      
-      anotherSel.disabled = false;
+      // 5. 어나더 자동 선택 로직 개선
+      // 만약 목록이 [""] (기본) 하나뿐이라면 자동 선택 후 비활성 유지, 바로 처리 함수 호출
       if (anothers.length === 1 && anothers[0] === "") {
+        anotherSel.innerHTML = `<option value="" selected>기본</option>`;
         anotherSel.value = "";
+        anotherSel.disabled = true; // 비활성 유지 (자동 적용)
         updateManageProcessing(anotherSel); 
       } else {
-        anotherSel.insertAdjacentHTML('afterbegin', `<option value="__placeholder__" disabled selected>선택</option>`);
+        // 여러 개 있거나 기본이 아닌 경우
+        anotherSel.innerHTML = `<option value="__placeholder__" disabled selected>선택</option>` + 
+                               (anothers.includes("") ? `<option value="">기본</option>` : '') + 
+                               anothers.filter(a => a !== "").map(a => `<option value="${a}">${a}</option>`).join('');
+        anotherSel.disabled = false;
       }
     } else {
       nameSpan.innerText = "보유하지 않은 카드";
@@ -487,7 +527,8 @@
     const tbody = document.getElementById('add-card-tbody'); const increment = count || (tbody.children.length === 1 ? 4 : 5);
     for (let i = 0; i < increment; i++) {
       const row = document.createElement('tr');
-      row.innerHTML = `<td><span class="card-name-fetch">번호 입력 대기</span></td><td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td><td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td><td><input type="number" class="new-card-qty" min="1" value="1" style="height:2.2rem !important; text-align:center;"></td><td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td><td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)"><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>`;
+      // 5. 기본 문구 변경: "카드 번호를 입력해주세요."
+      row.innerHTML = `<td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td><td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td><td><div class="td-flex-container"><select class="browser-default new-card-proc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allProcessingTypes.map(p => `<option value="${p}">${p}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input rarity-direct flex-input" disabled></div></td><td><input type="number" class="new-card-qty" min="1" value="1" style="height:2.2rem !important; text-align:center;"></td><td><div class="td-flex-container"><select class="browser-default new-card-loc flex-select" onchange="syncDirectInput(this)"><option value="" disabled selected>선택</option>${allLocations.map(l => `<option value="${l}">${l}</option>`).join('')}<option value="DIRECT">직접 추가</option></select><input type="text" class="direct-input loc-direct flex-input" disabled></div></td><td><div class="td-flex-container" style="justify-content: center;"><label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)"><span></span></label><input type="text" class="another-input new-card-another" disabled placeholder="원본"></div></td>`;
       tbody.appendChild(row);
     }
   }
@@ -496,7 +537,29 @@
   function updateDisconnectBtn() { const btn = document.getElementById('disconnect-btn'); if (localStorage.getItem(STORAGE_KEY)) btn.classList.remove('disabled'); else btn.classList.add('disabled'); }
   function toggleGuide(forceOpen = null) { const btn = document.getElementById('guide-accordion-btn'); const box = document.getElementById('guide-box'); const isOpen = (forceOpen !== null) ? forceOpen : box.style.display === 'none'; box.style.display = isOpen ? 'block' : 'none'; if (isOpen) btn.classList.add('active'); else btn.classList.remove('active'); }
   function openGuideFromMain() { M.Modal.getInstance(document.getElementById('settings-modal')).open(); toggleGuide(true); }
-  async function fetchCardName(el) { const cardNo = el.value.trim(); if (!cardNo) return; const nameSpan = el.closest('tr').querySelector('.card-name-fetch'); nameSpan.innerText = "조회 중..."; try { const res = await callApi('getCardNameFromDb', { cardNo }); nameSpan.innerText = res.name; } catch (e) { nameSpan.innerText = "조회 실패"; } }
+  
+  async function fetchCardName(el) { 
+    const cardNo = el.value.trim(); 
+    const nameSpan = el.closest('tr').querySelector('.card-name-fetch'); 
+    if (!cardNo) {
+        // 번호 비었을 때 기본 문구
+        nameSpan.innerText = "카드 번호를 입력해주세요.";
+        return;
+    }
+    nameSpan.innerText = "조회 중..."; 
+    try { 
+        const res = await callApi('getCardNameFromDb', { cardNo }); 
+        // 5. 검색 실패 시 문구 변경
+        if (res.name === "결과 없음" || res.name === "접속 오류") {
+            nameSpan.innerText = "유효하지 않은 카드 번호";
+        } else {
+            nameSpan.innerText = res.name; 
+        }
+    } catch (e) { 
+        nameSpan.innerText = "유효하지 않은 카드 번호"; 
+    } 
+  }
+  
   function startSearch() { const name = document.getElementById('card-search').value; if(!name || !isAppConfigured) return; saveRecentSearch(name); const filteredRows = localCardDatabase.filter(row => String(row[0]) === name); renderTable(filteredRows); }
   function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
   function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
@@ -509,7 +572,8 @@
     const tbody = document.getElementById('add-card-tbody'); const rows = [];
     for (let tr of tbody.children) {
       const cardNo = tr.querySelector('.new-card-no').value.trim(); const name = tr.querySelector('.card-name-fetch').innerText;
-      if (!cardNo || name === "결과 없음" || name === "조회 중..." || name === "번호 입력 대기") continue;
+      // 유효하지 않은 카드 번호일 때도 스킵
+      if (!cardNo || name === "결과 없음" || name === "조회 중..." || name === "카드 번호를 입력해주세요." || name === "유효하지 않은 카드 번호") continue;
       let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
       let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
       const qty = tr.querySelector('.new-card-qty').value; const another = tr.querySelector('.new-card-another').value.trim();
