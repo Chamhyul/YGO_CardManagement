@@ -29,6 +29,8 @@
       --input-bg: #ffffff;
       --disabled-bg: #e0e0e0;
       --disabled-text: #9e9e9e;
+      /* ★ 추가: 라이트 모드 로딩 배경 (밝은 반투명) */
+      --overlay-bg: rgba(255, 255, 255, 0.85);
     }
 
     body.dark-mode {
@@ -51,6 +53,8 @@
       --input-bg: #2c2c2c;
       --disabled-bg: #424242;
       --disabled-text: #757575;
+      /* ★ 추가: 다크 모드 로딩 배경 (어두운 반투명) */
+      --overlay-bg: rgba(0, 0, 0, 0.6);
     }
 
     body, input, button, table, .btn, .modal-content, select { font-family: 'Pretendard', sans-serif !important; }
@@ -62,14 +66,25 @@
     .maker-info a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 3px; transition: color 0.2s; }
     .maker-info a:hover { color: var(--error-red); }
 
-    /* ★ 수정: 토글 스위치 강제 고정 스타일 */
     .theme-switch-wrapper { 
         position: absolute; top: 6px; right: 130px; 
         display: flex; align-items: center; gap: 8px; z-index: 10; 
     }
-    #theme-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; min-width: 65px; text-align: right; }
+    #theme-label { 
+        font-size: 0.7rem; color: var(--text-muted); font-weight: 600; 
+        display: flex; justify-content: flex-end; align-items: center; 
+        min-width: 85px; 
+        text-align: right;
+    }
     
-    /* 부모 Label: 크기 고정 및 줄간격 초기화 */
+    .status-text {
+        display: inline-block;
+        width: 26px; 
+        text-align: center;
+        font-weight: 800; 
+        margin-left: 2px;
+    }
+    
     .theme-switch { 
         display: inline-block; position: relative; margin-bottom: 0;
         height: 18px !important; 
@@ -80,16 +95,14 @@
     
     .theme-switch input { display: none; }
     
-    /* 슬라이더(배경): absolute지만 bottom을 auto로 풀고 height를 고정하여 늘어짐 방지 */
     .slider { 
         background-color: #ccc; 
         position: absolute; cursor: pointer; 
-        top: 0; left: 0; /* right, bottom 제거 */
-        width: 36px; height: 18px; /* 강제 크기 지정 */
+        top: 0; left: 0; 
+        width: 36px; height: 18px; 
         transition: .4s; border-radius: 34px; 
     }
     
-    /* 동그라미 버튼 */
     .slider:before { 
         background-color: white; 
         content: ""; 
@@ -100,10 +113,8 @@
     }
     
     input:checked + .slider { background-color: var(--primary-color); }
-    /* 이동 거리: 36 - 14 - 4 = 18px */
     input:checked + .slider:before { transform: translateX(18px); }
     
-    /* 아이콘 */
     .slider .icon { 
         color: white; position: absolute; top: 50%; transform: translateY(-50%); 
         font-size: 10px; line-height: 1; pointer-events: none;
@@ -137,9 +148,29 @@
     
     @media only screen and (max-width: 600px) { .search-box { padding: 20px 10px; } .search-ghost { display: none; } .search-input-wrapper { flex: 1; } .btn-group { width: auto; margin-left: 8px; } .modal { width: 95% !important; max-height: 90% !important; top: 5% !important; } }
     
+    /* 자동완성 다크모드 지원 */
+    .autocomplete-content {
+      background-color: var(--bg-surface) !important;
+      border: 1px solid var(--border-color);
+    }
+    .autocomplete-content li {
+      border-bottom: 1px solid var(--border-color);
+    }
+    .autocomplete-content li > span {
+      color: var(--text-primary) !important;
+      font-size: 0.9rem;
+    }
+    .autocomplete-content li .highlight {
+      color: var(--primary-color) !important;
+      font-weight: 700;
+    }
+    .autocomplete-content li:hover, .autocomplete-content li.active {
+      background-color: var(--bg-sub) !important;
+    }
+
     table { background: var(--bg-surface); font-size: 0.85rem; table-layout: fixed; width: 100%; border-collapse: collapse; color: var(--text-primary); }
     th { background: var(--bg-header); color: var(--text-secondary); font-weight: 700; padding: 10px 4px; text-align: center; border: 1px solid var(--border-color); font-size: 0.8rem; word-break: break-all; }
-    td { border: 1px solid var(--border-color); text-align: center; padding: 6px 4px; position: relative; word-break: break-all; }
+    td { border: 1px solid var(--border-color); text-align: center; padding: 6px 4px; position: relative; word-break: break-all; color: var(--text-primary); }
     
     .result-container th { background: var(--primary-color); color: white; border-color: var(--primary-dark); }
     .col-card-no { width: 180px; } .col-loc { width: 110px; } .col-total { width: 60px; } .col-proc { width: 70px; } 
@@ -158,6 +189,9 @@
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; background-color: var(--bg-surface); color: var(--text-primary); }
     .modal .modal-content { background-color: var(--bg-surface); }
     .modal .modal-footer { background-color: var(--bg-surface); border-top: 1px solid var(--border-color); }
+    
+    #settings-modal .modal-footer { border-top: none !important; }
+
     #add-result-modal { width: 95% !important; max-width: 1000px !important; }
     
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
@@ -167,7 +201,14 @@
     .guide-btn { cursor: pointer; color: var(--primary-dark); font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
     .guide-content { background: var(--bg-sub); padding: 18px; border-radius: 8px; font-size: 0.95rem; border: 1px solid var(--border-color); display: none; margin-bottom: 15px; color: var(--text-primary); }
     
-    #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 11000; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+    /* ★ 수정: 로딩 오버레이 스타일 (변수 사용) */
+    #loading-overlay { 
+        display: none; position: fixed; top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background: var(--overlay-bg); /* 변수로 제어 */
+        z-index: 11000; flex-direction: column; align-items: center; justify-content: center; 
+        backdrop-filter: blur(2px); 
+    }
     body.dark-mode #loading-text { color: var(--primary-color) !important; }
     
     #result-area { overflow-x: auto; max-height: 0; opacity: 0; transition: max-height 0.6s ease; width: 100%; }
@@ -234,9 +275,21 @@
     select option { background-color: var(--bg-surface); color: var(--text-primary); }
 
     input.move-qty:disabled, select:disabled, input:disabled { color: var(--disabled-text) !important; border-bottom: 1px dotted var(--disabled-text) !important; cursor: not-allowed; }
+    
+    body.dark-mode input:disabled { 
+        color: var(--text-muted) !important;
+        -webkit-text-fill-color: var(--text-muted) !important;
+    }
+
+    body.dark-mode input[type=number]::-webkit-inner-spin-button, 
+    body.dark-mode input[type=number]::-webkit-outer-spin-button { 
+      filter: invert(1);
+    }
 
     #add-submit-btn.disabled { background-color: var(--disabled-bg) !important; color: var(--disabled-text) !important; }
     #confirm-btn.disabled { background-color: var(--disabled-bg) !important; color: var(--disabled-text) !important; }
+    
+    body.dark-mode #disconnect-btn.disabled { background-color: #424242 !important; color: #757575 !important; }
 
     .adjust-btn-group { display: flex; justify-content: center; gap: 8px; align-items: center; }
     .adjust-btn { 
@@ -286,10 +339,10 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.4.26</div>
+<div class="version-info">ver. 0.5.0</div>
 
 <div class="theme-switch-wrapper">
-    <span id="theme-label">다크 모드 OFF</span>
+    <span id="theme-label">다크 모드 <span class="status-text">OFF</span></span>
     <label class="theme-switch" for="checkbox-theme">
         <input type="checkbox" id="checkbox-theme" onchange="toggleTheme()">
         <div class="slider">
@@ -448,6 +501,12 @@
     subBtns.forEach(btn => { btn.addEventListener('click', () => { isFabOpen = false; updateFabState(fabElem); }); });
     M.FloatingActionButton.init(fabElem, { direction: 'top', hoverEnabled: false, onCloseStart: () => { if(isFabOpen) { isFabOpen = false; updateFabState(fabElem); } } });
     const searchInput = document.getElementById('card-search');
+    searchInput.addEventListener('click', function() { 
+        if(!localStorage.getItem(STORAGE_KEY)) {
+            this.blur();
+            openGuideFromMain();
+        }
+    });
     searchInput.addEventListener('input', function() { document.getElementById('clear-btn').style.display = this.value ? 'block' : 'none'; });
     document.getElementById('clear-btn').addEventListener('click', function() { searchInput.value = ''; this.style.display = 'none'; searchInput.focus(); });
     searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { const dropdown = document.querySelector('.autocomplete-content'); if (dropdown) { const firstVisible = dropdown.querySelector('li:not(.hide)'); if (firstVisible) this.value = firstVisible.innerText.trim(); } if (acInstance) acInstance.close(); this.blur(); startSearch(); } });
@@ -460,9 +519,9 @@
     if (savedTheme === 'dark') {
       document.body.classList.add('dark-mode');
       document.getElementById('checkbox-theme').checked = true;
-      label.innerText = "다크 모드 ON";
+      label.innerHTML = `다크 모드 <span class="status-text">ON</span>`;
     } else {
-      label.innerText = "다크 모드 OFF";
+      label.innerHTML = `다크 모드 <span class="status-text">OFF</span>`;
     }
   }
   function toggleTheme() {
@@ -470,11 +529,11 @@
     if (document.getElementById('checkbox-theme').checked) {
       document.body.classList.add('dark-mode');
       localStorage.setItem(THEME_KEY, 'dark');
-      label.innerText = "다크 모드 ON";
+      label.innerHTML = `다크 모드 <span class="status-text">ON</span>`;
     } else {
       document.body.classList.remove('dark-mode');
       localStorage.setItem(THEME_KEY, 'light');
-      label.innerText = "다크 모드 OFF";
+      label.innerHTML = `다크 모드 <span class="status-text">OFF</span>`;
     }
   }
 
@@ -487,7 +546,10 @@
     const response = await fetch(url, options); return await response.json();
   }
   function checkAuthAndOpen(modalId) {
-    if (!localStorage.getItem(STORAGE_KEY)) { M.toast({html: '먼저 구글 시트를 연결해주세요!', classes: 'red darken-2 rounded'}); return; }
+    if (!localStorage.getItem(STORAGE_KEY)) { 
+        openGuideFromMain();
+        return; 
+    }
     if (modalId === '#manage-card-modal' && document.getElementById('manage-card-tbody').children.length === 0) addManageRows(1);
     if (modalId === '#add-card-modal' && document.getElementById('add-card-tbody').children.length === 0) addMoreRows(1);
     M.Modal.getInstance(document.querySelector(modalId)).open();
@@ -516,7 +578,16 @@
   }
   function setupAutocomplete() { const searchInput = document.getElementById('card-search'); const fullData = {}; allNames.forEach(name => fullData[name] = null); acInstance = M.Autocomplete.init(searchInput, { data: fullData, onAutocomplete: startSearch, limit: 15, minLength: 1 }); }
 
-  function startSearch() { const name = document.getElementById('card-search').value; if(!name || !isAppConfigured) return; saveRecentSearch(name); const filteredRows = localCardDatabase.filter(row => String(row[0]) === name); renderTable(filteredRows); }
+  function startSearch() { 
+    if (!localStorage.getItem(STORAGE_KEY)) {
+        openGuideFromMain();
+        return;
+    }
+    const name = document.getElementById('card-search').value; 
+    if(!name || !isAppConfigured) return; 
+    saveRecentSearch(name); const filteredRows = localCardDatabase.filter(row => String(row[0]) === name); renderTable(filteredRows); 
+  }
+  
   function renderTable(rows) {
     showLoading(false); const resultArea = document.getElementById('result-area');
     if (rows.length === 0) { resultArea.innerHTML = "<p class='center'>결과 없음</p>"; resultArea.classList.add('show'); return; }
@@ -569,7 +640,10 @@
   function updateManageProcessing(anotherEl) { const row = anotherEl.closest('tr'); if (anotherEl.value === "__placeholder__") return; resetManageRow(row, 'proc'); const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = anotherEl.value; const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim()); const procSel = row.querySelector('.manage-proc'); const procs = [...new Set(matches.map(r => r[2]))]; procSel.innerHTML = `<option value="" disabled selected>선택</option>` + procs.map(p => `<option value="${p}">${p}</option>`).join(''); procSel.disabled = false; }
   function updateManageStorage(procEl) { const row = procEl.closest('tr'); resetManageRow(row, 'storage'); const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = row.querySelector('.manage-another').value; const proc = procEl.value; const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim() && String(r[2]).trim() === String(proc).trim()); const storageSel = row.querySelector('.manage-loc'); const locs = [...new Set(matches.map(r => r[4]))]; storageSel.innerHTML = `<option value="" disabled selected>선택</option>` + locs.map(l => `<option value="${l}">${l}</option>`).join(''); storageSel.disabled = false; }
   function updateManageMoveLoc(locEl) { const row = locEl.closest('tr'); resetManageRow(row, 'move'); const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = row.querySelector('.manage-another').value; const proc = row.querySelector('.manage-proc').value; const currentLoc = locEl.value; const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim() && String(r[2]).trim() === String(proc).trim() && String(r[4]).trim() === String(currentLoc).trim()); const totalQty = matches.reduce((sum, r) => sum + (parseInt(r[3]) || 0), 0); row.querySelector('.storage-qty-disp').innerText = totalQty; const moveSel = row.querySelector('.move-loc'); const availableLocs = allLocations.filter(l => l !== currentLoc); moveSel.innerHTML = `<option value="" disabled selected>선택</option>` + availableLocs.map(l => `<option value="${l}">${l}</option>`).join('') + `<option value="DIRECT">직접 입력</option>`; moveSel.disabled = false; }
-  function syncDirectInputManage(sel) { const row = sel.closest('tr'); const input = sel.nextElementSibling; const qtyInput = row.querySelector('.move-qty'); const maxQty = parseInt(row.querySelector('.storage-qty-disp').innerText); if (sel.value === 'DIRECT') { sel.style.flex = "0 0 35%"; input.style.display = 'block'; input.style.flex = "1"; input.disabled = false; input.value = ""; input.focus(); } else { sel.style.flex = "1"; input.style.display = 'none'; input.disabled = true; input.value = sel.value; } qtyInput.disabled = false; qtyInput.max = maxQty; qtyInput.placeholder = `최대 ${maxQty}`; qtyInput.value = ""; }
+  function syncDirectInputManage(sel) { const row = sel.closest('tr'); const input = sel.nextElementSibling; const qtyInput = row.querySelector('.move-qty'); const maxQty = parseInt(row.querySelector('.storage-qty-disp').innerText); if (sel.value === 'DIRECT') { sel.style.flex = "0 0 35%"; input.style.display = 'block'; input.style.flex = "1"; input.disabled = false; input.value = ""; input.focus(); } else { sel.style.flex = "1"; input.style.display = 'none'; input.disabled = true; input.value = sel.value; } qtyInput.disabled = false; qtyInput.max = maxQty; 
+    qtyInput.placeholder = ""; 
+    qtyInput.value = ""; 
+  }
   function resetManageRow(row, level) { const levels = ['another', 'proc', 'storage', 'move']; const startIdx = levels.indexOf(level); if (startIdx <= 0) { const el = row.querySelector('.manage-another'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; } if (startIdx <= 1) { const el = row.querySelector('.manage-proc'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; } if (startIdx <= 2) { const el = row.querySelector('.manage-loc'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; } if (startIdx <= 3) { const moveSel = row.querySelector('.move-loc'); moveSel.innerHTML = '<option value="">선택</option>'; moveSel.disabled = true; moveSel.style.flex = "1"; const directInp = row.querySelector('.loc-direct'); directInp.style.display = 'none'; directInp.value = ""; row.querySelector('.storage-qty-disp').innerText = "-"; const qtyInp = row.querySelector('.move-qty'); qtyInp.value = ""; qtyInp.disabled = true; qtyInp.placeholder = ""; } }
   async function submitManageCards() { const tbody = document.getElementById('manage-card-tbody'); const moves = []; for (let tr of tbody.children) { const cardName = tr.querySelector('.card-name-fetch').innerText; const cardNo = tr.querySelector('.manage-card-no').value.trim(); if (!cardNo || cardName === "카드 번호를 입력해주세요." || cardName === "보유하지 않은 카드") continue; const another = tr.querySelector('.manage-another').value; const proc = tr.querySelector('.manage-proc').value; const currentLoc = tr.querySelector('.manage-loc').value; const moveSel = tr.querySelector('.move-loc'); let targetLoc = moveSel.value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : moveSel.value; const moveQty = parseInt(tr.querySelector('.move-qty').value); const maxQty = parseInt(tr.querySelector('.storage-qty-disp').innerText); if (another !== "__placeholder__" && proc && currentLoc && targetLoc && moveQty > 0 && moveQty <= maxQty) { moves.push({ cardName, cardNo, another, proc, currentLoc, targetLoc, moveQty }); } } if (moves.length === 0) { M.toast({html: '유효한 이동 요청이 없습니다.', classes: 'red darken-2 rounded'}); return; } const btn = document.getElementById('manage-submit-btn'); btn.classList.add('disabled'); showLoading(true, "이동 처리 중..."); try { const res = await callApi('moveCards', {}, moves); M.Modal.getInstance(document.getElementById('manage-card-modal')).close(); showLoading(false); M.toast({html: '카드 이동 완료!', displayLength: 1500, classes: 'cyan darken-2'}); setTimeout(() => location.reload(), 1500); } catch (e) { showLoading(false); btn.classList.remove('disabled'); M.toast({html: '처리 중 오류 발생', classes: 'red darken-2 rounded'}); } }
 
@@ -945,7 +1019,6 @@
     const failCount = detailLog.filter(l => l.status === 'fail').length;
     document.getElementById('result-fail-text').innerText = failCount > 0 ? `(${failCount}종의 카드를 등록할 수 없습니다.)` : "";
     
-    // ★ 수정: 결과 표시 시 등록 성공 플래그 세우기
     hasRegisteredInSession = true;
 
     let summaryHtml = "";
@@ -1010,32 +1083,26 @@
     icon.innerText = isHidden ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
   }
 
-  // ★ 수정: 추가 등록 (Continue) 로직 개선
   function handleContinueRegistration() {
     isContinuingRegistration = true;
     
-    // 1. 결과 모달 닫기
     M.Modal.getInstance(document.getElementById('add-result-modal')).close();
     
-    // 2. 실패한 행 찾기
     const tbody = document.getElementById('add-card-tbody');
     let hasFailures = false;
     Array.from(tbody.children).forEach(tr => {
         if (tr.dataset.status === 'success') {
-            tr.remove(); // 성공한 행 제거
+            tr.remove(); 
         } else {
-            hasFailures = true; // 실패한 행 존재 (유지됨)
+            hasFailures = true; 
             delete tr.dataset.status;
         }
     });
     
-    // 3. 실패한 행이 없으면 초기화 (1행 생성)
     if (!hasFailures) {
         addMoreRows(1);
     } else {
-        // 실패한 행이 있으면 번호 재정렬
         reIndexRows();
-        // 남은 행이 5의 배수가 되도록 추가
         const currentCount = tbody.children.length;
         const remainder = currentCount % 5;
         if (remainder !== 0) {
@@ -1043,12 +1110,9 @@
         }
     }
     
-    // 4. 모달 데이터 유지 설정 (닫힐 때 리셋 방지)
     document.getElementById('add-card-modal').dataset.keepData = "true";
-    isContinuingRegistration = false; // Reset flag
+    isContinuingRegistration = false; 
   }
-
-  // retryFailedCards는 handleContinueRegistration으로 대체됨. (HTML onclick 변경 완료)
 
   function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
   function disconnectSheet() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
