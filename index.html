@@ -51,7 +51,9 @@
     .clear-history-btn:hover { color: #616161; }
 
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
-    #add-result-modal { max-width: 700px !important; }
+    /* 결과 모달 너비 확장 */
+    #add-result-modal { width: 95% !important; max-width: 1000px !important; }
+    
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
     .url-input-container input { margin-bottom: 0 !important; padding-right: 40px !important; }
     .valid-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: none; }
@@ -69,7 +71,6 @@
     #toast-container { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; right: auto !important; bottom: auto !important; max-width: 90%; width: auto !important; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .toast { border-radius: 24px !important; text-align: center; justify-content: center; margin-top: 10px; }
 
-    /* FAB */
     .fixed-action-btn { bottom: 24px; right: 24px; }
     .fixed-action-btn .main-fab i { transition: transform 0.3s ease-in-out 0s; }
     .fixed-action-btn.fab-open .main-fab i { transform: rotate(45deg); }
@@ -81,8 +82,10 @@
     .modal-subtitle { color: #666; font-size: 0.95rem; margin-top: 0; margin-bottom: 20px; display: block; line-height: 1.5; }
     .add-modal-table { font-size: 0.82rem; width: 100%; border-collapse: collapse; }
     
-    /* 어나더 열 수정 (간격 제거 0px) */
+    /* 1. & 2. 어나더 열 정렬 수정 (내림 및 밀착) */
     .another-cell-container { display: flex; align-items: center; justify-content: center; gap: 0; width: 100%; height: 100%; }
+    .another-cell-container .checkbox-label { margin-top: 5px; margin-right: -5px; z-index: 5; }
+    
     .td-flex-container { display: flex; align-items: center; gap: 4px; width: 100%; height: 100%; }
     .flex-select { flex: 1; min-width: 0; height: 2.2rem !important; font-size: 0.85rem; display: block !important; }
     .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
@@ -95,23 +98,25 @@
       font-size: 0.85rem !important; 
       text-align: center; 
       border-bottom: 1px solid #9e9e9e !important; 
-      /* 대문자 강제 */
       text-transform: uppercase;
     }
     input.move-qty:disabled, select:disabled, input:disabled { color: #ccc !important; border-bottom: 1px dotted #ccc !important; cursor: not-allowed; }
 
     /* 결과 모달 스타일 수정 */
-    .result-icon-area { text-align: center; margin-top: 10px; margin-bottom: 20px; }
+    .result-icon-area { text-align: center; margin-top: 10px; margin-bottom: 10px; }
     .result-icon-area i { font-size: 60px; color: var(--success-green); }
-    /* 행간 줄임 */
     .result-summary { text-align: center; font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 2px; }
-    .result-fail-summary { text-align: center; font-size: 0.9rem; color: var(--error-red); margin-bottom: 20px; font-weight: 500; }
+    .result-fail-summary { text-align: center; font-size: 0.9rem; color: var(--error-red); margin-bottom: 15px; font-weight: 500; }
     
-    .result-table-wrapper { display: none; margin-top: 15px; }
-    .result-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: center; }
-    .result-table td { border: 1px solid #ddd; padding: 8px; }
+    /* 1. 요약표 상시 노출 영역 */
+    #result-summary-table-box { width: 100%; overflow-x: auto; margin-bottom: 15px; }
     
-    /* 행 전체 색상 적용 */
+    /* 3. 자세히(상세) 표 영역 */
+    .result-detail-wrapper { display: none; margin-top: 10px; width: 100%; overflow-x: auto; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: center; }
+    .result-table th { background: #f5f5f5; color: #666; padding: 6px; border: 1px solid #ddd; }
+    .result-table td { border: 1px solid #ddd; padding: 6px; word-break: break-all; }
+    
     tr.success-row { background-color: var(--bg-success); }
     tr.fail-row { background-color: var(--bg-fail); }
     
@@ -124,7 +129,7 @@
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.15</div>
+<div class="version-info">ver. 0.2.16</div>
 <div class="maker-info">Made by <a href="https://www.youtube.com/@참혈" target="_blank"><i class="fab fa-youtube"></i>참혈</a></div>
 
 <div id="loading-overlay">
@@ -223,17 +228,35 @@
     <p id="result-success-text" class="result-summary"></p>
     <p id="result-fail-text" class="result-fail-summary"></p>
     
+    <div id="result-summary-table-box">
+        <table class="result-table">
+            <tbody id="result-summary-body"></tbody>
+        </table>
+    </div>
+    
     <div class="toggle-result-btn" onclick="toggleResultDetail()">
-        <span>내역 보기</span>
+        <span>자세히</span>
         <i id="toggle-icon" class="material-icons" style="font-size:1.2rem; transform: translateY(1px);">keyboard_arrow_down</i>
     </div>
-    <div id="result-detail-box" class="result-table-wrapper">
+    <div id="result-detail-box" class="result-detail-wrapper">
         <table class="result-table">
-            <tbody id="result-table-body"></tbody>
+            <thead>
+                <tr>
+                    <th style="width:5%;">No</th>
+                    <th style="width:20%;">카드 이름</th>
+                    <th style="width:15%;">카드 번호</th>
+                    <th style="width:15%;">어나더</th>
+                    <th style="width:15%;">가공</th>
+                    <th style="width:15%;">보관 위치</th>
+                    <th style="width:10%;">수량</th>
+                </tr>
+            </thead>
+            <tbody id="result-detail-body"></tbody>
         </table>
     </div>
   </div>
-  <div class="modal-footer" style="display:flex; justify-content:flex-end; padding-right:24px;">
+  <div class="modal-footer" style="display:flex; justify-content:flex-end; padding-right:24px; gap:8px;">
+    <button class="btn grey lighten-1" style="color:#333; font-weight:600;" onclick="retryFailedCards()">보완</button>
     <button class="btn cyan-theme" onclick="location.reload()">확인</button>
   </div>
 </div>
@@ -248,7 +271,18 @@
   let isAppConfigured = false, acInstance = null, isLoading = false, validationTimeout = null, isFabOpen = false;
 
   document.addEventListener('DOMContentLoaded', function() {
-    M.Modal.init(document.querySelectorAll('.modal'), { onCloseEnd: function(el) { if(el.id === 'add-card-modal') resetAddModal(); if(el.id === 'manage-card-modal') resetManageModal(); } });
+    M.Modal.init(document.querySelectorAll('.modal'), { 
+      onCloseEnd: function(el) { 
+        if(el.id === 'add-card-modal') {
+            // 보완 모드인지 확인 (모달이 닫혀도 데이터 유지 필요 시 리셋 안함)
+            // 하지만 기본적으로 닫히면 리셋하는게 맞음. '보완' 버튼은 닫지 않고 처리하거나, 닫고나서 즉시 재오픈시 리셋을 막아야함.
+            // 여기서는 단순화: add-card-modal이 닫힐 때 내부 플래그가 없으면 리셋.
+            if(!el.dataset.keepData) resetAddModal();
+            else delete el.dataset.keepData; // 플래그 해제
+        }
+        if(el.id === 'manage-card-modal') resetManageModal(); 
+      } 
+    });
     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
     const fabElem = document.getElementById('fab-menu');
     const mainFabBtn = fabElem.querySelector('.main-fab');
@@ -323,78 +357,17 @@
     });
   }
 
-  // Manage functions
-  function addManageRows(count = null) {
-    const tbody = document.getElementById('manage-card-tbody');
-    let increment = count; if (increment === null) { increment = (tbody.children.length === 1) ? 4 : 5; }
-    for (let i = 0; i < increment; i++) {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td><td><input type="text" class="manage-card-no" onblur="updateManageDropdowns(this)" placeholder="번호 입력"></td><td><select class="browser-default manage-another flex-select" onchange="updateManageProcessing(this)" disabled><option value="">선택</option></select></td><td><select class="browser-default manage-proc flex-select" onchange="updateManageStorage(this)" disabled><option value="">선택</option></select></td><td><select class="browser-default manage-loc flex-select" onchange="updateManageMoveLoc(this)" disabled><option value="">선택</option></select></td><td><div class="td-flex-container"><select class="browser-default move-loc flex-select" onchange="syncDirectInputManage(this)" disabled><option value="" disabled selected>선택</option></select><input type="text" class="direct-input loc-direct flex-input" placeholder="새 위치"></div></td><td><span class="storage-qty-disp">-</span></td><td><input type="number" class="move-qty" min="1" disabled style="height:2.2rem !important; text-align:center;"></td>`;
-      tbody.appendChild(row);
-    }
-  }
-  function updateManageDropdowns(inputEl) {
-    const row = inputEl.closest('tr'); const cardNo = inputEl.value.trim().toUpperCase(); inputEl.value = cardNo;
-    const nameSpan = row.querySelector('.card-name-fetch'); resetManageRow(row, 'another');
-    if (!cardNo) { nameSpan.innerText = "카드 번호를 입력해주세요."; return; }
-    const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo);
-    if (matches.length > 0) {
-      nameSpan.innerText = matches[0][0]; const anotherSel = row.querySelector('.manage-another'); const anothers = [...new Set(matches.map(r => r[5] || ""))];
-      if (anothers.length === 1 && anothers[0] === "") { anotherSel.innerHTML = `<option value="" selected>기본</option>`; anotherSel.value = ""; anotherSel.disabled = true; updateManageProcessing(anotherSel); } 
-      else { anotherSel.innerHTML = `<option value="__placeholder__" disabled selected>선택</option>` + (anothers.includes("") ? `<option value="">기본</option>` : '') + anothers.filter(a => a !== "").map(a => `<option value="${a}">${a}</option>`).join(''); anotherSel.disabled = false; }
-    } else { nameSpan.innerText = "보유하지 않은 카드"; }
-  }
-  function updateManageProcessing(anotherEl) {
-    const row = anotherEl.closest('tr'); if (anotherEl.value === "__placeholder__") return; resetManageRow(row, 'proc');
-    const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = anotherEl.value;
-    const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim());
-    const procSel = row.querySelector('.manage-proc'); const procs = [...new Set(matches.map(r => r[2]))];
-    procSel.innerHTML = `<option value="" disabled selected>선택</option>` + procs.map(p => `<option value="${p}">${p}</option>`).join(''); procSel.disabled = false;
-  }
-  function updateManageStorage(procEl) {
-    const row = procEl.closest('tr'); resetManageRow(row, 'storage');
-    const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = row.querySelector('.manage-another').value; const proc = procEl.value;
-    const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim() && String(r[2]).trim() === String(proc).trim());
-    const storageSel = row.querySelector('.manage-loc'); const locs = [...new Set(matches.map(r => r[4]))];
-    storageSel.innerHTML = `<option value="" disabled selected>선택</option>` + locs.map(l => `<option value="${l}">${l}</option>`).join(''); storageSel.disabled = false;
-  }
-  function updateManageMoveLoc(locEl) {
-    const row = locEl.closest('tr'); resetManageRow(row, 'move');
-    const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = row.querySelector('.manage-another').value; const proc = row.querySelector('.manage-proc').value; const currentLoc = locEl.value;
-    const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim() && String(r[2]).trim() === String(proc).trim() && String(r[4]).trim() === String(currentLoc).trim());
-    const totalQty = matches.reduce((sum, r) => sum + (parseInt(r[3]) || 0), 0);
-    row.querySelector('.storage-qty-disp').innerText = totalQty;
-    const moveSel = row.querySelector('.move-loc'); const availableLocs = allLocations.filter(l => l !== currentLoc);
-    moveSel.innerHTML = `<option value="" disabled selected>선택</option>` + availableLocs.map(l => `<option value="${l}">${l}</option>`).join('') + `<option value="DIRECT">직접 입력</option>`; moveSel.disabled = false;
-  }
-  function syncDirectInputManage(sel) {
-    const row = sel.closest('tr'); const input = sel.nextElementSibling; const qtyInput = row.querySelector('.move-qty'); const maxQty = parseInt(row.querySelector('.storage-qty-disp').innerText);
-    if (sel.value === 'DIRECT') { sel.style.flex = "0 0 35%"; input.style.display = 'block'; input.style.flex = "1"; input.disabled = false; input.value = ""; input.focus(); } else { sel.style.flex = "1"; input.style.display = 'none'; input.disabled = true; input.value = sel.value; }
-    qtyInput.disabled = false; qtyInput.max = maxQty; qtyInput.placeholder = `최대 ${maxQty}`; qtyInput.value = "";
-  }
-  function resetManageRow(row, level) {
-    const levels = ['another', 'proc', 'storage', 'move']; const startIdx = levels.indexOf(level);
-    if (startIdx <= 0) { const el = row.querySelector('.manage-another'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; }
-    if (startIdx <= 1) { const el = row.querySelector('.manage-proc'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; }
-    if (startIdx <= 2) { const el = row.querySelector('.manage-loc'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; }
-    if (startIdx <= 3) { const moveSel = row.querySelector('.move-loc'); moveSel.innerHTML = '<option value="">선택</option>'; moveSel.disabled = true; moveSel.style.flex = "1"; const directInp = row.querySelector('.loc-direct'); directInp.style.display = 'none'; directInp.value = ""; row.querySelector('.storage-qty-disp').innerText = "-"; const qtyInp = row.querySelector('.move-qty'); qtyInp.value = ""; qtyInp.disabled = true; qtyInp.placeholder = ""; }
-  }
-  async function submitManageCards() {
-    const tbody = document.getElementById('manage-card-tbody'); const moves = [];
-    for (let tr of tbody.children) {
-      const cardName = tr.querySelector('.card-name-fetch').innerText; const cardNo = tr.querySelector('.manage-card-no').value.trim();
-      if (!cardNo || cardName === "카드 번호를 입력해주세요." || cardName === "보유하지 않은 카드") continue;
-      const another = tr.querySelector('.manage-another').value; const proc = tr.querySelector('.manage-proc').value; const currentLoc = tr.querySelector('.manage-loc').value;
-      const moveSel = tr.querySelector('.move-loc'); let targetLoc = moveSel.value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : moveSel.value;
-      const moveQty = parseInt(tr.querySelector('.move-qty').value); const maxQty = parseInt(tr.querySelector('.storage-qty-disp').innerText);
-      if (another !== "__placeholder__" && proc && currentLoc && targetLoc && moveQty > 0 && moveQty <= maxQty) { moves.push({ cardName, cardNo, another, proc, currentLoc, targetLoc, moveQty }); }
-    }
-    if (moves.length === 0) { M.toast({html: '유효한 이동 요청이 없습니다.', classes: 'red darken-2 rounded'}); return; }
-    const btn = document.getElementById('manage-submit-btn'); btn.classList.add('disabled'); showLoading(true, "이동 처리 중...");
-    try { const res = await callApi('moveCards', {}, moves); M.Modal.getInstance(document.getElementById('manage-card-modal')).close(); showLoading(false); M.toast({html: '카드 이동 완료!', displayLength: 1500, classes: 'cyan darken-2'}); setTimeout(() => location.reload(), 1500); } catch (e) { showLoading(false); btn.classList.remove('disabled'); M.toast({html: '처리 중 오류 발생', classes: 'red darken-2 rounded'}); }
-  }
+  // Manage functions (omitted for brevity, same as previous)
+  function addManageRows(count = null) { const tbody = document.getElementById('manage-card-tbody'); let increment = count || ((tbody.children.length === 1) ? 4 : 5); for (let i = 0; i < increment; i++) { const row = document.createElement('tr'); row.innerHTML = `<td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td><td><input type="text" class="manage-card-no" onblur="updateManageDropdowns(this)" placeholder="번호 입력"></td><td><select class="browser-default manage-another flex-select" onchange="updateManageProcessing(this)" disabled><option value="">선택</option></select></td><td><select class="browser-default manage-proc flex-select" onchange="updateManageStorage(this)" disabled><option value="">선택</option></select></td><td><select class="browser-default manage-loc flex-select" onchange="updateManageMoveLoc(this)" disabled><option value="">선택</option></select></td><td><div class="td-flex-container"><select class="browser-default move-loc flex-select" onchange="syncDirectInputManage(this)" disabled><option value="" disabled selected>선택</option></select><input type="text" class="direct-input loc-direct flex-input" placeholder="새 위치"></div></td><td><span class="storage-qty-disp">-</span></td><td><input type="number" class="move-qty" min="1" disabled style="height:2.2rem !important; text-align:center;"></td>`; tbody.appendChild(row); } }
+  function updateManageDropdowns(inputEl) { const row = inputEl.closest('tr'); const cardNo = inputEl.value.trim().toUpperCase(); inputEl.value = cardNo; const nameSpan = row.querySelector('.card-name-fetch'); resetManageRow(row, 'another'); if (!cardNo) { nameSpan.innerText = "카드 번호를 입력해주세요."; return; } const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo); if (matches.length > 0) { nameSpan.innerText = matches[0][0]; const anotherSel = row.querySelector('.manage-another'); const anothers = [...new Set(matches.map(r => r[5] || ""))]; if (anothers.length === 1 && anothers[0] === "") { anotherSel.innerHTML = `<option value="" selected>기본</option>`; anotherSel.value = ""; anotherSel.disabled = true; updateManageProcessing(anotherSel); } else { anotherSel.innerHTML = `<option value="__placeholder__" disabled selected>선택</option>` + (anothers.includes("") ? `<option value="">기본</option>` : '') + anothers.filter(a => a !== "").map(a => `<option value="${a}">${a}</option>`).join(''); anotherSel.disabled = false; } } else { nameSpan.innerText = "보유하지 않은 카드"; } }
+  function updateManageProcessing(anotherEl) { const row = anotherEl.closest('tr'); if (anotherEl.value === "__placeholder__") return; resetManageRow(row, 'proc'); const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = anotherEl.value; const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim()); const procSel = row.querySelector('.manage-proc'); const procs = [...new Set(matches.map(r => r[2]))]; procSel.innerHTML = `<option value="" disabled selected>선택</option>` + procs.map(p => `<option value="${p}">${p}</option>`).join(''); procSel.disabled = false; }
+  function updateManageStorage(procEl) { const row = procEl.closest('tr'); resetManageRow(row, 'storage'); const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = row.querySelector('.manage-another').value; const proc = procEl.value; const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim() && String(r[2]).trim() === String(proc).trim()); const storageSel = row.querySelector('.manage-loc'); const locs = [...new Set(matches.map(r => r[4]))]; storageSel.innerHTML = `<option value="" disabled selected>선택</option>` + locs.map(l => `<option value="${l}">${l}</option>`).join(''); storageSel.disabled = false; }
+  function updateManageMoveLoc(locEl) { const row = locEl.closest('tr'); resetManageRow(row, 'move'); const cardNo = row.querySelector('.manage-card-no').value.trim().toUpperCase(); const another = row.querySelector('.manage-another').value; const proc = row.querySelector('.manage-proc').value; const currentLoc = locEl.value; const matches = localCardDatabase.filter(r => String(r[1]).toUpperCase() === cardNo && String(r[5] || "").trim() === String(another).trim() && String(r[2]).trim() === String(proc).trim() && String(r[4]).trim() === String(currentLoc).trim()); const totalQty = matches.reduce((sum, r) => sum + (parseInt(r[3]) || 0), 0); row.querySelector('.storage-qty-disp').innerText = totalQty; const moveSel = row.querySelector('.move-loc'); const availableLocs = allLocations.filter(l => l !== currentLoc); moveSel.innerHTML = `<option value="" disabled selected>선택</option>` + availableLocs.map(l => `<option value="${l}">${l}</option>`).join('') + `<option value="DIRECT">직접 입력</option>`; moveSel.disabled = false; }
+  function syncDirectInputManage(sel) { const row = sel.closest('tr'); const input = sel.nextElementSibling; const qtyInput = row.querySelector('.move-qty'); const maxQty = parseInt(row.querySelector('.storage-qty-disp').innerText); if (sel.value === 'DIRECT') { sel.style.flex = "0 0 35%"; input.style.display = 'block'; input.style.flex = "1"; input.disabled = false; input.value = ""; input.focus(); } else { sel.style.flex = "1"; input.style.display = 'none'; input.disabled = true; input.value = sel.value; } qtyInput.disabled = false; qtyInput.max = maxQty; qtyInput.placeholder = `최대 ${maxQty}`; qtyInput.value = ""; }
+  function resetManageRow(row, level) { const levels = ['another', 'proc', 'storage', 'move']; const startIdx = levels.indexOf(level); if (startIdx <= 0) { const el = row.querySelector('.manage-another'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; } if (startIdx <= 1) { const el = row.querySelector('.manage-proc'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; } if (startIdx <= 2) { const el = row.querySelector('.manage-loc'); el.innerHTML = '<option value="">선택</option>'; el.disabled = true; } if (startIdx <= 3) { const moveSel = row.querySelector('.move-loc'); moveSel.innerHTML = '<option value="">선택</option>'; moveSel.disabled = true; moveSel.style.flex = "1"; const directInp = row.querySelector('.loc-direct'); directInp.style.display = 'none'; directInp.value = ""; row.querySelector('.storage-qty-disp').innerText = "-"; const qtyInp = row.querySelector('.move-qty'); qtyInp.value = ""; qtyInp.disabled = true; qtyInp.placeholder = ""; } }
+  async function submitManageCards() { const tbody = document.getElementById('manage-card-tbody'); const moves = []; for (let tr of tbody.children) { const cardName = tr.querySelector('.card-name-fetch').innerText; const cardNo = tr.querySelector('.manage-card-no').value.trim(); if (!cardNo || cardName === "카드 번호를 입력해주세요." || cardName === "보유하지 않은 카드") continue; const another = tr.querySelector('.manage-another').value; const proc = tr.querySelector('.manage-proc').value; const currentLoc = tr.querySelector('.manage-loc').value; const moveSel = tr.querySelector('.move-loc'); let targetLoc = moveSel.value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : moveSel.value; const moveQty = parseInt(tr.querySelector('.move-qty').value); const maxQty = parseInt(tr.querySelector('.storage-qty-disp').innerText); if (another !== "__placeholder__" && proc && currentLoc && targetLoc && moveQty > 0 && moveQty <= maxQty) { moves.push({ cardName, cardNo, another, proc, currentLoc, targetLoc, moveQty }); } } if (moves.length === 0) { M.toast({html: '유효한 이동 요청이 없습니다.', classes: 'red darken-2 rounded'}); return; } const btn = document.getElementById('manage-submit-btn'); btn.classList.add('disabled'); showLoading(true, "이동 처리 중..."); try { const res = await callApi('moveCards', {}, moves); M.Modal.getInstance(document.getElementById('manage-card-modal')).close(); showLoading(false); M.toast({html: '카드 이동 완료!', displayLength: 1500, classes: 'cyan darken-2'}); setTimeout(() => location.reload(), 1500); } catch (e) { showLoading(false); btn.classList.remove('disabled'); M.toast({html: '처리 중 오류 발생', classes: 'red darken-2 rounded'}); } }
 
-  // ★ 1-5-10-15 행 추가 로직 적용 (Add)
+  // Add Card Logic
   function addMoreRows(count = null) {
     const tbody = document.getElementById('add-card-tbody');
     let startIdx = tbody.children.length + 1;
@@ -402,14 +375,13 @@
     
     for (let i = 0; i < increment; i++) {
       const row = document.createElement('tr');
-      // No 열 추가 & 어나더 열 이동 & 체크박스 정렬 & 플레이스홀더 "기본" & 대문자 입력 적용
       row.innerHTML = `
         <td style="font-weight:600; color:#888;">${startIdx + i}</td>
         <td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td>
         <td><input type="text" class="new-card-no" oninput="this.value = this.value.toUpperCase()" onblur="fetchCardName(this)" placeholder="번호 입력"></td>
         <td>
             <div class="another-cell-container">
-                <label class="checkbox-label" style="margin-top:4px;"><input type="checkbox" class="filled-in" onchange="syncAnother(this)" disabled><span></span></label>
+                <label class="checkbox-label"><input type="checkbox" class="filled-in" onchange="syncAnother(this)" disabled><span></span></label>
                 <input type="text" class="another-input new-card-another" disabled placeholder="기본">
             </div>
         </td>
@@ -471,112 +443,137 @@
   async function submitNewCards() {
     const tbody = document.getElementById('add-card-tbody'); 
     const validRows = [];
-    const failRows = [];
+    const detailLog = []; // { no, name, cardNo, another, proc, loc, qty, status: 'success'|'fail', failReason }
     let successCount = 0;
     let successQty = 0;
 
     for (let tr of tbody.children) {
       const no = tr.cells[0].innerText;
       const cardNo = tr.querySelector('.new-card-no').value.trim(); 
-      const name = tr.querySelector('.card-name-fetch').innerText;
-      
+      let name = tr.querySelector('.card-name-fetch').innerText;
+      // 입력 없는 행 스킵
       if (!cardNo) continue;
 
+      let another = tr.querySelector('.new-card-another').value.trim();
+      let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
+      let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
+      const qty = parseInt(tr.querySelector('.new-card-qty').value);
+
+      // 실패 사유 판별
       let failReason = null;
-      if (name.includes("유효하지 않은") || name.includes("확인하세요") || name.includes("결과 없음")) failReason = "존재하지 않은 카드 번호";
-      else if (name.includes("조회 중") || name.includes("오류")) failReason = "조회 오류";
-      else if (!tr.querySelector('.new-card-proc').value) failReason = "가공 미선택";
-      else if (!tr.querySelector('.new-card-loc').value) failReason = "보관 위치 미선택";
+      if (name.includes("유효하지 않은") || name.includes("확인하세요") || name.includes("결과 없음")) { failReason = "invalid_no"; name = "유효하지 않은 카드 번호"; }
+      else if (name.includes("조회 중") || name.includes("오류")) { failReason = "error"; name = "조회 오류"; }
+      else if (!proc) { failReason = "no_proc"; proc = "미선택"; }
+      else if (!loc) { failReason = "no_loc"; loc = "미선택"; }
 
       if (failReason) {
-        failRows.push({ no, cardNo, reason: failReason });
+        detailLog.push({ no, name, cardNo, another, proc, loc, qty, status: 'fail', failReason });
+        // 실패 행에 마킹
+        tr.dataset.status = 'fail';
       } else {
-        let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
-        let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
-        const qty = parseInt(tr.querySelector('.new-card-qty').value); 
-        const another = tr.querySelector('.new-card-another').value.trim();
-        
         validRows.push([name, cardNo, proc, qty, loc, another]);
+        detailLog.push({ no, name, cardNo, another, proc, loc, qty, status: 'success' });
         successCount++;
         successQty += qty;
+        // 성공 행에 마킹
+        tr.dataset.status = 'success';
       }
     }
 
-    if (validRows.length === 0) return;
+    // 서버 전송은 유효한 데이터만
+    if (validRows.length > 0) {
+        const btn = document.getElementById('add-submit-btn'); 
+        btn.classList.add('disabled'); 
+        showLoading(true, "기록 중...");
 
-    const btn = document.getElementById('add-submit-btn'); 
-    btn.classList.add('disabled'); 
-    showLoading(true, "기록 중...");
-
-    try {
-      await callApi('addCards', {}, validRows); 
-      M.Modal.getInstance(document.getElementById('add-card-modal')).close(); 
-      showLoading(false); 
-      showResultModal(validRows, failRows, successCount, successQty);
-    } catch (e) { 
-        showLoading(false); 
-        btn.classList.remove('disabled');
-        M.toast({html: '서버 통신 오류', classes: 'red darken-2 rounded'}); 
+        try {
+          await callApi('addCards', {}, validRows); 
+          // ★ 성공시 모달을 닫지 않고 결과 모달을 띄움
+          // 하지만 Add 모달은 열린 상태로 두되, 결과 모달이 위로 덮임.
+          // 여기서 Add 모달을 닫지 않아야 '보완' 기능 사용 가능
+          showLoading(false); 
+          showResultModal(successCount, successQty, detailLog);
+        } catch (e) { 
+            showLoading(false); 
+            btn.classList.remove('disabled');
+            M.toast({html: '서버 통신 오류', classes: 'red darken-2 rounded'}); 
+        }
+    } else {
+        // 유효한게 하나도 없으면 바로 결과창 (실패 내역만 보여줌)
+        showResultModal(0, 0, detailLog);
     }
   }
 
-  function showResultModal(successRows, failRows, count, totalQty) {
+  function showResultModal(count, totalQty, detailLog) {
     const modal = M.Modal.getInstance(document.getElementById('add-result-modal'));
     document.getElementById('result-success-text').innerText = `${count}종의 카드 ${totalQty}장을 추가했습니다.`;
-    document.getElementById('result-fail-text').innerText = failRows.length > 0 ? `(${failRows.length}종의 카드를 추가할 수 없습니다.)` : "";
+    const failCount = detailLog.filter(l => l.status === 'fail').length;
+    document.getElementById('result-fail-text').innerText = failCount > 0 ? `(${failCount}종의 카드를 추가할 수 없습니다.)` : "";
     
-    // 성공 데이터 재집계 (이름 > 번호 기준 합산)
-    const aggregated = {};
-    successRows.forEach(r => {
-        const name = r[0];
-        const no = r[1];
-        const qty = parseInt(r[3]);
-        if(!aggregated[name]) aggregated[name] = {};
-        if(!aggregated[name][no]) aggregated[name][no] = 0;
-        aggregated[name][no] += qty;
-    });
-
-    let html = "";
-    
-    // 성공 행 렌더링
-    const successNames = Object.keys(aggregated);
-    let totalSuccessRowSpan = 0;
-    successNames.forEach(n => totalSuccessRowSpan += Object.keys(aggregated[n]).length);
-
-    if (successNames.length > 0) {
+    // 1. 요약표 (성공/실패)
+    let summaryHtml = "";
+    // 성공 (이름 > 번호 병합)
+    const successLogs = detailLog.filter(l => l.status === 'success');
+    if (successLogs.length > 0) {
+        const aggregated = {};
+        successLogs.forEach(l => {
+            const name = l.name; const no = l.cardNo; const q = l.qty;
+            if(!aggregated[name]) aggregated[name] = {};
+            if(!aggregated[name][no]) aggregated[name][no] = 0;
+            aggregated[name][no] += q;
+        });
+        
         let isFirstGlobal = true;
-        successNames.forEach((name) => {
+        let totalRowSpan = 0;
+        Object.keys(aggregated).forEach(n => totalRowSpan += Object.keys(aggregated[n]).length);
+
+        Object.keys(aggregated).forEach(name => {
             const numbers = Object.keys(aggregated[name]);
             numbers.forEach((no, idx) => {
-                html += `<tr class="success-row">`;
-                // 전체 성공 병합 셀 (가장 첫 행에만)
-                if (isFirstGlobal) {
-                    html += `<td rowspan="${totalSuccessRowSpan}" style="font-weight:700;">성공</td>`;
-                    isFirstGlobal = false;
-                }
-                // 이름 병합 셀 (이름별 첫 행에만)
-                if (idx === 0) {
-                    html += `<td rowspan="${numbers.length}">${name}</td>`;
-                }
-                // 번호, 합산 수량
-                html += `<td>${no}</td><td>${aggregated[name][no]}</td></tr>`;
+                summaryHtml += `<tr class="success-row">`;
+                if(isFirstGlobal) { summaryHtml += `<td rowspan="${totalRowSpan}" style="font-weight:700;">성공</td>`; isFirstGlobal = false; }
+                if(idx === 0) summaryHtml += `<td rowspan="${numbers.length}">${name}</td>`;
+                summaryHtml += `<td>${no}</td><td>${aggregated[name][no]}장</td></tr>`; // 장 단위 추가
             });
         });
     }
-
-    // 실패 행 렌더링
-    if (failRows.length > 0) {
-        failRows.forEach((row, i) => {
-            html += `<tr class="fail-row">`;
-            if (i === 0) html += `<td rowspan="${failRows.length}" style="font-weight:700;">실패</td>`;
-            // 실패는 이름 대신 번호를 표시, 사유를 병합
-            html += `<td>${row.cardNo}</td><td colspan="2" style="color:#d32f2f;">${row.reason}</td></tr>`;
+    
+    // 실패 (카드 번호 기준)
+    const failLogs = detailLog.filter(l => l.status === 'fail');
+    if (failLogs.length > 0) {
+        failLogs.forEach((l, i) => {
+            summaryHtml += `<tr class="fail-row">`;
+            if (i === 0) summaryHtml += `<td rowspan="${failLogs.length}" style="font-weight:700;">실패</td>`;
+            // 실패 사유 텍스트 변환 (이미 submitNewCards에서 처리됨)
+            let reason = l.name; 
+            if(l.failReason === "no_proc" || l.failReason === "no_loc") reason = `${l.failReason === "no_proc" ? "가공" : "보관 위치"} 미선택`;
+            else if(l.failReason === "invalid_no") reason = "존재하지 않은 카드 번호";
+            else if(l.name === "이게 왜 안 됐지?") reason = "알 수 없는 오류";
+            
+            summaryHtml += `<td>${l.cardNo}</td><td colspan="2" style="color:#d32f2f;">${reason}</td></tr>`;
         });
     }
+    document.getElementById('result-summary-body').innerHTML = summaryHtml;
 
-    document.getElementById('result-table-body').innerHTML = html;
+    // 3. 상세표 (입력값 그대로 미러링)
+    let detailHtml = "";
+    detailLog.forEach(l => {
+        const rowClass = l.status === 'success' ? 'success-row' : 'fail-row';
+        detailHtml += `<tr class="${rowClass}">
+            <td>${l.no}</td>
+            <td style="${l.status==='fail' && (l.failReason==='invalid_no' || l.failReason==='error') ? 'color:#d32f2f; font-weight:700;' : ''}">${l.name}</td>
+            <td>${l.cardNo}</td>
+            <td>${l.another || '-'}</td>
+            <td style="${l.status==='fail' && l.failReason==='no_proc' ? 'color:#d32f2f; font-weight:700;' : ''}">${l.proc}</td>
+            <td style="${l.status==='fail' && l.failReason==='no_loc' ? 'color:#d32f2f; font-weight:700;' : ''}">${l.loc}</td>
+            <td>${l.qty}</td>
+        </tr>`;
+    });
+    document.getElementById('result-detail-body').innerHTML = detailHtml;
+
+    // UI 초기화
     document.getElementById('result-detail-box').style.display = 'none';
-    document.getElementById('toggle-icon').innerText = 'keyboard_arrow_down'; // 아이콘 초기화
+    document.getElementById('toggle-icon').innerText = 'keyboard_arrow_down';
     modal.open();
   }
 
@@ -586,6 +583,43 @@
     const isHidden = box.style.display === 'none';
     box.style.display = isHidden ? 'block' : 'none';
     icon.innerText = isHidden ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+  }
+
+  // 4. 보완 기능
+  function retryFailedCards() {
+    const tbody = document.getElementById('add-card-tbody');
+    // 성공한 행 삭제
+    Array.from(tbody.children).forEach(tr => {
+        if (tr.dataset.status === 'success') {
+            tr.remove();
+        } else {
+            // 실패 행은 상태 초기화
+            delete tr.dataset.status;
+        }
+    });
+    
+    // 번호 재정렬
+    let idx = 1;
+    Array.from(tbody.children).forEach(tr => {
+        tr.cells[0].innerText = idx++;
+    });
+
+    // 남은 행 개수에 맞춰 5의 배수 채우기 계산
+    // 현재 남은게 3개 -> 2개 추가해서 5개 맞춤
+    // 현재 남은게 7개 -> 3개 추가해서 10개 맞춤
+    const currentCount = tbody.children.length;
+    const remainder = currentCount % 5;
+    if (remainder !== 0) {
+        addMoreRows(5 - remainder);
+    } else if (currentCount === 0) {
+        addMoreRows(1); // 다 성공했으면 1개(또는 5개) 기본 추가
+    }
+
+    // 결과 모달 닫기
+    M.Modal.getInstance(document.getElementById('add-result-modal')).close();
+    
+    // 카드 추가 모달이 닫히면 데이터가 리셋되므로, 리셋 방지 플래그 설정
+    document.getElementById('add-card-modal').dataset.keepData = "true";
   }
 
   function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
