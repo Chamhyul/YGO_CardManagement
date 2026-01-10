@@ -25,7 +25,6 @@
     .guide-trigger-wrapper { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 8px; padding-right: 15px; }
     .guide-trigger-top { color: var(--dark-cyan); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
     
-    /* 검색창 등 기존 스타일 유지 */
     .search-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: relative; }
     .search-row { display: flex; align-items: center; justify-content: center; width: 100%; }
     .search-ghost { width: 110px; flex-shrink: 0; } 
@@ -52,7 +51,7 @@
     .clear-history-btn:hover { color: #616161; }
 
     .modal { border-radius: 12px; width: 95% !important; max-width: 600px !important; }
-    #add-result-modal { max-width: 700px !important; } /* 결과 모달 너비 조정 */
+    #add-result-modal { max-width: 700px !important; }
     .url-input-container { position: relative; display: flex; align-items: center; margin-top: 20px; margin-bottom: 5px; }
     .url-input-container input { margin-bottom: 0 !important; padding-right: 40px !important; }
     .valid-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: none; }
@@ -82,8 +81,8 @@
     .modal-subtitle { color: #666; font-size: 0.95rem; margin-top: 0; margin-bottom: 20px; display: block; line-height: 1.5; }
     .add-modal-table { font-size: 0.82rem; width: 100%; border-collapse: collapse; }
     
-    /* 3. 어나더 열 정렬 */
-    .another-cell-container { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 100%; }
+    /* 어나더 열 수정 (간격 제거 0px) */
+    .another-cell-container { display: flex; align-items: center; justify-content: center; gap: 0; width: 100%; height: 100%; }
     .td-flex-container { display: flex; align-items: center; gap: 4px; width: 100%; height: 100%; }
     .flex-select { flex: 1; min-width: 0; height: 2.2rem !important; font-size: 0.85rem; display: block !important; }
     .flex-input { flex: 1; min-width: 0; height: 2.2rem !important; display: none; border: 1px solid #ccc !important; padding: 0 5px !important; box-sizing: border-box !important; }
@@ -96,25 +95,36 @@
       font-size: 0.85rem !important; 
       text-align: center; 
       border-bottom: 1px solid #9e9e9e !important; 
+      /* 대문자 강제 */
+      text-transform: uppercase;
     }
     input.move-qty:disabled, select:disabled, input:disabled { color: #ccc !important; border-bottom: 1px dotted #ccc !important; cursor: not-allowed; }
 
-    /* 결과 모달 스타일 */
+    /* 결과 모달 스타일 수정 */
     .result-icon-area { text-align: center; margin-top: 10px; margin-bottom: 20px; }
     .result-icon-area i { font-size: 60px; color: var(--success-green); }
-    .result-summary { text-align: center; font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 5px; }
+    /* 행간 줄임 */
+    .result-summary { text-align: center; font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 2px; }
     .result-fail-summary { text-align: center; font-size: 0.9rem; color: var(--error-red); margin-bottom: 20px; font-weight: 500; }
+    
     .result-table-wrapper { display: none; margin-top: 15px; }
     .result-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: center; }
     .result-table td { border: 1px solid #ddd; padding: 8px; }
-    .bg-success { background-color: var(--bg-success); color: var(--dark-cyan); font-weight: 600; }
-    .bg-fail { background-color: var(--bg-fail); color: var(--error-red); font-weight: 600; }
-    .toggle-result-btn { cursor: pointer; color: var(--dark-cyan); font-weight: 700; text-align: center; margin: 0 auto; display: block; width: fit-content; margin-bottom: 10px; }
+    
+    /* 행 전체 색상 적용 */
+    tr.success-row { background-color: var(--bg-success); }
+    tr.fail-row { background-color: var(--bg-fail); }
+    
+    .toggle-result-btn { 
+        cursor: pointer; color: var(--dark-cyan); font-weight: 700; 
+        text-align: center; margin: 0 auto; display: flex; align-items: center; justify-content: center; 
+        width: fit-content; margin-bottom: 10px; gap: 4px;
+    }
   </style>
 </head>
 <body>
 
-<div class="version-info">ver. 0.2.14</div>
+<div class="version-info">ver. 0.2.15</div>
 <div class="maker-info">Made by <a href="https://www.youtube.com/@참혈" target="_blank"><i class="fab fa-youtube"></i>참혈</a></div>
 
 <div id="loading-overlay">
@@ -213,14 +223,17 @@
     <p id="result-success-text" class="result-summary"></p>
     <p id="result-fail-text" class="result-fail-summary"></p>
     
-    <div class="toggle-result-btn" onclick="toggleResultDetail()">> 내역 보기</div>
+    <div class="toggle-result-btn" onclick="toggleResultDetail()">
+        <span>내역 보기</span>
+        <i id="toggle-icon" class="material-icons" style="font-size:1.2rem; transform: translateY(1px);">keyboard_arrow_down</i>
+    </div>
     <div id="result-detail-box" class="result-table-wrapper">
         <table class="result-table">
             <tbody id="result-table-body"></tbody>
         </table>
     </div>
   </div>
-  <div class="modal-footer" style="text-align: center;">
+  <div class="modal-footer" style="display:flex; justify-content:flex-end; padding-right:24px;">
     <button class="btn cyan-theme" onclick="location.reload()">확인</button>
   </div>
 </div>
@@ -389,11 +402,11 @@
     
     for (let i = 0; i < increment; i++) {
       const row = document.createElement('tr');
-      // 1. No 열 추가 & 2. 어나더 열 이동 & 3. 체크박스 정렬 & 4. 플레이스홀더 "기본"
+      // No 열 추가 & 어나더 열 이동 & 체크박스 정렬 & 플레이스홀더 "기본" & 대문자 입력 적용
       row.innerHTML = `
         <td style="font-weight:600; color:#888;">${startIdx + i}</td>
         <td><span class="card-name-fetch">카드 번호를 입력해주세요.</span></td>
-        <td><input type="text" class="new-card-no" onblur="fetchCardName(this)" placeholder="번호 입력"></td>
+        <td><input type="text" class="new-card-no" oninput="this.value = this.value.toUpperCase()" onblur="fetchCardName(this)" placeholder="번호 입력"></td>
         <td>
             <div class="another-cell-container">
                 <label class="checkbox-label" style="margin-top:4px;"><input type="checkbox" class="filled-in" onchange="syncAnother(this)" disabled><span></span></label>
@@ -406,7 +419,7 @@
       `;
       tbody.appendChild(row);
     }
-    checkAddButton(); // 행 추가 후 버튼 상태 갱신
+    checkAddButton(); 
   }
 
   function syncDirectInput(sel) { const input = sel.nextElementSibling; if (sel.value === 'DIRECT') { sel.style.flex = "0 0 35%"; input.style.display = 'block'; input.style.flex = "1"; input.disabled = false; input.value = ""; input.focus(); } else { sel.style.flex = "1"; input.style.display = 'none'; input.disabled = true; input.value = sel.value; } checkAddButton(); }
@@ -432,7 +445,6 @@
     checkAddButton();
   }
 
-  // 5. 추가 버튼 유효성 검사 로직
   function checkAddButton() {
     const tbody = document.getElementById('add-card-tbody');
     let hasValidRow = false;
@@ -440,7 +452,6 @@
         const name = tr.querySelector('.card-name-fetch').innerText;
         const proc = tr.querySelector('.new-card-proc').value;
         const loc = tr.querySelector('.new-card-loc').value;
-        // 이름이 유효하고, 가공과 위치가 선택되어야 "완벽한 행"으로 간주
         if (!name.includes("입력해주세요") && !name.includes("확인하세요") && !name.includes("유효하지 않은") && !name.includes("오류") && !name.includes("조회 중") && proc && loc) {
             hasValidRow = true;
             break;
@@ -450,11 +461,9 @@
     const wrapper = document.querySelector('.tooltipped-wrapper');
     if (hasValidRow) {
         btn.classList.remove('disabled');
-        // 툴팁 비활성화 (꼼수: 내용 비우기)
         M.Tooltip.getInstance(wrapper).destroy(); 
     } else {
         btn.classList.add('disabled');
-        // 툴팁 재설정
         M.Tooltip.init(wrapper, {html: "추가할 수 있는 카드가 없습니다.", position: "top"});
     }
   }
@@ -466,16 +475,13 @@
     let successCount = 0;
     let successQty = 0;
 
-    // 1. 데이터 분류 (유효 / 실패)
     for (let tr of tbody.children) {
       const no = tr.cells[0].innerText;
       const cardNo = tr.querySelector('.new-card-no').value.trim(); 
       const name = tr.querySelector('.card-name-fetch').innerText;
       
-      // 입력 없는 행 스킵
       if (!cardNo) continue;
 
-      // 실패 사유 판별
       let failReason = null;
       if (name.includes("유효하지 않은") || name.includes("확인하세요") || name.includes("결과 없음")) failReason = "존재하지 않은 카드 번호";
       else if (name.includes("조회 중") || name.includes("오류")) failReason = "조회 오류";
@@ -485,20 +491,18 @@
       if (failReason) {
         failRows.push({ no, cardNo, reason: failReason });
       } else {
-        // 유효 데이터
         let proc = tr.querySelector('.new-card-proc').value === 'DIRECT' ? tr.querySelector('.rarity-direct').value.trim() : tr.querySelector('.new-card-proc').value;
         let loc = tr.querySelector('.new-card-loc').value === 'DIRECT' ? tr.querySelector('.loc-direct').value.trim() : tr.querySelector('.new-card-loc').value;
         const qty = parseInt(tr.querySelector('.new-card-qty').value); 
         const another = tr.querySelector('.new-card-another').value.trim();
         
         validRows.push([name, cardNo, proc, qty, loc, another]);
-        // 결과창 표시용 데이터 (이름별 합산을 위해 임시 저장)
         successCount++;
         successQty += qty;
       }
     }
 
-    if (validRows.length === 0) return; // checkAddButton에서 막히지만 안전장치
+    if (validRows.length === 0) return;
 
     const btn = document.getElementById('add-submit-btn'); 
     btn.classList.add('disabled'); 
@@ -508,10 +512,7 @@
       await callApi('addCards', {}, validRows); 
       M.Modal.getInstance(document.getElementById('add-card-modal')).close(); 
       showLoading(false); 
-      
-      // 7. 결과 모달 렌더링
       showResultModal(validRows, failRows, successCount, successQty);
-
     } catch (e) { 
         showLoading(false); 
         btn.classList.remove('disabled');
@@ -524,34 +525,41 @@
     document.getElementById('result-success-text').innerText = `${count}종의 카드 ${totalQty}장을 추가했습니다.`;
     document.getElementById('result-fail-text').innerText = failRows.length > 0 ? `(${failRows.length}종의 카드를 추가할 수 없습니다.)` : "";
     
-    // 테이블 생성
-    let html = "";
-    
-    // 성공 내역 (이름 기준 병합)
-    // successRows 구조: [Name, No, Proc, Qty, Loc, Another]
-    const groupedSuccess = {};
+    // 성공 데이터 재집계 (이름 > 번호 기준 합산)
+    const aggregated = {};
     successRows.forEach(r => {
         const name = r[0];
-        if(!groupedSuccess[name]) groupedSuccess[name] = [];
-        groupedSuccess[name].push(r);
+        const no = r[1];
+        const qty = parseInt(r[3]);
+        if(!aggregated[name]) aggregated[name] = {};
+        if(!aggregated[name][no]) aggregated[name][no] = 0;
+        aggregated[name][no] += qty;
     });
 
-    // 성공 행 렌더링
-    let isFirstSuccess = true;
-    const successKeys = Object.keys(groupedSuccess);
+    let html = "";
     
-    if (successKeys.length > 0) {
-        successKeys.forEach((name, idx) => {
-            const items = groupedSuccess[name];
-            // 같은 이름 내에서 루프
-            items.forEach((item, i) => {
-                html += `<tr>`;
-                // 1열: 성공 (전체 병합)
-                if (idx === 0 && i === 0) html += `<td class="bg-success" rowspan="${successRows.length}">성공</td>`;
-                // 2열: 이름 (이름별 병합)
-                if (i === 0) html += `<td rowspan="${items.length}">${name}</td>`;
-                // 3열: 번호, 4열: 수량
-                html += `<td>${item[1]}</td><td>${item[3]}</td></tr>`;
+    // 성공 행 렌더링
+    const successNames = Object.keys(aggregated);
+    let totalSuccessRowSpan = 0;
+    successNames.forEach(n => totalSuccessRowSpan += Object.keys(aggregated[n]).length);
+
+    if (successNames.length > 0) {
+        let isFirstGlobal = true;
+        successNames.forEach((name) => {
+            const numbers = Object.keys(aggregated[name]);
+            numbers.forEach((no, idx) => {
+                html += `<tr class="success-row">`;
+                // 전체 성공 병합 셀 (가장 첫 행에만)
+                if (isFirstGlobal) {
+                    html += `<td rowspan="${totalSuccessRowSpan}" style="font-weight:700;">성공</td>`;
+                    isFirstGlobal = false;
+                }
+                // 이름 병합 셀 (이름별 첫 행에만)
+                if (idx === 0) {
+                    html += `<td rowspan="${numbers.length}">${name}</td>`;
+                }
+                // 번호, 합산 수량
+                html += `<td>${no}</td><td>${aggregated[name][no]}</td></tr>`;
             });
         });
     }
@@ -559,22 +567,25 @@
     // 실패 행 렌더링
     if (failRows.length > 0) {
         failRows.forEach((row, i) => {
-            html += `<tr>`;
-            if (i === 0) html += `<td class="bg-fail" rowspan="${failRows.length}">실패</td>`;
-            // 실패는 이름 칸에 번호를 넣거나 함. 요청 양식: [실패] | [카드 번호] | [실패 이유]
-            // 위 성공 양식(4컬럼)과 맞추기 위해 2열(이름)에 카드번호, 3열+4열 병합하여 이유 표시
+            html += `<tr class="fail-row">`;
+            if (i === 0) html += `<td rowspan="${failRows.length}" style="font-weight:700;">실패</td>`;
+            // 실패는 이름 대신 번호를 표시, 사유를 병합
             html += `<td>${row.cardNo}</td><td colspan="2" style="color:#d32f2f;">${row.reason}</td></tr>`;
         });
     }
 
     document.getElementById('result-table-body').innerHTML = html;
-    document.getElementById('result-detail-box').style.display = 'none'; // 초기엔 숨김
+    document.getElementById('result-detail-box').style.display = 'none';
+    document.getElementById('toggle-icon').innerText = 'keyboard_arrow_down'; // 아이콘 초기화
     modal.open();
   }
 
   function toggleResultDetail() {
     const box = document.getElementById('result-detail-box');
-    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    const icon = document.getElementById('toggle-icon');
+    const isHidden = box.style.display === 'none';
+    box.style.display = isHidden ? 'block' : 'none';
+    icon.innerText = isHidden ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
   }
 
   function saveSettings() { const url = document.getElementById('sheet-url').value; const match = url.match(/[-\w]{25,}/); if (match) { localStorage.setItem(STORAGE_KEY, match[0]); location.reload(); } }
